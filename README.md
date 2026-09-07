@@ -99,7 +99,7 @@ Upgrade to version 1.2.3 for performance improvements and compatibility checks.
 
 ## ⚖️ License & Copyright
 - Copyright © **Oi Technologies** 
-- Email: [EMAIL_ADDRESS]
+- Email: support@oitech.com.bd
 - Website: https://oitech.com.bd
 - Open Source: https://oitech.com.bd/open-source/
 - Contact: https://oitech.com.bd/helpline/contact-us/

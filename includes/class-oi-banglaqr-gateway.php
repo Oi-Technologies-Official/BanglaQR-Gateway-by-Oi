@@ -355,6 +355,11 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         $rounded_total = round(WC()->cart->get_total('edit'));
         $formatted_total = html_entity_decode(wp_strip_all_tags(wc_price($rounded_total)));
 
+        // Dynamically set max file size based on server limit and our 5MB default
+        $max_upload_size = wp_max_upload_size();
+        $allowed_max_size = min(5 * 1024 * 1024, $max_upload_size);
+        $allowed_max_size_mb = max(1, round($allowed_max_size / (1024 * 1024)));
+        
         // Localize configuration data
         wp_localize_script($handle, 'oi_banglaqr_params', array(
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -362,14 +367,15 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             'active_qr' => $active_qr,
             'gateway_id' => $this->id,
             'theme_color' => isset($settings['theme_color']) ? $settings['theme_color'] : '#137833',
-            'max_file_size' => 5 * 1024 * 1024, // 5MB in bytes
-            'text_max_file_size' => '5MB',
+            'max_file_size' => $allowed_max_size,
+            'text_max_file_size' => $allowed_max_size_mb . 'MB',
             'paymentpage_img_url' => OI_BANGLAQR_URL . 'includes/img/banglaqr-paymentpage.png',
             'order_total' => $formatted_total,
             'payment_charge' => $charge_percent,
             'error_no_file' => __('Please upload your payment receipt or enter your payment Transaction ID to confirm your order.', 'banglaqr-payment-gateway-by-oi'),
             'error_invalid_file' => __('Invalid file format. Only JPEG, PNG, WEBP, and GIF images are allowed.', 'banglaqr-payment-gateway-by-oi'),
-            'error_file_too_large' => __('The selected file is too large. Maximum size allowed is 5MB.', 'banglaqr-payment-gateway-by-oi'),
+            // translators: %s is the max file size text (e.g. 5MB)
+            'error_file_too_large' => sprintf(__('The selected file is too large. Maximum size allowed is %s.', 'banglaqr-payment-gateway-by-oi'), $allowed_max_size_mb . 'MB'),
         ));
     }
 
@@ -442,7 +448,14 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         }
 
         if (empty($_FILES['file']) || !empty($_FILES['file']['error'])) {
-            wp_send_json_error(array('message' => __('No file uploaded or file error.', 'banglaqr-payment-gateway-by-oi')));
+            $error_message = __('No file uploaded or file error.', 'banglaqr-payment-gateway-by-oi');
+            if (!empty($_FILES['file']['error'])) {
+                $error_code = intval($_FILES['file']['error']);
+                if ($error_code === UPLOAD_ERR_INI_SIZE || $error_code === UPLOAD_ERR_FORM_SIZE) {
+                    $error_message = __('The uploaded file exceeds the maximum allowed upload size on this server (upload_max_filesize).', 'banglaqr-payment-gateway-by-oi');
+                }
+            }
+            wp_send_json_error(array('message' => $error_message));
         }
 
         require_once ABSPATH . 'wp-admin/includes/image.php';
