@@ -35,6 +35,10 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_checkout_assets'));
         add_action('woocommerce_checkout_process', array($this, 'validate_checkout_fields'));
+
+        // AJAX hooks for slip upload
+        add_action('wp_ajax_oi_banglaqr_upload_slip', array($this, 'ajax_upload_slip'));
+        add_action('wp_ajax_nopriv_oi_banglaqr_upload_slip', array($this, 'ajax_upload_slip'));
     }
 
     /**
@@ -428,6 +432,68 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
     }
 
     /**
+     * Handle AJAX file upload for payment receipt.
+     */
+    public function ajax_upload_slip()
+    {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_key($_POST['nonce']), 'oi_banglaqr_upload_slip_action')) {
+            wp_send_json_error(array('message' => __('Invalid security token. Please refresh the page and try again.', 'banglaqr-payment-gateway-by-oi')));
+        }
+
+        if (empty($_FILES['file']) || !empty($_FILES['file']['error'])) {
+            wp_send_json_error(array('message' => __('No file uploaded or file error.', 'banglaqr-payment-gateway-by-oi')));
+        }
+
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+
+        $file = $_FILES['file']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+
+        $overrides = array(
+            'test_form' => false,
+            'mimes' => array(
+                'jpg|jpeg|jpe' => 'image/jpeg',
+                'gif'          => 'image/gif',
+                'png'          => 'image/png',
+                'webp'         => 'image/webp'
+            ),
+        );
+
+        $uploaded_file = wp_handle_upload($file, $overrides);
+
+        if (isset($uploaded_file['error'])) {
+            wp_send_json_error(array('message' => $uploaded_file['error']));
+        }
+
+        $filename = $uploaded_file['file'];
+        $attachment = array(
+            'post_mime_type' => $uploaded_file['type'],
+            'post_title'     => preg_replace('/\.[^.]+$/', '', basename($filename)),
+            'post_content'   => '',
+            'post_status'    => 'inherit'
+        );
+
+        $attachment_id = wp_insert_attachment($attachment, $filename);
+
+        if (is_wp_error($attachment_id)) {
+            wp_send_json_error(array('message' => __('Failed to create attachment.', 'banglaqr-payment-gateway-by-oi')));
+        }
+
+        $attachment_data = wp_generate_attachment_metadata($attachment_id, $filename);
+        wp_update_attachment_metadata($attachment_id, $attachment_data);
+
+        // Security mark to prevent IDOR during checkout
+        update_post_meta($attachment_id, '_oi_banglaqr_pending_upload', '1');
+
+        wp_send_json_success(array(
+            'id'  => $attachment_id,
+            'url' => wp_get_attachment_url($attachment_id)
+        ));
+    }
+
+    /**
      * Process WooCommerce Payment.
      *
      * @param int $order_id Order ID.
@@ -451,12 +517,17 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             // Security check: Only update post parent if the ID belongs to an attachment to prevent IDOR
             if ($receipt_id > 0) {
                 $receipt_post = get_post($receipt_id);
-                if ($receipt_post && $receipt_post->post_type === 'attachment') {
-                    // Set the attachment as media parent of this order
-                    wp_update_post(array(
-                        'ID' => $receipt_id,
-                        'post_parent' => $order_id,
-                    ));
+                if ($receipt_post && $receipt_post->post_type === 'attachment' && $receipt_post->post_parent == 0) {
+                    // Verify the attachment was uploaded via our gateway
+                    if (get_post_meta($receipt_id, '_oi_banglaqr_pending_upload', true) === '1') {
+                        // Set the attachment as media parent of this order
+                        wp_update_post(array(
+                            'ID' => $receipt_id,
+                            'post_parent' => $order_id,
+                        ));
+                        // Remove pending mark
+                        delete_post_meta($receipt_id, '_oi_banglaqr_pending_upload');
+                    }
                 }
             }
         }
