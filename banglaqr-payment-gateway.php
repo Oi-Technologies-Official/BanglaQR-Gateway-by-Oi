@@ -6,12 +6,12 @@
  * Version: 1.0.0
  * Author: Oi Technologies
  * Author URI: https://Oitech.com.bd/
- * License: GPLv2 or later
+ * License: MIT
  * Domain Path: /languages
  * Tested up to: 6.6
  * Requires at least: 5.6
  * Requires PHP: 7.4
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * License URI: https://opensource.org/license/mit/
  * Text Domain: banglaqr-payment-gateway-by-oi
  */
 

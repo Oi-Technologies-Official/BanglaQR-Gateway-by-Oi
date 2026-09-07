@@ -11,8 +11,8 @@ A WooCommerce payment gateway supporting bank and mobile QR payments with a scan
 - **Requires at least:** WordPress 5.6
 - **Tested up to:** WordPress 7.0 
 - **Requires PHP:** 7.4  
-- **Stable tag:** 1.2.3 
-- **License:** [GPLv2 or later](https://www.gnu.org/licenses/gpl-2.0.html)
+- **Stable tag:** 1.0.0
+- **License:** [MIT](https://opensource.org/license/mit/)
 
 ---
 

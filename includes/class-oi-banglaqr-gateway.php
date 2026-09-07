@@ -447,10 +447,10 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             wp_send_json_error(array('message' => __('Invalid security token. Please refresh the page and try again.', 'banglaqr-payment-gateway-by-oi')));
         }
 
-        if (empty($_FILES['file']) || !empty($_FILES['file']['error'])) {
+        if (empty($_FILES['oi_banglaqr_file']) || !empty($_FILES['oi_banglaqr_file']['error'])) {
             $error_message = __('No file uploaded or file error.', 'banglaqr-payment-gateway-by-oi');
-            if (!empty($_FILES['file']['error'])) {
-                $error_code = intval($_FILES['file']['error']);
+            if (!empty($_FILES['oi_banglaqr_file']['error'])) {
+                $error_code = intval($_FILES['oi_banglaqr_file']['error']);
                 if ($error_code === UPLOAD_ERR_INI_SIZE || $error_code === UPLOAD_ERR_FORM_SIZE) {
                     $error_message = __('The uploaded file exceeds the maximum allowed upload size on this server (upload_max_filesize).', 'banglaqr-payment-gateway-by-oi');
                 }
@@ -462,7 +462,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         require_once ABSPATH . 'wp-admin/includes/file.php';
         require_once ABSPATH . 'wp-admin/includes/media.php';
 
-        $file = $_FILES['file']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+        $file = $_FILES['oi_banglaqr_file']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
         $overrides = array(
             'test_form' => false,

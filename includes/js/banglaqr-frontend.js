@@ -319,6 +319,40 @@ jQuery(document).ready(function ($) {
         $('#banglaqr-zoom-overlay').fadeOut(150).removeClass('is-active');
     }
 
+    // Image compression utility
+    function compressImage(file, callback) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(event) {
+            var img = new Image();
+            img.src = event.target.result;
+            img.onload = function() {
+                var canvas = document.createElement('canvas');
+                var ctx = canvas.getContext('2d');
+                var MAX_WIDTH = 1200;
+                var width = img.width;
+                var height = img.height;
+
+                if (width > MAX_WIDTH) {
+                    height = height * (MAX_WIDTH / width);
+                    width = MAX_WIDTH;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                canvas.toBlob(function(blob) {
+                    var newFile = new File([blob], file.name, {
+                        type: 'image/jpeg',
+                        lastModified: Date.now()
+                    });
+                    callback(newFile);
+                }, 'image/jpeg', 0.7);
+            };
+        };
+    }
+
     // Process file validation and rendering previews
     function handleFileSelect(file) {
         hideError();
@@ -329,39 +363,42 @@ jQuery(document).ready(function ($) {
             return;
         }
 
-        // Check file size
-        if (file.size > oi_banglaqr_params.max_file_size) {
-            showError(oi_banglaqr_params.error_file_too_large);
-            return;
-        }
+        // Compress image before proceeding
+        compressImage(file, function(compressedFile) {
+            // Check file size on compressed file against server limits
+            if (compressedFile.size > oi_banglaqr_params.max_file_size) {
+                showError(oi_banglaqr_params.error_file_too_large);
+                return;
+            }
 
-        selectedFile = file;
+            selectedFile = compressedFile;
 
-        // Render preview card
-        var objectUrl = URL.createObjectURL(file);
-        var sizeInMb = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+            // Render preview card
+            var objectUrl = URL.createObjectURL(compressedFile);
+            var sizeInMb = (compressedFile.size / (1024 * 1024)).toFixed(2) + ' MB';
 
-        $('#banglaqr-file-preview-container').html(
-            '<div class="banglaqr-file-preview-card">' +
-            '  <div class="banglaqr-file-thumbnail" style="background-image: url(' + objectUrl + ')"></div>' +
-            '  <div class="banglaqr-file-info">' +
-            '    <div class="banglaqr-file-name" title="' + escAttr(file.name) + '">' + escHtml(file.name) + '</div>' +
-            '    <div class="banglaqr-file-size">' + sizeInMb + '</div>' +
-            '    <div class="banglaqr-progress-container" style="display:none;">' +
-            '      <div class="banglaqr-progress-bar" id="banglaqr-progress-bar"></div>' +
-            '    </div>' +
-            '  </div>' +
-            '  <button type="button" class="banglaqr-remove-file-btn" id="banglaqr-remove-file" aria-label="Remove file">' +
-            '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejOin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>' +
-            '  </button>' +
-            '</div>'
-        );
+            $('#banglaqr-file-preview-container').html(
+                '<div class="banglaqr-file-preview-card">' +
+                '  <div class="banglaqr-file-thumbnail" style="background-image: url(' + objectUrl + ')"></div>' +
+                '  <div class="banglaqr-file-info">' +
+                '    <div class="banglaqr-file-name" title="' + escAttr(file.name) + '">' + escHtml(file.name) + '</div>' +
+                '    <div class="banglaqr-file-size">' + sizeInMb + '</div>' +
+                '    <div class="banglaqr-progress-container" style="display:none;">' +
+                '      <div class="banglaqr-progress-bar" id="banglaqr-progress-bar"></div>' +
+                '    </div>' +
+                '  </div>' +
+                '  <button type="button" class="banglaqr-remove-file-btn" id="banglaqr-remove-file" aria-label="Remove file">' +
+                '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejOin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>' +
+                '  </button>' +
+                '</div>'
+            );
 
-        // Bind delete action
-        $('#banglaqr-remove-file').on('click', function (e) {
-            e.preventDefault();
-            if (uploadInProgress) return;
-            resetFileSelector();
+            // Bind delete action
+            $('#banglaqr-remove-file').on('click', function (e) {
+                e.preventDefault();
+                if (uploadInProgress) return;
+                resetFileSelector();
+            });
         });
     }
 
