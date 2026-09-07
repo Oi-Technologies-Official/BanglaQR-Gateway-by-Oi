@@ -1,0 +1,14 @@
+{
+    "intelephense.stubs": [
+        "wordpress",
+        "woocommerce",
+        "standard",
+        "Core",
+        "date",
+        "Reflection",
+        "pcre",
+        "SPL",
+        "hash",
+        "json"
+    ]
+}

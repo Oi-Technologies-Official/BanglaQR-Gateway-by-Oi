@@ -1,0 +1,181 @@
+<?php
+/**
+ * Plugin Name: Bangla QR Payment Gatway by Oi
+ * Plugin URI: https://Oitech.com.bd/gifts/Bangla-qr-wp-plugin/
+ * Description: A payment gateway supporting bank and mobile QR payments with a scan-to-pay popup and payment receipt upload verification.
+ * Version: 1.0.0
+ * Author: Oi Technologies
+ * Author URI: https://Oitech.com.bd/
+ * License: GPLv2 or later
+ * Domain Path: /languages
+ * Tested up to: 6.6
+ * Requires at least: 5.6
+ * Requires PHP: 7.4
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: banglaqr-payment-gateway-by-oi
+ */
+
+defined('ABSPATH') || exit;
+
+// Define plugin-wide constants
+define('OI_BANGLAQR_VERSION', '1.0.0');
+define('OI_BANGLAQR_PATH', plugin_dir_path(__FILE__));
+define('OI_BANGLAQR_URL', plugin_dir_url(__FILE__));
+define('OI_BANGLAQR_BASENAME', plugin_basename(__FILE__));
+
+/**
+ * Declare WooCommerce HPOS Compatibility
+ */
+add_action('before_woocommerce_init', function () {
+    if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
+    }
+});
+
+/**
+ * Add settings action link to the plugin lists table.
+ *
+ * @param array $links Array of plugin action links.
+ * @return array Modified links array.
+ */
+function oi_banglaqr_add_settings_link($links)
+{
+    if (class_exists('WooCommerce')) {
+        $settings_url = admin_url('admin.php?page=wc-settings&tab=checkout&section=oi_banglaqr');
+        $settings_link = '<a href="' . esc_url($settings_url) . '">' . esc_html__('Settings', 'banglaqr-payment-gateway-by-oi') . '</a>';
+        array_unshift($links, $settings_link);
+    }
+    return $links;
+}
+add_filter('plugin_action_links_' . OI_BANGLAQR_BASENAME, 'oi_banglaqr_add_settings_link');
+
+/**
+ * Initialize the plugin when plugins are loaded.
+ */
+function oi_banglaqr_init_plugin()
+{
+    // Load plugin text domain for translations
+    load_plugin_textdomain('banglaqr-payment-gateway-by-oi', false, dirname(plugin_basename(__FILE__)) . '/languages');
+
+    // Hard check for WooCommerce
+    if (!class_exists('WooCommerce')) {
+        add_action('admin_notices', 'oi_banglaqr_woocommerce_missing_notice');
+        return;
+    }
+
+    // Load WooCommerce specific files
+    require_once OI_BANGLAQR_PATH . 'includes/class-oi-banglaqr-gateway.php';
+    require_once OI_BANGLAQR_PATH . 'includes/class-oi-banglaqr-admin.php';
+
+    new Oi_BanglaQR_Admin();
+
+    // Register gateway in WooCommerce
+    add_filter('woocommerce_payment_gateways', 'oi_banglaqr_register_gateway');
+
+    // Calculate fees globally to bypass class instantiation delays
+    add_action('woocommerce_cart_calculate_fees', 'oi_banglaqr_add_payment_charge_fee');
+}
+add_action('plugins_loaded', 'oi_banglaqr_init_plugin', 11);
+
+/**
+ * WooCommerce Missing Admin Notice.
+ */
+function oi_banglaqr_woocommerce_missing_notice()
+{
+    ?>
+    <div class="error notice">
+        <p><?php esc_html_e('Bangla QR Payment Gatway by Oi requires WooCommerce to be installed and active. The plugin is currently disabled.', 'banglaqr-payment-gateway-by-oi'); ?>
+        </p>
+    </div>
+    <?php
+}
+
+/**
+ * Register Gateway with WooCommerce.
+ *
+ * @param array $gateways WooCommerce gateways.
+ * @return array
+ */
+function oi_banglaqr_register_gateway($gateways)
+{
+    $gateways[] = 'Oi_BanglaQR_Gateway';
+    return $gateways;
+}
+
+/**
+ * Add payment gateway charge fee globally.
+ */
+function oi_banglaqr_add_payment_charge_fee()
+{
+    if (is_admin() && !defined('DOING_AJAX')) {
+        return;
+    }
+
+    // 1. Get chosen payment method from POST or Session
+    $chosen_gateway = '';
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing
+    if (isset($_POST['payment_method'])) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        $chosen_gateway = sanitize_text_field(wp_unslash($_POST['payment_method']));
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing
+    } elseif (isset($_POST['post_data'])) {
+        $post_data = array();
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        wp_parse_str(wp_unslash($_POST['post_data']), $post_data);
+        if (isset($post_data['payment_method'])) {
+            $chosen_gateway = sanitize_text_field($post_data['payment_method']);
+        }
+    } elseif (WC()->session) {
+        $chosen_gateway = WC()->session->get('chosen_payment_method');
+    }
+
+    if ('oi_banglaqr' !== $chosen_gateway) {
+        return;
+    }
+
+    // 2. Fetch the active QR code settings directly from database
+    $settings = get_option('woocommerce_oi_banglaqr_settings', array());
+    $qrs_table = isset($settings['qrs_table']) ? $settings['qrs_table'] : array();
+
+    if (!is_array($qrs_table) || empty($qrs_table)) {
+        $qrs_table = array(
+            array(
+                'qr_name' => 'Test QR',
+                'qr_code_url' => OI_BANGLAQR_URL . 'includes/img/testqr.png',
+                'payment_charge' => '1',
+                'is_active' => 'yes',
+            )
+        );
+    }
+
+    $active_qr = null;
+    if (is_array($qrs_table) && !empty($qrs_table)) {
+        foreach ($qrs_table as $qr) {
+            if (isset($qr['is_active']) && $qr['is_active'] === 'yes') {
+                $active_qr = $qr;
+                break;
+            }
+        }
+        if (!$active_qr && !empty($qrs_table)) {
+            $active_qr = $qrs_table[0];
+        }
+    }
+
+    $charge_percent = ($active_qr && isset($active_qr['payment_charge'])) ? floatval($active_qr['payment_charge']) : 0;
+    if ($charge_percent <= 0) {
+        return;
+    }
+
+    // 3. Base amount: subtotal + shipping
+    $base_amount = WC()->cart->get_subtotal() + WC()->cart->get_shipping_total();
+
+    // Calculate fee
+    $fee = ($base_amount * $charge_percent) / 100;
+    $fee = round($fee);
+
+    if ($fee > 0) {
+        // translators: %s is the payment charge percentage.
+        $fee_name = sprintf(__('Payment Charge (%s%%)', 'banglaqr-payment-gateway-by-oi'), $charge_percent);
+        WC()->cart->add_fee($fee_name, $fee, true);
+    }
+}

@@ -1,0 +1,650 @@
+/**
+ * Checkout Frontend CSS for Bangla QR Payment Method
+ * Clean, premium, Stripe-like aesthetic
+ */
+
+:root {
+    /* These variables are dynamically injected in PHP, but provided here as fallback */
+    --risb-primary: #137833;
+    --risb-primary-hover: #0f6229;
+    --risb-primary-light: #f0fdf4;
+    --risb-primary-border: #bbf7d0;
+
+    --risb-accent: #E20613;
+    --risb-accent-light: #fef2f2;
+    --risb-accent-border: #fecaca;
+
+    --risb-text: #0f172a;
+    --risb-text-muted: #475569;
+    --risb-text-light: #64748b;
+    
+    --risb-bg-dark: rgba(15, 23, 42, 0.75);
+    --risb-card-bg: #ffffff;
+    --risb-border: #e2e8f0;
+    --risb-input-border: #cbd5e1;
+    
+    --risb-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --risb-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --risb-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --risb-shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Base resets for plugin */
+.banglaqr-standalone-wrapper *,
+.banglaqr-modal-overlay * {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+/* --- 1. Standalone Payment Form --- */
+.banglaqr-standalone-wrapper {
+    background: var(--risb-card-bg) !important;
+    border: 1px solid var(--risb-border) !important;
+    box-shadow: var(--risb-shadow) !important;
+    border-radius: 16px !important;
+    padding: 32px !important;
+    max-width: 440px !important;
+    margin: 0 auto !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.banglaqr-standalone-wrapper:hover {
+    box-shadow: var(--risb-shadow-lg) !important;
+    transform: translateY(-2px);
+}
+
+.banglaqr-standalone-wrapper h3 {
+    color: var(--risb-text) !important;
+    font-size: 22px !important;
+    font-weight: 800 !important;
+    margin: 0 0 8px 0 !important;
+    letter-spacing: -0.5px !important;
+    text-align: center;
+}
+
+.banglaqr-standalone-wrapper p {
+    font-size: 14px !important;
+    color: var(--risb-text-light) !important;
+    margin: 0 0 24px 0 !important;
+    line-height: 1.5 !important;
+    text-align: center;
+}
+
+/* Standalone Form Inputs */
+#banglaqr-standalone-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#banglaqr-standalone-form label {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: var(--risb-text) !important;
+    margin-bottom: 6px !important;
+    display: block;
+}
+
+#banglaqr-standalone-form input:not([type="file"]) {
+    width: 100% !important;
+    height: 44px !important;
+    border: 1px solid var(--risb-input-border) !important;
+    border-radius: 10px !important;
+    padding: 0 14px !important;
+    font-size: 14px !important;
+    color: var(--risb-text) !important;
+    background-color: #ffffff !important;
+    transition: all 0.2s ease !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.02) !important;
+}
+
+#banglaqr-standalone-form input:focus {
+    border-color: var(--risb-primary) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px var(--risb-primary-light) !important;
+}
+
+/* Standalone Submit Button */
+#banglaqr-standalone-form button[type="submit"] {
+    background: linear-gradient(180deg, var(--risb-primary) 0%, var(--risb-primary-hover) 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    height: 48px !important;
+    border-radius: 10px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 4px 12px var(--risb-primary-light) !important;
+    margin-top: 8px;
+}
+
+#banglaqr-standalone-form button[type="submit"]:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 16px var(--risb-primary-border) !important;
+}
+
+#banglaqr-standalone-form button[type="submit"]:active {
+    transform: translateY(0) !important;
+}
+
+/* Standalone Upload Area */
+.banglaqr-upload-area {
+    border: 2px dashed var(--risb-input-border) !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+    text-align: center !important;
+    background-color: #f8fafc !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.banglaqr-upload-area:hover {
+    border-color: var(--risb-primary) !important;
+    background-color: var(--risb-primary-light) !important;
+}
+
+/* --- 2. Modal Overlay (WooCommerce Checkout) --- */
+.banglaqr-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--risb-bg-dark);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 16px;
+}
+
+.banglaqr-modal-overlay.risb-active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.banglaqr-modal-container {
+    background-color: var(--risb-card-bg);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: var(--risb-shadow-modal);
+    overflow: hidden;
+    transform: translateY(20px) scale(0.98);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.banglaqr-modal-overlay.risb-active .banglaqr-modal-container {
+    transform: translateY(0) scale(1);
+}
+
+/* Modal Header with Smooth Gradient */
+.banglaqr-modal-header {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, var(--risb-primary) 0%, var(--risb-primary-hover) 100%);
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.banglaqr-modal-header h3 {
+    margin: 0 !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    line-height: 1.2 !important;
+}
+
+.banglaqr-modal-subtitle {
+    margin: 4px 0 0 0 !important;
+    font-size: 13px !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+}
+
+.banglaqr-modal-close {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    width: 32px;
+    height: 32px;
+}
+
+.banglaqr-modal-close:hover {
+    background-color: #ffffff;
+    color: var(--risb-primary);
+    transform: rotate(90deg);
+}
+
+.banglaqr-modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: #ffffff;
+}
+
+/* QR Box */
+.banglaqr-qr-box {
+    width: 180px;
+    height: 190px;
+    border-radius: 16px;
+    background-color: #ffffff;
+    border: 1px solid var(--risb-border);
+    box-shadow: var(--risb-shadow-sm);
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 12px;
+    margin: 0 auto !important;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.banglaqr-qr-box.is-zoomable:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--risb-shadow-lg);
+    border-color: var(--risb-primary);
+}
+
+.banglaqr-qr-box img {
+    width: 150px !important;
+    height: 150px !important;
+    object-fit: contain !important;
+    margin-bottom: 6px !important;
+}
+
+.banglaqr-qr-box-text {
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    color: var(--risb-primary) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.banglaqr-qr-zoom-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 28px;
+    height: 28px;
+    background-color: var(--risb-primary);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.banglaqr-qr-box.is-zoomable:hover .banglaqr-qr-zoom-badge {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Upload Dropzone */
+.banglaqr-dropzone {
+    border: 2px dashed var(--risb-input-border);
+    border-radius: 12px;
+    padding: 24px 16px;
+    text-align: center;
+    background-color: #f8fafc;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.banglaqr-dropzone:hover,
+.banglaqr-dropzone.risb-dragover {
+    border-color: var(--risb-primary);
+    background-color: var(--risb-primary-light);
+}
+
+.banglaqr-upload-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--risb-text-muted);
+    transition: color 0.2s ease;
+}
+
+.banglaqr-dropzone:hover .banglaqr-upload-icon {
+    color: var(--risb-primary);
+}
+
+.banglaqr-upload-text {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--risb-text) !important;
+}
+
+.banglaqr-upload-subtext {
+    font-size: 12px !important;
+    color: var(--risb-text-light) !important;
+}
+
+/* Progress bar */
+.banglaqr-progress-container {
+    width: 100%;
+    height: 6px;
+    background-color: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.banglaqr-progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: var(--risb-primary);
+    transition: width 0.2s ease-out;
+}
+
+/* Buttons */
+.banglaqr-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    height: 44px;
+    width: 100%;
+}
+
+.banglaqr-btn-submit {
+    background: linear-gradient(180deg, var(--risb-primary) 0%, var(--risb-primary-hover) 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px var(--risb-primary-light);
+}
+
+.banglaqr-btn-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px var(--risb-primary-border);
+}
+
+.banglaqr-btn-submit:active {
+    transform: translateY(0);
+}
+
+.banglaqr-btn-cancel {
+    background-color: #ffffff;
+    color: var(--risb-text);
+    border: 1px solid var(--risb-input-border);
+}
+
+.banglaqr-btn-cancel:hover {
+    background-color: #f8fafc;
+    border-color: #94a3b8;
+}
+
+.banglaqr-modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--risb-border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    background-color: #fafbfc;
+}
+
+/* Trx Field */
+.banglaqr-trx-input-container {
+    background-color: #f8fafc;
+    border: 1px solid var(--risb-border);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.banglaqr-trx-input {
+    width: 100%;
+    height: 42px;
+    border: 1px solid var(--risb-input-border);
+    border-radius: 8px;
+    padding: 0 14px 0 38px !important;
+    font-size: 14px !important;
+    font-family: inherit !important;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+}
+
+.banglaqr-trx-input:focus {
+    border-color: var(--risb-primary) !important;
+    box-shadow: 0 0 0 3px var(--risb-primary-light) !important;
+    outline: none !important;
+}
+
+.banglaqr-trx-input-box {
+    position: relative;
+    margin-top: 8px;
+}
+
+.banglaqr-trx-field-icon {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    color: var(--risb-text-light);
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.banglaqr-trx-hint {
+    display: block;
+    font-size: 11px;
+    color: var(--risb-text-light);
+    margin-top: 6px;
+}
+
+.banglaqr-trx-toggle-btn {
+    width: 100%;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--risb-primary);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.banglaqr-trx-toggle-btn:hover {
+    background: var(--risb-primary-light);
+}
+
+.banglaqr-trx-toggle-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* Zoom Overlay */
+.banglaqr-zoom-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.banglaqr-zoom-card {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: var(--risb-shadow-modal);
+    animation: banglaqr-zoom-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-width: 360px;
+    width: 100%;
+}
+
+@keyframes banglaqr-zoom-in {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.banglaqr-zoom-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.banglaqr-zoom-title-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.banglaqr-zoom-title {
+    margin: 4px 0 0 0 !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: var(--risb-text) !important;
+}
+
+.banglaqr-zoom-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--risb-primary);
+    background: var(--risb-primary-light);
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-block;
+    align-self: flex-start;
+}
+
+.banglaqr-zoom-close {
+    background: #f1f5f9;
+    border: none;
+    color: var(--risb-text);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.banglaqr-zoom-close:hover {
+    background: var(--risb-accent-light);
+    color: var(--risb-accent);
+}
+
+.banglaqr-zoom-img-wrap {
+    border: 2px solid var(--risb-border);
+    border-radius: 16px;
+    padding: 16px;
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.banglaqr-zoom-img-wrap img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.banglaqr-zoom-footer-note {
+    font-size: 13px;
+    color: var(--risb-text-light);
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.banglaqr-zoom-dismiss-btn {
+    width: 100%;
+    height: 44px;
+    border-radius: 10px;
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--risb-text);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+.banglaqr-zoom-dismiss-btn:hover {
+    background-color: #e2e8f0;
+}
+
+.banglaqr-modal-error {
+    background-color: var(--risb-accent-light);
+    border: 1px solid var(--risb-accent-border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--risb-accent);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    display: none;
+}
+
+/* Common spinners and animations */
+.banglaqr-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: risb-spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    display: inline-block;
+}
+
+@keyframes risb-spin {
+    to { transform: rotate(360deg); }
+}
+
+.banglaqr-shake {
+    animation: risb-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes risb-shake {
+    10%, 90% { transform: translateX(-2px); }
+    20%, 80% { transform: translateX(4px); }
+    30%, 50%, 70% { transform: translateX(-8px); }
+    40%, 60% { transform: translateX(8px); }
+}
