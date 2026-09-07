@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Bangla QR Payment Gatway by Oi
- * Plugin URI: https://Oitech.com.bd/gifts/Bangla-qr-wp-plugin/
+ * Plugin URI: https://Oitech.com.bd/open-source/
  * Description: A payment gateway supporting bank and mobile QR payments with a scan-to-pay popup and payment receipt upload verification.
  * Version: 1.0.0
  * Author: Oi Technologies

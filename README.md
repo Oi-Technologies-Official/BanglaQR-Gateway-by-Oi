@@ -6,7 +6,7 @@ A WooCommerce payment gateway supporting bank and mobile QR payments with a scan
 ---
 
 ## 📌 Plugin Information
-- **Contributors:** shagor447  
+- **Contributors:** Oi Technologies
 - **Tags:** woocommerce, payment, gateway, banglaqr, qrpayment
 - **Requires at least:** WordPress 5.6
 - **Tested up to:** WordPress 7.0 
@@ -98,9 +98,10 @@ Yes, guest customers can checkout and upload their payment screenshots securely.
 Upgrade to version 1.2.3 for performance improvements and compatibility checks.
 
 ## ⚖️ License & Copyright
-- Copyright © **Raisul Islam Shagor** 
-- Email: deploy@raisul.dev
-- Website: https://raisul.dev/
-- Contact: https://raisul.dev/contact
+- Copyright © **Oi Technologies** 
+- Email: [EMAIL_ADDRESS]
+- Website: https://oitech.com.bd
+- Open Source: https://oitech.com.bd/open-source/
+- Contact: https://oitech.com.bd/helpline/contact-us/
 - Licensed under the **GPLv2 or later**  
 - ✅ This plugin is **free to use, modify, and distribute** under the license terms.
