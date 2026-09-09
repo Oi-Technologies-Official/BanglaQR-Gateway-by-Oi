@@ -142,9 +142,9 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                             <div class="banglaqr-logo-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
                                     stroke="currentColor" style="width:24px; height:24px;">
-                                    <path stroke-linecap="round" stroke-linejOin="round"
+                                    <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
-                                    <path stroke-linecap="round" stroke-linejOin="round"
+                                    <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M15 15h.008v.008H15V15zm0 2.25h.008v.008H15v-.008zM17.25 15h.008v.008H17.25V15zm0 2.25h.008v.008H17.25v-.008zm-2.25 2.25h.008v.008H15v-.008zm2.25 0h.008v.008H17.25v-.008zM19.5 15h.008v.008H19.5V15zm0 2.25h.008v.008H19.5v-.008zm-2.25-4.5h.008v.008H17.25v-.008zm2.25 0h.008v.008H19.5v-.008z" />
                                 </svg>
                             </div>
@@ -282,27 +282,45 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         $raw_value = isset($_POST[$this->get_field_key($key)]) ? wp_unslash($_POST[$this->get_field_key($key)]) : '';
-        $decoded = json_decode(html_entity_decode(stripslashes($raw_value)), true);
+        $decoded = json_decode($raw_value, true);
+        if (!is_array($decoded)) {
+            $decoded = json_decode(html_entity_decode($raw_value), true);
+        }
 
         $sanitized_qrs = array();
+        $has_active = false;
         if (is_array($decoded)) {
             foreach ($decoded as $qr) {
                 $qr_name = sanitize_text_field(isset($qr['qr_name']) ? $qr['qr_name'] : '');
                 $qr_code_url = esc_url_raw(isset($qr['qr_code_url']) ? $qr['qr_code_url'] : '');
 
-                // Skip saving completely empty entries to allow default QR fallback
+                // Skip saving completely empty entries
                 if (empty($qr_name) && empty($qr_code_url)) {
                     continue;
+                }
+
+                $charge = isset($qr['payment_charge']) ? floatval($qr['payment_charge']) : 0;
+                $charge = max(0, min(100, $charge));
+
+                $is_active = (isset($qr['is_active']) && $qr['is_active'] === 'yes' && !$has_active) ? 'yes' : 'no';
+                if ($is_active === 'yes') {
+                    $has_active = true;
                 }
 
                 $sanitized_qrs[] = array(
                     'qr_name' => $qr_name,
                     'qr_code_url' => $qr_code_url,
-                    'payment_charge' => sanitize_text_field(isset($qr['payment_charge']) ? $qr['payment_charge'] : '0'),
-                    'is_active' => isset($qr['is_active']) && $qr['is_active'] === 'yes' ? 'yes' : 'no',
+                    'payment_charge' => (string)$charge,
+                    'is_active' => $is_active,
                 );
             }
         }
+
+        // If none is active but accounts exist, make the first one active
+        if (!$has_active && !empty($sanitized_qrs)) {
+            $sanitized_qrs[0]['is_active'] = 'yes';
+        }
+
         return $sanitized_qrs;
     }
 
@@ -311,14 +329,17 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
      */
     public function enqueue_checkout_assets()
     {
-        if (!is_checkout() || !$this->is_available()) {
+        if (!is_checkout() || !WC()->cart || !$this->is_available()) {
             return;
         }
 
         $handle = 'banglaqr-frontend';
 
-        wp_enqueue_style($handle, OI_BANGLAQR_URL . 'includes/css/banglaqr-frontend.css', array(), OI_BANGLAQR_VERSION);
-        wp_enqueue_script($handle, OI_BANGLAQR_URL . 'includes/js/banglaqr-frontend.js', array('jquery'), OI_BANGLAQR_VERSION, true);
+        $css_ver = file_exists(OI_BANGLAQR_PATH . 'includes/css/banglaqr-frontend.css') ? filemtime(OI_BANGLAQR_PATH . 'includes/css/banglaqr-frontend.css') : OI_BANGLAQR_VERSION;
+        $js_ver  = file_exists(OI_BANGLAQR_PATH . 'includes/js/banglaqr-frontend.js') ? filemtime(OI_BANGLAQR_PATH . 'includes/js/banglaqr-frontend.js') : OI_BANGLAQR_VERSION;
+
+        wp_enqueue_style($handle, OI_BANGLAQR_URL . 'includes/css/banglaqr-frontend.css', array(), $css_ver);
+        wp_enqueue_script($handle, OI_BANGLAQR_URL . 'includes/js/banglaqr-frontend.js', array('jquery'), $js_ver, true);
 
         // Find active QR code from settings
         $settings = $this->settings;
@@ -351,9 +372,9 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
 
         $charge_percent = ($active_qr && isset($active_qr['payment_charge'])) ? floatval($active_qr['payment_charge']) : 0;
 
-        // Calculate dynamic total including payment charge rounded to nearest integer (do not display decimal/fractional paisa values)
-        $rounded_total = round(WC()->cart->get_total('edit'));
-        $formatted_total = html_entity_decode(wp_strip_all_tags(wc_price($rounded_total)));
+        // Formatted total respecting store decimal settings
+        $total_amount = WC()->cart->get_total('edit');
+        $formatted_total = html_entity_decode(wp_strip_all_tags(wc_price($total_amount)));
 
         // Dynamically set max file size based on server limit and our 5MB default
         $max_upload_size = wp_max_upload_size();
@@ -376,6 +397,9 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             'error_invalid_file' => __('Invalid file format. Only JPEG, PNG, WEBP, and GIF images are allowed.', 'banglaqr-payment-gateway-by-oi'),
             // translators: %s is the max file size text (e.g. 5MB)
             'error_file_too_large' => sprintf(__('The selected file is too large. Maximum size allowed is %s.', 'banglaqr-payment-gateway-by-oi'), $allowed_max_size_mb . 'MB'),
+            'i18n_required_field' => __('%s is a required field.', 'banglaqr-payment-gateway-by-oi'),
+            'i18n_valid_email' => __('Please enter a valid email address for %s.', 'banglaqr-payment-gateway-by-oi'),
+            'i18n_terms' => __('You must accept the terms and conditions.', 'banglaqr-payment-gateway-by-oi'),
         ));
     }
 
@@ -442,25 +466,82 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
      */
     public function ajax_upload_slip()
     {
+        // Security check
         // phpcs:ignore WordPress.Security.NonceVerification.Missing
         if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_key($_POST['nonce']), 'oi_banglaqr_upload_slip_action')) {
             wp_send_json_error(array('message' => __('Invalid security token. Please refresh the page and try again.', 'banglaqr-payment-gateway-by-oi')));
         }
 
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+
+        // 1. Process Base64 payload (bypasses PHP upload_max_filesize completely)
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        if (!empty($_POST['image_base64'])) {
+            $base64_data = sanitize_text_field(wp_unslash($_POST['image_base64']));
+            if (preg_match('/^data:image\/(jpeg|jpg|png|webp|gif);base64,(.*)$/s', $base64_data, $matches)) {
+                $ext = strtolower($matches[1]);
+                if ($ext === 'jpeg') {
+                    $ext = 'jpg';
+                }
+                $decoded = base64_decode($matches[2]);
+
+                if ($decoded !== false) {
+                    $raw_name = !empty($_POST['image_name']) ? sanitize_file_name(wp_unslash($_POST['image_name'])) : 'receipt.jpg';
+                    $clean_name = preg_replace('/\.[^.]+$/', '', $raw_name);
+                    if (empty($clean_name)) {
+                        $clean_name = 'receipt';
+                    }
+                    $filename_to_save = 'receipt_' . wp_generate_password(8, false) . '.' . $ext;
+
+                    $upload = wp_upload_bits($filename_to_save, null, $decoded);
+                    if (!empty($upload['error'])) {
+                        wp_send_json_error(array('message' => $upload['error']));
+                    }
+
+                    $filename = $upload['file'];
+                    $wp_filetype = wp_check_filetype($filename, null);
+
+                    $attachment = array(
+                        'post_mime_type' => !empty($wp_filetype['type']) ? $wp_filetype['type'] : 'image/jpeg',
+                        'post_title'     => $clean_name,
+                        'post_content'   => '',
+                        'post_status'    => 'inherit'
+                    );
+
+                    $attachment_id = wp_insert_attachment($attachment, $filename);
+
+                    if (is_wp_error($attachment_id)) {
+                        wp_send_json_error(array('message' => __('Failed to create attachment.', 'banglaqr-payment-gateway-by-oi')));
+                    }
+
+                    $attachment_data = wp_generate_attachment_metadata($attachment_id, $filename);
+                    wp_update_attachment_metadata($attachment_id, $attachment_data);
+
+                    // Security mark to prevent IDOR during checkout
+                    update_post_meta($attachment_id, '_oi_banglaqr_pending_upload', '1');
+
+                    wp_send_json_success(array(
+                        'id'            => $attachment_id,
+                        'attachment_id' => $attachment_id,
+                        'url'           => wp_get_attachment_url($attachment_id)
+                    ));
+                }
+            }
+        }
+
+        // 2. Fallback: Standard $_FILES handling
         if (empty($_FILES['oi_banglaqr_file']) || !empty($_FILES['oi_banglaqr_file']['error'])) {
             $error_message = __('No file uploaded or file error.', 'banglaqr-payment-gateway-by-oi');
             if (!empty($_FILES['oi_banglaqr_file']['error'])) {
                 $error_code = intval($_FILES['oi_banglaqr_file']['error']);
                 if ($error_code === UPLOAD_ERR_INI_SIZE || $error_code === UPLOAD_ERR_FORM_SIZE) {
-                    $error_message = __('The uploaded file exceeds the maximum allowed upload size on this server (upload_max_filesize).', 'banglaqr-payment-gateway-by-oi');
+                    $error_message = __('The uploaded file exceeds the server upload limit. Please choose a smaller image or contact the site administrator.', 'banglaqr-payment-gateway-by-oi');
                 }
             }
             wp_send_json_error(array('message' => $error_message));
         }
-
-        require_once ABSPATH . 'wp-admin/includes/image.php';
-        require_once ABSPATH . 'wp-admin/includes/file.php';
-        require_once ABSPATH . 'wp-admin/includes/media.php';
 
         $file = $_FILES['oi_banglaqr_file']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 
@@ -501,8 +582,9 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         update_post_meta($attachment_id, '_oi_banglaqr_pending_upload', '1');
 
         wp_send_json_success(array(
-            'id'  => $attachment_id,
-            'url' => wp_get_attachment_url($attachment_id)
+            'id'            => $attachment_id,
+            'attachment_id' => $attachment_id,
+            'url'           => wp_get_attachment_url($attachment_id)
         ));
     }
 

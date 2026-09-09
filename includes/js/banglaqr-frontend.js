@@ -9,17 +9,39 @@ jQuery(document).ready(function ($) {
     }
 
     var selectedFile = null;
+    var selectedBase64 = null;
     var uploadInProgress = false;
+    var currentObjectUrl = null;
+    var $lastActiveElement = null;
 
     // Escaping helper
     function escHtml(str) {
         if (!str) return '';
-        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
     function escAttr(str) {
         if (!str) return '';
-        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    // Get dynamic checkout total from DOM, fallback to localized total
+    function getCurrentOrderTotal() {
+        var total = '';
+        var $domTotal = $('.order-total strong span.woocommerce-Price-amount, .order-total strong, .order-total .amount').first();
+        if ($domTotal.length) {
+            total = $domTotal.text().trim();
+        }
+        if (!total) {
+            total = oi_banglaqr_params.order_total || '0';
+        }
+        return total;
+    }
+
+    // Update payable amount in modal without rebuilding HTML
+    function updateModalAmounts() {
+        var total = getCurrentOrderTotal();
+        $('#banglaqr-modal-payable-val').text(total);
     }
 
     // Append modal HTML structure to body
@@ -30,74 +52,64 @@ jQuery(document).ready(function ($) {
 
         var activeQr = oi_banglaqr_params.active_qr;
         var themeColor = oi_banglaqr_params.theme_color || '#137833';
+        var total = getCurrentOrderTotal();
+        var charge = parseFloat(oi_banglaqr_params.payment_charge || '0');
 
-        var html = '<div id="banglaqr-modal" class="banglaqr-modal-overlay">';
+        var html = '<div id="banglaqr-modal" class="banglaqr-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="banglaqr-modal-title">';
         html += '<style>';
         html += '  #banglaqr-modal {';
-        html += '    --risb-primary: ' + escAttr(themeColor) + ';';
-        html += '    --risb-primary-hover: ' + escAttr(themeColor) + 'dd;';
-        html += '    --risb-primary-light: ' + escAttr(themeColor) + '15;';
-        html += '    --risb-primary-border: ' + escAttr(themeColor) + '30;';
+        html += '    --banglaqr-modal-primary: ' + escAttr(themeColor) + ';';
+        html += '    --banglaqr-modal-primary-hover: ' + escAttr(themeColor) + 'dd;';
+        html += '    --banglaqr-modal-primary-light: ' + escAttr(themeColor) + '15;';
+        html += '    --banglaqr-modal-primary-border: ' + escAttr(themeColor) + '30;';
         html += '  }';
         html += '</style>';
-        html += '  <div class="banglaqr-modal-container">';
+        html += '  <div class="banglaqr-modal-container" role="document">';
 
         // Header
         html += '    <div class="banglaqr-modal-header">';
         html += '      <div>';
-        html += '        <h3>' + escHtml('Bangla QR Payment') + '</h3>';
-        html += '        <p class="banglaqr-modal-subtitle">' + escHtml('Scan QR & upload payment proof.') + '</p>';
+        html += '        <h3 id="banglaqr-modal-title">' + escHtml('Bangla QR Payment') + '</h3>';
+        html += '        <p class="banglaqr-modal-subtitle">' + escHtml('Scan QR & submit payment proof') + '</p>';
         html += '      </div>';
         html += '      <button type="button" class="banglaqr-modal-close" id="banglaqr-modal-close-btn" aria-label="Close modal">';
-        html += '        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejOin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>';
+        html += '        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>';
         html += '      </button>';
         html += '    </div>';
 
         // Body
         html += '    <div class="banglaqr-modal-body">';
-        html += '      <div id="banglaqr-error-banner" class="banglaqr-modal-error"></div>';
+        html += '      <div id="banglaqr-error-banner" class="banglaqr-modal-error" role="alert" aria-live="polite"></div>';
 
         if (activeQr && activeQr.qr_code_url) {
-            // Get dynamic checkout total from DOM, fallback to localized total
-            var total = '';
-            var $domTotal = $('.order-total strong span.woocommerce-Price-amount, .order-total strong, .order-total .amount').first();
-            if ($domTotal.length) {
-                total = $domTotal.text().trim();
-            }
-            if (!total) {
-                total = oi_banglaqr_params.order_total || '0';
-            }
-            // Strip decimals/paisa (e.g. .00)
-            total = total.replace(/\.\d+(?=\s*\D*$)/, '');
-
-            var charge = parseFloat(oi_banglaqr_params.payment_charge || '0');
-
-            html += '      <div class="banglaqr-payable-amount-box" style="text-align:center; padding: 6px 10px; background-color: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 2px;">';
-            html += '        <div style="font-size: 10px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2;">Payable Amount</div>';
-            html += '        <div style="font-size: 18px; font-weight: 800; color: #137833; margin: 1px 0; line-height: 1.2;">' + escHtml(total) + '</div>';
+            html += '      <div class="banglaqr-payable-amount-box">';
+            html += '        <div class="banglaqr-payable-label">Payable Amount</div>';
+            html += '        <div class="banglaqr-payable-value" id="banglaqr-modal-payable-val">' + escHtml(total) + '</div>';
             if (charge > 0) {
-                html += '        <div style="font-size: 9px; color: #475569; font-weight: 600; line-height: 1.2;">(Includes ' + charge + '% bank charge)</div>';
+                html += '        <div class="banglaqr-payable-note">(Includes ' + charge + '% bank charge)</div>';
             } else {
-                html += '        <div style="font-size: 9px; color: #475569; font-weight: 600; line-height: 1.2;">(No extra charge)</div>';
+                html += '        <div class="banglaqr-payable-note">(No extra charge)</div>';
             }
             html += '      </div>';
 
             // QR Code Box (Click to zoom/enlarge)
             html += '      <div class="banglaqr-qr-wrapper">';
-            html += '        <div class="banglaqr-qr-box is-zoomable" id="banglaqr-qr-box" title="Click to view enlarged QR code" role="button" tabindex="0">';
+            html += '        <div class="banglaqr-qr-box is-zoomable" id="banglaqr-qr-box" title="Click to view enlarged QR code" role="button" tabindex="0" aria-label="Enlarge QR Code">';
             html += '          <div class="banglaqr-qr-zoom-badge">';
-            html += '            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejOin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
+            html += '            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
             html += '          </div>';
-            html += '          <img src="' + escAttr(activeQr.qr_code_url) + '" alt="' + escAttr(activeQr.qr_name) + '" />';
+            html += '          <img src="' + escAttr(activeQr.qr_code_url) + '" alt="' + escAttr(activeQr.qr_name || 'Bangla QR Code') + '" />';
             html += '          <div class="banglaqr-qr-box-text">Scan Here to Pay</div>';
             html += '        </div>';
             html += '        <div class="banglaqr-qr-zoom-hint-text">Click QR code to view large size</div>';
             html += '      </div>';
 
             // Payment Page Banner
-            html += '      <div class="banglaqr-payment-methods-banner" style="text-align:center; margin: 2px 0;">';
-            html += '        <img src="' + escAttr(oi_banglaqr_params.paymentpage_img_url) + '" alt="Accepted Payment Methods" style="max-width:100%; height:auto; display:inline-block; border-radius: 4px;" />';
-            html += '      </div>';
+            if (oi_banglaqr_params.paymentpage_img_url) {
+                html += '      <div class="banglaqr-payment-methods-banner">';
+                html += '        <img src="' + escAttr(oi_banglaqr_params.paymentpage_img_url) + '" alt="Accepted Payment Methods" />';
+                html += '      </div>';
+            }
 
             // Instruction Alert Banner
             html += '      <div class="banglaqr-instruction-banner">';
@@ -111,22 +123,22 @@ jQuery(document).ready(function ($) {
 
         // Upload Receipt Section
         html += '      <div class="banglaqr-upload-section">';
-        html += '        <label class="banglaqr-upload-label">' + escHtml('Upload Payment Screenshot / Receipt') + '</label>';
-        html += '        <div id="banglaqr-dropzone" class="banglaqr-dropzone">';
-        html += '          <svg class="banglaqr-upload-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejOin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>';
+        html += '        <label class="banglaqr-upload-label" for="banglaqr-file-input">' + escHtml('Upload Payment Screenshot / Receipt') + '</label>';
+        html += '        <div id="banglaqr-dropzone" class="banglaqr-dropzone" tabindex="0" role="button" aria-label="Upload payment screenshot">';
+        html += '          <svg class="banglaqr-upload-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>';
         html += '          <span class="banglaqr-upload-text">Drag & drop receipt here or click to browse</span>';
         html += '          <span class="banglaqr-upload-subtext">Max size: ' + oi_banglaqr_params.text_max_file_size + ' (JPEG, PNG, WEBP, GIF)</span>';
-        html += '          <input type="file" id="banglaqr-file-input" style="display:none;" accept="image/*" />';
+        html += '          <input type="file" id="banglaqr-file-input" style="display:none;" accept="image/jpeg,image/png,image/webp,image/gif" />';
         html += '        </div>';
         html += '        <div id="banglaqr-file-preview-container"></div>';
         html += '      </div>';
 
-        // Transaction ID Section (Collapsible option)
+        // Transaction ID Section
         html += '      <div class="banglaqr-trx-section">';
         html += '        <div class="banglaqr-trx-toggle-wrap">';
-        html += '          <button type="button" class="banglaqr-trx-toggle-btn" id="banglaqr-trx-toggle-btn">';
+        html += '          <button type="button" class="banglaqr-trx-toggle-btn" id="banglaqr-trx-toggle-btn" aria-expanded="false" aria-controls="banglaqr-trx-input-container">';
         html += '            <span class="banglaqr-trx-toggle-icon">';
-        html += '              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejOin="round"><path d="M12 5v14M5 12h14"/></svg>';
+        html += '              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
         html += '            </span>';
         html += '            <span class="banglaqr-trx-toggle-text">Or provide your payment Transaction ID instead</span>';
         html += '          </button>';
@@ -134,10 +146,10 @@ jQuery(document).ready(function ($) {
         html += '        <div class="banglaqr-trx-input-container" id="banglaqr-trx-input-container" style="display:none;">';
         html += '          <label class="banglaqr-trx-label" for="banglaqr-trx-input">Payment Transaction ID / TrxID</label>';
         html += '          <div class="banglaqr-trx-input-box">';
-        html += '            <svg class="banglaqr-trx-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejOin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>';
+        html += '            <svg class="banglaqr-trx-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>';
         html += '            <input type="text" id="banglaqr-trx-input" class="banglaqr-trx-input" placeholder="e.g. 9K28DF109X or Bank Ref" autocomplete="off" />';
         html += '          </div>';
-        html += '          <span class="banglaqr-trx-hint">Enter the Transaction ID or reference from your bank/MFS payment receipt.</span>';
+        html += '          <span class="banglaqr-trx-hint">Enter the Transaction ID or reference number from your receipt.</span>';
         html += '        </div>';
         html += '      </div>';
 
@@ -153,7 +165,7 @@ jQuery(document).ready(function ($) {
 
         // Enlarged QR Lightbox View
         if (activeQr && activeQr.qr_code_url) {
-            html += '  <div id="banglaqr-zoom-overlay" class="banglaqr-zoom-overlay" style="display:none;">';
+            html += '  <div id="banglaqr-zoom-overlay" class="banglaqr-zoom-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Enlarged QR Code">';
             html += '    <div class="banglaqr-zoom-card">';
             html += '      <div class="banglaqr-zoom-header">';
             html += '        <div class="banglaqr-zoom-title-box">';
@@ -161,7 +173,7 @@ jQuery(document).ready(function ($) {
             html += '          <h4 class="banglaqr-zoom-title">Scan QR Code</h4>';
             html += '        </div>';
             html += '        <button type="button" class="banglaqr-zoom-close" id="banglaqr-zoom-close-btn" aria-label="Close enlarged QR">';
-            html += '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejOin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>';
+            html += '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>';
             html += '        </button>';
             html += '      </div>';
             html += '      <div class="banglaqr-zoom-img-wrap">';
@@ -189,9 +201,13 @@ jQuery(document).ready(function ($) {
         });
 
         // Trigger file input click when clicking dropzone
-        $('#banglaqr-dropzone').on('click', function (e) {
+        $('#banglaqr-dropzone').on('click keydown', function (e) {
             if (uploadInProgress) return;
+            if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') {
+                return;
+            }
             if (e.target.id !== 'banglaqr-file-input') {
+                e.preventDefault();
                 $('#banglaqr-file-input').click();
             }
         });
@@ -207,18 +223,18 @@ jQuery(document).ready(function ($) {
         $('#banglaqr-dropzone').on('dragover', function (e) {
             e.preventDefault();
             if (uploadInProgress) return;
-            $(this).addClass('risb-dragover');
+            $(this).addClass('is-dragover');
         });
 
         $('#banglaqr-dropzone').on('dragleave', function (e) {
             e.preventDefault();
-            $(this).removeClass('risb-dragover');
+            $(this).removeClass('is-dragover');
         });
 
         $('#banglaqr-dropzone').on('drop', function (e) {
             e.preventDefault();
             if (uploadInProgress) return;
-            $(this).removeClass('risb-dragover');
+            $(this).removeClass('is-dragover');
 
             var files = e.originalEvent.dataTransfer.files;
             if (files.length > 0) {
@@ -255,16 +271,16 @@ jQuery(document).ready(function ($) {
 
             if ($container.is(':visible')) {
                 $container.slideUp(180);
-                $btn.removeClass('is-open');
+                $btn.removeClass('is-open').attr('aria-expanded', 'false');
             } else {
                 $container.slideDown(200, function () {
                     $('#banglaqr-trx-input').focus();
                 });
-                $btn.addClass('is-open');
+                $btn.addClass('is-open').attr('aria-expanded', 'true');
             }
         });
 
-        // Submit form
+        // Submit form inside modal
         $('#banglaqr-btn-submit').on('click', function (e) {
             e.preventDefault();
             if (uploadInProgress) return;
@@ -298,13 +314,32 @@ jQuery(document).ready(function ($) {
             }
         });
 
-        // Listen for ESC key to close zoom or modal
+        // Focus trap & ESC key handling
         $(document).on('keydown.banglaqr', function (e) {
             if (e.key === 'Escape') {
                 if ($('#banglaqr-zoom-overlay').is(':visible')) {
                     closeQrZoom();
-                } else if ($('#banglaqr-modal').hasClass('risb-active') && !uploadInProgress) {
+                } else if ($('#banglaqr-modal').hasClass('is-active') && !uploadInProgress) {
                     closeModal();
+                }
+            } else if (e.key === 'Tab' && $('#banglaqr-modal').hasClass('is-active')) {
+                // Focus trap within modal
+                var $focusable = $('#banglaqr-modal').find('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])').filter(':visible');
+                if ($focusable.length === 0) return;
+
+                var $first = $focusable.first();
+                var $last = $focusable.last();
+
+                if (e.shiftKey) {
+                    if (document.activeElement === $first[0]) {
+                        e.preventDefault();
+                        $last.focus();
+                    }
+                } else {
+                    if (document.activeElement === $last[0]) {
+                        e.preventDefault();
+                        $first.focus();
+                    }
                 }
             }
         });
@@ -313,44 +348,84 @@ jQuery(document).ready(function ($) {
     // QR Zoom Helpers
     function openQrZoom() {
         $('#banglaqr-zoom-overlay').fadeIn(200).addClass('is-active');
+        $('#banglaqr-zoom-close-btn').focus();
     }
 
     function closeQrZoom() {
         $('#banglaqr-zoom-overlay').fadeOut(150).removeClass('is-active');
+        $('#banglaqr-qr-box').focus();
     }
 
-    // Image compression utility
+    // Image compression utility with aggressive lightweight optimization (guaranteed < 1MB)
     function compressImage(file, callback) {
         var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function(event) {
+
+        reader.onerror = function () {
+            handleUploadError(oi_banglaqr_params.error_invalid_file || 'Failed to read image file.');
+        };
+
+        reader.onload = function (event) {
             var img = new Image();
-            img.src = event.target.result;
-            img.onload = function() {
+
+            img.onerror = function () {
+                handleUploadError(oi_banglaqr_params.error_invalid_file || 'Failed to decode image.');
+            };
+
+            img.onload = function () {
                 var canvas = document.createElement('canvas');
                 var ctx = canvas.getContext('2d');
-                var MAX_WIDTH = 1200;
+                var MAX_DIM = 1000;
                 var width = img.width;
                 var height = img.height;
 
-                if (width > MAX_WIDTH) {
-                    height = height * (MAX_WIDTH / width);
-                    width = MAX_WIDTH;
+                if (width > height) {
+                    if (width > MAX_DIM) {
+                        height = Math.round(height * (MAX_DIM / width));
+                        width = MAX_DIM;
+                    }
+                } else {
+                    if (height > MAX_DIM) {
+                        width = Math.round(width * (MAX_DIM / height));
+                        height = MAX_DIM;
+                    }
                 }
-                
+
                 canvas.width = width;
                 canvas.height = height;
                 ctx.drawImage(img, 0, 0, width, height);
-                
-                canvas.toBlob(function(blob) {
-                    var newFile = new File([blob], file.name, {
-                        type: 'image/jpeg',
-                        lastModified: Date.now()
-                    });
-                    callback(newFile);
-                }, 'image/jpeg', 0.7);
+
+                function exportBlob(quality) {
+                    canvas.toBlob(function (blob) {
+                        if (!blob) {
+                            handleUploadError('Image processing failed. Please try another image.');
+                            return;
+                        }
+
+                        // If still larger than 1MB and quality can be reduced, compress further
+                        if (blob.size > 1024 * 1024 && quality > 0.4) {
+                            exportBlob(quality - 0.15);
+                            return;
+                        }
+
+                        // Align filename with jpeg output to avoid MIME mismatch rejection in WordPress
+                        var baseName = file.name.replace(/\.[^/.]+$/, "");
+                        var newFile = new File([blob], baseName + '.jpg', {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+
+                        var base64Data = canvas.toDataURL('image/jpeg', quality);
+                        callback(newFile, base64Data);
+                    }, 'image/jpeg', quality);
+                }
+
+                exportBlob(0.65);
             };
+
+            img.src = event.target.result;
         };
+
+        reader.readAsDataURL(file);
     }
 
     // Process file validation and rendering previews
@@ -364,7 +439,7 @@ jQuery(document).ready(function ($) {
         }
 
         // Compress image before proceeding
-        compressImage(file, function(compressedFile) {
+        compressImage(file, function (compressedFile, base64Data) {
             // Check file size on compressed file against server limits
             if (compressedFile.size > oi_banglaqr_params.max_file_size) {
                 showError(oi_banglaqr_params.error_file_too_large);
@@ -372,14 +447,18 @@ jQuery(document).ready(function ($) {
             }
 
             selectedFile = compressedFile;
+            selectedBase64 = base64Data;
 
-            // Render preview card
-            var objectUrl = URL.createObjectURL(compressedFile);
+            // Revoke old object URL if exists to prevent memory leaks
+            if (currentObjectUrl) {
+                URL.revokeObjectURL(currentObjectUrl);
+            }
+            currentObjectUrl = URL.createObjectURL(compressedFile);
             var sizeInMb = (compressedFile.size / (1024 * 1024)).toFixed(2) + ' MB';
 
             $('#banglaqr-file-preview-container').html(
                 '<div class="banglaqr-file-preview-card">' +
-                '  <div class="banglaqr-file-thumbnail" style="background-image: url(' + objectUrl + ')"></div>' +
+                '  <div class="banglaqr-file-thumbnail" style="background-image: url(' + currentObjectUrl + ')"></div>' +
                 '  <div class="banglaqr-file-info">' +
                 '    <div class="banglaqr-file-name" title="' + escAttr(file.name) + '">' + escHtml(file.name) + '</div>' +
                 '    <div class="banglaqr-file-size">' + sizeInMb + '</div>' +
@@ -388,7 +467,7 @@ jQuery(document).ready(function ($) {
                 '    </div>' +
                 '  </div>' +
                 '  <button type="button" class="banglaqr-remove-file-btn" id="banglaqr-remove-file" aria-label="Remove file">' +
-                '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejOin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>' +
+                '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>' +
                 '  </button>' +
                 '</div>'
             );
@@ -404,6 +483,11 @@ jQuery(document).ready(function ($) {
 
     function resetFileSelector() {
         selectedFile = null;
+        selectedBase64 = null;
+        if (currentObjectUrl) {
+            URL.revokeObjectURL(currentObjectUrl);
+            currentObjectUrl = null;
+        }
         $('#banglaqr-file-input').val('');
         $('#banglaqr-file-preview-container').empty();
         hideError();
@@ -422,18 +506,27 @@ jQuery(document).ready(function ($) {
     }
 
     function openModal() {
-        $('#banglaqr-modal').remove(); // Clear old structure to regenerate dynamic total and inputs
+        $lastActiveElement = document.activeElement;
         buildModalHtml();
-        resetFileSelector();
+        updateModalAmounts();
 
-        // Show overlay and fade-in
-        $('#banglaqr-modal').addClass('risb-active');
-        $('body').css('overflow', 'hidden'); // block page scrolling
+        // Show overlay
+        $('#banglaqr-modal').addClass('is-active');
+        $('body').css('overflow', 'hidden'); // block background scrolling
+
+        // Focus close button
+        setTimeout(function () {
+            $('#banglaqr-modal-close-btn').focus();
+        }, 50);
     }
 
     function closeModal() {
-        $('#banglaqr-modal').removeClass('risb-active');
+        $('#banglaqr-modal').removeClass('is-active');
         $('body').css('overflow', ''); // restore scroll
+
+        if ($lastActiveElement && $($lastActiveElement).is(':visible')) {
+            $($lastActiveElement).focus();
+        }
     }
 
     // Submit with Transaction ID Only (No Image Upload)
@@ -460,6 +553,7 @@ jQuery(document).ready(function ($) {
 
         // Submit checkout form
         uploadInProgress = false;
+        closeModal();
         $('form.checkout').submit();
     }
 
@@ -483,7 +577,14 @@ jQuery(document).ready(function ($) {
         var formData = new FormData();
         formData.append('action', 'oi_banglaqr_upload_slip');
         formData.append('nonce', oi_banglaqr_params.upload_nonce);
-        formData.append('oi_banglaqr_file', selectedFile);
+
+        // Send base64 payload to bypass PHP upload_max_filesize restriction
+        if (selectedBase64) {
+            formData.append('image_base64', selectedBase64);
+            formData.append('image_name', selectedFile ? selectedFile.name : 'receipt.jpg');
+        } else if (selectedFile) {
+            formData.append('oi_banglaqr_file', selectedFile);
+        }
 
         $.ajax({
             url: oi_banglaqr_params.ajax_url,
@@ -504,19 +605,22 @@ jQuery(document).ready(function ($) {
                 return myXhr;
             },
             success: function (response) {
-                if (response.success) {
+                if (response && response.success && response.data) {
                     var activeQrName = 'QR Payment';
                     if (oi_banglaqr_params.active_qr && oi_banglaqr_params.active_qr.qr_name) {
                         activeQrName = oi_banglaqr_params.active_qr.qr_name;
                     }
 
+                    // Read attachment ID robustly (supporting both 'attachment_id' and 'id')
+                    var attachmentId = response.data.attachment_id || response.data.id || '';
+
                     // Store details in checkout fields
-                    $('#oi_banglaqr_receipt_id').val(response.data.attachment_id);
+                    $('#oi_banglaqr_receipt_id').val(attachmentId);
                     $('#oi_banglaqr_transaction_id').val(trxId || '');
                     $('#oi_banglaqr_selected_qr').val(activeQrName);
 
-                    // Render small success snippet
-                    var previewMarkup = '<strong>QR Account:</strong> ' + escHtml(activeQrName) + '<br/><strong>Receipt Uploaded:</strong> <a href="' + escAttr(response.data.url) + '" target="_blank" style="color: #137833; font-weight:600;">View Screenshot</a>';
+                    // Render small success snippet on checkout page
+                    var previewMarkup = '<strong>QR Account:</strong> ' + escHtml(activeQrName) + '<br/><strong>Receipt Uploaded:</strong> <a href="' + escAttr(response.data.url) + '" target="_blank" rel="noopener noreferrer" style="color: #137833; font-weight:600;">View Screenshot</a>';
                     if (trxId) {
                         previewMarkup += '<br/><strong>Transaction ID:</strong> <span style="font-family:monospace; font-weight:700; color:#0f172a;">' + escHtml(trxId) + '</span>';
                     }
@@ -526,11 +630,12 @@ jQuery(document).ready(function ($) {
 
                     $submitBtn.html('<span class="banglaqr-spinner"></span> <span>Placing Order...</span>');
 
-                    // Submit checkout form
                     uploadInProgress = false;
+                    closeModal();
+                    // Submit checkout form
                     $('form.checkout').submit();
                 } else {
-                    handleUploadError(response.data ? response.data.message : 'An error occurred during file upload.');
+                    handleUploadError(response && response.data && response.data.message ? response.data.message : 'An error occurred during file upload.');
                 }
             },
             error: function () {
@@ -578,20 +683,23 @@ jQuery(document).ready(function ($) {
                 labelText = $input.attr('placeholder') || $input.attr('name') || 'Required field';
             }
 
+            var reqMsg = (oi_banglaqr_params.i18n_required_field || '%s is a required field.').replace('%s', '<strong>' + escHtml(labelText) + '</strong>');
+
             if ($input.is(':checkbox')) {
                 if (!$input.is(':checked')) {
-                    errors.push('<strong>' + escHtml(labelText) + '</strong> is a required field.');
+                    errors.push(reqMsg);
                     $row.addClass('woocommerce-invalid');
                 }
             } else {
                 if (!val || val.trim() === '') {
-                    errors.push('<strong>' + escHtml(labelText) + '</strong> is a required field.');
+                    errors.push(reqMsg);
                     $row.addClass('woocommerce-invalid');
                 } else {
                     if ($input.attr('type') === 'email' || ($input.attr('name') && $input.attr('name').indexOf('email') !== -1)) {
-                        var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+                        var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                         if (!emailReg.test(val)) {
-                            errors.push('Please enter a valid email address for <strong>' + escHtml(labelText) + '</strong>.');
+                            var emailMsg = (oi_banglaqr_params.i18n_valid_email || 'Please enter a valid email address for %s.').replace('%s', '<strong>' + escHtml(labelText) + '</strong>');
+                            errors.push(emailMsg);
                             $row.addClass('woocommerce-invalid');
                         }
                     }
@@ -602,7 +710,7 @@ jQuery(document).ready(function ($) {
         // Verify terms and conditions checkbox
         var $terms = $('#terms');
         if ($terms.length && $terms.is(':visible') && !$terms.is(':checked')) {
-            errors.push('You must accept the terms and conditions.');
+            errors.push(oi_banglaqr_params.i18n_terms || 'You must accept the terms and conditions.');
             $terms.closest('p').addClass('woocommerce-invalid');
         }
 
@@ -683,9 +791,8 @@ jQuery(document).ready(function ($) {
         openModal();
     });
 
-    // Listen to WooCommerce checkout errors to close the modal
+    // Listen to WooCommerce checkout errors to reset buttons
     $(document.body).on('checkout_error', function () {
-        closeModal();
         $('#banglaqr-btn-submit').prop('disabled', false).removeClass('loading').html('Confirm Payment');
         $('#banglaqr-btn-cancel, #banglaqr-remove-file').prop('disabled', false);
         $('.banglaqr-progress-container').hide();

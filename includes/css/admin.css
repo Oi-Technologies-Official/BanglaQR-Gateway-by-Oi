@@ -477,3 +477,145 @@ input:checked + .banglaqr-slider:before {
     color: var(--banglaqr-primary);
     background: var(--banglaqr-primary-light);
 }
+
+/* Empty QR Accounts State */
+.banglaqr-empty-qrs-box {
+    text-align: center;
+    padding: 36px 20px;
+    background: #ffffff;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+
+.banglaqr-empty-qrs-box .dashicons {
+    font-size: 38px;
+    width: 38px;
+    height: 38px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+
+.banglaqr-empty-qrs-box p {
+    margin: 0 0 16px 0;
+    color: var(--banglaqr-text-muted);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Admin Order Details Screen Card */
+.banglaqr-admin-order-receipt-card {
+    margin-top: 20px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background-color: #f8fafc;
+    padding: 16px;
+    max-width: 440px;
+    box-shadow: var(--banglaqr-shadow);
+}
+
+.banglaqr-receipt-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+}
+
+.banglaqr-receipt-bank-name {
+    font-weight: 700;
+    color: var(--banglaqr-text);
+    font-size: 14px;
+}
+
+.banglaqr-view-full-link {
+    color: var(--banglaqr-primary);
+    font-weight: 600;
+    font-size: 12px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.banglaqr-view-full-link:hover {
+    text-decoration: underline;
+    color: var(--banglaqr-primary-hover);
+}
+
+.banglaqr-view-full-link .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+}
+
+.banglaqr-admin-trx-box {
+    margin-bottom: 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.banglaqr-admin-trx-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--banglaqr-text-muted);
+    letter-spacing: 0.5px;
+}
+
+.banglaqr-admin-trx-val {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    font-family: monospace;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+}
+
+.banglaqr-copy-btn {
+    font-size: 11px !important;
+    height: 28px !important;
+    line-height: 26px !important;
+    font-weight: 600 !important;
+    padding: 0 10px !important;
+    border-radius: 6px !important;
+}
+
+.banglaqr-receipt-image-preview-container {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+}
+
+.banglaqr-receipt-preview-img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 6px;
+}
+
+.banglaqr-receipt-missing-box {
+    background-color: var(--banglaqr-accent-light);
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+.banglaqr-receipt-missing-notice {
+    margin: 0;
+    color: var(--banglaqr-accent);
+    font-size: 12px;
+    font-weight: 600;
+}

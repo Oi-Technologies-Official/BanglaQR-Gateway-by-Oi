@@ -2,20 +2,20 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+The following versions of **BanglaQR Payment Gateway by Oi** are currently supported with security updates:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 1.0.x   | :white_check_mark: |
+| < 1.0.0 | :x:                |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+If you discover a security vulnerability within this plugin, please send an email to the Oi Technologies security team at **security@oitech.com.bd** or via our contact page at [https://oitech.com.bd/helpline/contact-us/](https://oitech.com.bd/helpline/contact-us/).
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Please include:
+- A description of the vulnerability and its potential impact.
+- Step-by-step instructions (or proof of concept) to reproduce the issue.
+- Details regarding your environment (WordPress and WooCommerce versions).
+
+All security reports will be acknowledged within 48 hours, and patches will be issued promptly.

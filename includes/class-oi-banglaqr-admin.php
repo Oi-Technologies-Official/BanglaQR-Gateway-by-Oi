@@ -28,11 +28,11 @@ class Oi_BanglaQR_Admin
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         $is_settings_page = isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === 'wc-settings' && isset($_GET['section']) && sanitize_text_field(wp_unslash($_GET['section'])) === 'oi_banglaqr';
 
-        // Check for WooCommerce order screens
+        // Check for WooCommerce order screens (Classic and HPOS)
         $is_order_page = false;
         $screen = get_current_screen();
         if ($screen) {
-            if ($screen->id === 'shop_order' || $screen->id === 'woocommerce_page_wc-orders' || $screen->post_type === 'shop_order') {
+            if ($screen->id === 'shop_order' || $screen->id === 'woocommerce_page_wc-orders' || strpos($screen->id, 'wc-orders') !== false || (isset($screen->post_type) && $screen->post_type === 'shop_order')) {
                 $is_order_page = true;
             }
         }
@@ -43,15 +43,18 @@ class Oi_BanglaQR_Admin
 
         $handle = 'banglaqr-admin';
 
+        $css_ver = file_exists(OI_BANGLAQR_PATH . 'includes/css/admin.css') ? filemtime(OI_BANGLAQR_PATH . 'includes/css/admin.css') : OI_BANGLAQR_VERSION;
+        $js_ver  = file_exists(OI_BANGLAQR_PATH . 'includes/js/admin.js') ? filemtime(OI_BANGLAQR_PATH . 'includes/js/admin.js') : OI_BANGLAQR_VERSION;
+
         // Enqueue styles
-        wp_enqueue_style($handle, OI_BANGLAQR_URL . 'includes/css/admin.css', array(), OI_BANGLAQR_VERSION);
+        wp_enqueue_style($handle, OI_BANGLAQR_URL . 'includes/css/admin.css', array(), $css_ver);
 
         // Enqueue script only on settings page to handle Repeatable QR manager
         if ($is_settings_page) {
             wp_enqueue_media();
             wp_enqueue_script('jquery-ui-sortable');
 
-            wp_enqueue_script($handle, OI_BANGLAQR_URL . 'includes/js/admin.js', array('jquery', 'jquery-ui-sortable'), OI_BANGLAQR_VERSION, true);
+            wp_enqueue_script($handle, OI_BANGLAQR_URL . 'includes/js/admin.js', array('jquery', 'jquery-ui-sortable'), $js_ver, true);
 
             wp_localize_script($handle, 'oi_banglaqr_admin_params', array(
                 'media_title' => __('Select QR Image', 'banglaqr-payment-gateway-by-oi'),
@@ -101,59 +104,51 @@ class Oi_BanglaQR_Admin
             }
         }
         ?>
-                <div class="clear"></div>
-                <div class="banglaqr-admin-order-receipt-card"
-                    style="margin-top: 20px; border: 1px solid #cbd5e1; border-radius: 8px; background-color: #f8fafc; padding: 15px; max-width: 420px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);">
-                    <div class="banglaqr-receipt-card-header"
-                        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 12px;">
-                        <span class="banglaqr-receipt-bank-name" style="font-weight: 700; color: #1e293b; font-size: 14px;">
-                            <?php echo esc_html(!empty($selected_qr) ? $selected_qr : __('Bangla QR Payment Details', 'banglaqr-payment-gateway-by-oi')); ?>
-                        </span>
-                        <?php if ($image_url): ?>
-                                <a href="<?php echo esc_url($image_url); ?>" target="_blank" class="banglaqr-view-full-link"
-                                    style="color: #137833; font-weight: 600; font-size: 12px; text-decoration: none; display: flex; align-items: center; gap: 4px;">
-                                    <?php esc_html_e('View Full Image', 'banglaqr-payment-gateway-by-oi'); ?>
-                                    <span class="dashicons dashicons-external"
-                                        style="font-size: 14px; width: 14px; height: 14px; line-height: 14px;"></span>
-                                </a>
-                        <?php endif; ?>
+        <div class="clear"></div>
+        <div class="banglaqr-admin-order-receipt-card">
+            <div class="banglaqr-receipt-card-header">
+                <span class="banglaqr-receipt-bank-name">
+                    <?php echo esc_html(!empty($selected_qr) ? $selected_qr : __('Bangla QR Payment Details', 'banglaqr-payment-gateway-by-oi')); ?>
+                </span>
+                <?php if ($image_url): ?>
+                    <a href="<?php echo esc_url($image_url); ?>" target="_blank" rel="noopener noreferrer" class="banglaqr-view-full-link">
+                        <?php esc_html_e('View Full Image', 'banglaqr-payment-gateway-by-oi'); ?>
+                        <span class="dashicons dashicons-external"></span>
+                    </a>
+                <?php endif; ?>
+            </div>
+
+            <?php if (!empty($trx_id)): ?>
+                <div class="banglaqr-admin-trx-box">
+                    <div>
+                        <div class="banglaqr-admin-trx-label">
+                            <?php esc_html_e('Transaction ID', 'banglaqr-payment-gateway-by-oi'); ?>
+                        </div>
+                        <div class="banglaqr-admin-trx-val">
+                            <?php echo esc_html($trx_id); ?>
+                        </div>
                     </div>
-
-                    <?php if (!empty($trx_id)): ?>
-                            <div class="banglaqr-admin-trx-box"
-                                style="margin-bottom: 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <div
-                                        style="font-size: 10px; text-transform: uppercase; font-weight: 700; color: #64748b; letter-spacing: 0.5px;">
-                                        <?php esc_html_e('Transaction ID', 'banglaqr-payment-gateway-by-oi'); ?></div>
-                                    <div
-                                        style="font-size: 14px; font-weight: 700; color: #0f172a; font-family: monospace; letter-spacing: 0.5px;">
-                                        <?php echo esc_html($trx_id); ?></div>
-                                </div>
-                                <button type="button" class="button button-small"
-                                    onclick="navigator.clipboard.writeText('<?php echo esc_js($trx_id); ?>'); this.innerText='<?php echo esc_js(__('Copied!', 'banglaqr-payment-gateway-by-oi')); ?>'; setTimeout(()=>{this.innerText='<?php echo esc_js(__('Copy', 'banglaqr-payment-gateway-by-oi')); ?>'}, 2000);"
-                                    style="font-size: 11px; height: 26px; line-height: 24px; font-weight: 600;">
-                                    <?php esc_html_e('Copy', 'banglaqr-payment-gateway-by-oi'); ?>
-                                </button>
-                            </div>
-                    <?php endif; ?>
-
-                    <?php if ($image_url): ?>
-                            <div class="banglaqr-receipt-image-preview-container"
-                                style="border-radius: 6px; overflow: hidden; border: 1px solid #e2e8f0; background: #fff; display: flex; align-items: center; justify-content: center; padding: 5px;">
-                                <img src="<?php echo esc_url($image_url); ?>"
-                                    alt="<?php esc_attr_e('Payment Receipt', 'banglaqr-payment-gateway-by-oi'); ?>"
-                                    class="banglaqr-receipt-preview-img"
-                                    style="max-width: 100%; height: auto; display: block; border-radius: 4px;" />
-                            </div>
-                    <?php elseif (empty($trx_id)): ?>
-                            <div class="banglaqr-admin-order-receipt-card error-card">
-                                <p class="banglaqr-receipt-missing-notice" style="margin:0; color:#b91c1c; font-size:12px;">
-                                    <?php esc_html_e('Receipt attachment URL could not be resolved.', 'banglaqr-payment-gateway-by-oi'); ?>
-                                </p>
-                            </div>
-                    <?php endif; ?>
+                    <button type="button" class="button button-small banglaqr-copy-btn"
+                        onclick="if(navigator.clipboard){navigator.clipboard.writeText('<?php echo esc_js($trx_id); ?>');} this.innerText='<?php echo esc_js(__('Copied!', 'banglaqr-payment-gateway-by-oi')); ?>'; setTimeout(()=>{this.innerText='<?php echo esc_js(__('Copy', 'banglaqr-payment-gateway-by-oi')); ?>'}, 2000);">
+                        <?php esc_html_e('Copy', 'banglaqr-payment-gateway-by-oi'); ?>
+                    </button>
                 </div>
-                <?php
+            <?php endif; ?>
+
+            <?php if ($image_url): ?>
+                <div class="banglaqr-receipt-image-preview-container">
+                    <img src="<?php echo esc_url($image_url); ?>"
+                        alt="<?php esc_attr_e('Payment Receipt', 'banglaqr-payment-gateway-by-oi'); ?>"
+                        class="banglaqr-receipt-preview-img" />
+                </div>
+            <?php elseif (!empty($receipt_id)): ?>
+                <div class="banglaqr-receipt-missing-box">
+                    <p class="banglaqr-receipt-missing-notice">
+                        <?php esc_html_e('Receipt attachment could not be loaded or was removed from media library.', 'banglaqr-payment-gateway-by-oi'); ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
     }
 }

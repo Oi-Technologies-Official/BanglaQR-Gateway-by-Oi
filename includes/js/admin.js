@@ -31,7 +31,7 @@ jQuery(document).ready(function ($) {
     // Helper to escape attributes
     function escapeAttr(str) {
         if (!str) return '';
-        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
     // Generate HTML for a single accordion row
@@ -41,15 +41,15 @@ jQuery(document).ready(function ($) {
         var active = (qr.is_active === 'yes');
 
         var checkedStr = active ? 'checked' : '';
-        var isExpandedCls = (idx === 0) ? 'is-expanded' : ''; // Expand the first one by default if multiple
-        if (qrs.length === 1) isExpandedCls = 'is-expanded'; // Always expand if only 1
+        var isExpandedCls = (idx === 0) ? 'is-expanded' : '';
+        if (qrs.length === 1) isExpandedCls = 'is-expanded';
 
         var logoHtml = qrCodeUrl
-            ? '<img src="' + escapeAttr(qrCodeUrl) + '" />'
+            ? '<img src="' + escapeAttr(qrCodeUrl) + '" alt="' + escapeAttr(qrName) + '" />'
             : '<span class="dashicons dashicons-qr-code" style="font-size: 18px; width:18px; height:18px; color:#94a3b8;"></span>';
 
         var qrPreview = qrCodeUrl
-            ? '<img src="' + escapeAttr(qrCodeUrl) + '" />'
+            ? '<img src="' + escapeAttr(qrCodeUrl) + '" alt="' + escapeAttr(qrName) + '" />'
             : '<span class="dashicons dashicons-qr-code" style="font-size: 24px; width:24px; height:24px; color:#94a3b8;"></span>';
 
         var statusBadge = active 
@@ -79,7 +79,7 @@ jQuery(document).ready(function ($) {
         html += '      <div class="banglaqr-large-qr-preview-wrapper" style="' + largePreviewStyle + '">';
         html += '        <div class="banglaqr-grid-field"><label>Scan Preview</label></div>';
         html += '        <div class="banglaqr-large-qr-preview-box">';
-        html += '          <img class="banglaqr-large-qr-preview-img" src="' + escapeAttr(qrCodeUrl) + '" />';
+        html += '          <img class="banglaqr-large-qr-preview-img" src="' + escapeAttr(qrCodeUrl) + '" alt="QR Preview" />';
         html += '        </div>';
         html += '        <span style="font-size: 11px; color: #64748b; margin-top: 6px; display: block; line-height: 1.4;">Verify QR works.</span>';
         html += '      </div>';
@@ -97,7 +97,7 @@ jQuery(document).ready(function ($) {
         var qrCharge = qr.payment_charge || '0';
         html += '        <div class="banglaqr-grid-field">';
         html += '          <label>Payment Charge (%)</label>';
-        html += '          <input type="text" class="banglaqr-payment-charge-input banglaqr-general-input" value="' + escapeAttr(qrCharge) + '" placeholder="e.g. 2 (leave 0 to disable)" />';
+        html += '          <input type="number" step="0.01" min="0" max="100" class="banglaqr-payment-charge-input banglaqr-general-input" value="' + escapeAttr(qrCharge) + '" placeholder="e.g. 1.85 (leave 0 to disable)" />';
         html += '        </div>';
 
         // Image URL
@@ -117,7 +117,7 @@ jQuery(document).ready(function ($) {
         html += '              <input type="checkbox" class="banglaqr-is-active-input" ' + checkedStr + ' />';
         html += '              <span class="banglaqr-slider"></span>';
         html += '            </label>';
-        html += '            <span class="banglaqr-toggle-status">' + (active ? 'Set as Active QR' : 'Set as Active QR') + '</span>';
+        html += '            <span class="banglaqr-toggle-status">' + (active ? 'Active QR' : 'Set as Active') + '</span>';
         html += '          </div>';
         html += '          <button type="button" class="banglaqr-delete-row-btn" title="Delete QR Account">';
         html += '            <span class="dashicons dashicons-trash"></span> Delete';
@@ -138,14 +138,20 @@ jQuery(document).ready(function ($) {
         var expandedStates = [];
         $('.banglaqr-qr-accordion-item').each(function() {
             if ($(this).hasClass('is-expanded')) {
-                expandedStates.push($(this).data('index'));
+                expandedStates.push(parseInt($(this).data('index'), 10));
             }
         });
 
         $accordionWrapper.empty();
 
         if (qrs.length === 0) {
-            addQrCard(true);
+            var emptyHtml = '<div class="banglaqr-empty-qrs-box">';
+            emptyHtml += '  <span class="dashicons dashicons-qr-code"></span>';
+            emptyHtml += '  <p>No QR accounts configured yet.</p>';
+            emptyHtml += '  <button type="button" class="button button-primary" id="banglaqr-add-first-qr-btn"><span class="dashicons dashicons-plus"></span> Add QR Account</button>';
+            emptyHtml += '</div>';
+            $accordionWrapper.append(emptyHtml);
+            serializeData();
             return;
         }
 
@@ -193,12 +199,11 @@ jQuery(document).ready(function ($) {
         qrs.push(newQr);
         
         // Collapse all others and expand new one
-        $('.banglaqr-qr-accordion-item').removeClass('is-expanded');
         renderTable();
         
-        // Ensure new item is expanded
         var newIdx = qrs.length - 1;
         setTimeout(function() {
+            $('.banglaqr-qr-accordion-item').removeClass('is-expanded');
             $('.banglaqr-qr-accordion-item[data-index="' + newIdx + '"]').addClass('is-expanded');
         }, 50);
     }
@@ -271,6 +276,8 @@ jQuery(document).ready(function ($) {
             var $panel = $(this).closest('.banglaqr-qr-accordion-item');
             var idx = parseInt($panel.data('index'), 10);
 
+            // Sync current inputs before deleting
+            serializeData();
             qrs.splice(idx, 1);
 
             // If the deleted QR code was active, default another QR code to active
@@ -290,9 +297,9 @@ jQuery(document).ready(function ($) {
     });
 
     // Add Row Click triggers
-    $(document).on('click', '#banglaqr-add-qr-row-inline', function (e) {
+    $(document).on('click', '#banglaqr-add-qr-row-inline, #banglaqr-add-first-qr-btn', function (e) {
         e.preventDefault();
-        addQrCard();
+        addQrCard(false);
     });
 
     // Dynamic Title Sync to the Tab title
@@ -330,35 +337,38 @@ jQuery(document).ready(function ($) {
     // Enabled/Disable switch changes status text and tab opacity (mutually exclusive active QRs)
     $(document).on('change', '.banglaqr-is-active-input', function () {
         var $panel = $(this).closest('.banglaqr-qr-accordion-item');
-        var idx = $panel.data('index');
+        var idx = parseInt($panel.data('index'), 10);
         var isChecked = $(this).is(':checked');
 
         if (isChecked) {
-            // Uncheck other active check boxes
+            // Uncheck other active checkboxes
             $('.banglaqr-is-active-input').each(function () {
                 var $other = $(this);
                 var $otherPanel = $other.closest('.banglaqr-qr-accordion-item');
-                var Oidx = $otherPanel.data('index');
-                if (Oidx !== idx) {
+                var otherIdx = parseInt($otherPanel.data('index'), 10);
+                if (otherIdx !== idx) {
                     $other.prop('checked', false);
                     $otherPanel.find('.banglaqr-badge-wrapper').html('<span class="banglaqr-status-badge status-inactive"><span class="status-dot"></span> Inactive</span>');
+                    $otherPanel.find('.banglaqr-toggle-status').text('Set as Active');
                 }
             });
 
             $panel.find('.banglaqr-badge-wrapper').html('<span class="banglaqr-status-badge status-active"><span class="status-dot"></span> Active</span>');
+            $panel.find('.banglaqr-toggle-status').text('Active QR');
         } else {
             $panel.find('.banglaqr-badge-wrapper').html('<span class="banglaqr-status-badge status-inactive"><span class="status-dot"></span> Inactive</span>');
+            $panel.find('.banglaqr-toggle-status').text('Set as Active');
         }
 
         serializeData();
     });
 
-    // Serialize when textbox values change
-    $(document).on('input change', '.banglaqr-qr-accordion-item input[type="text"]', function () {
+    // Serialize when input values change
+    $(document).on('input change', '.banglaqr-qr-accordion-item input', function () {
         serializeData();
     });
 
-    // Enable dragging accordion rows
+    // Enable dragging accordion rows smoothly without DOM recreation
     if ($.fn.sortable) {
         $accordionWrapper.sortable({
             handle: '.banglaqr-sort-handle',
@@ -367,8 +377,9 @@ jQuery(document).ready(function ($) {
             axis: 'y',
             update: function () {
                 var reordered = [];
-                $accordionWrapper.find('.banglaqr-qr-accordion-item').each(function () {
+                $accordionWrapper.find('.banglaqr-qr-accordion-item').each(function (newIndex) {
                     var $panel = $(this);
+                    $panel.attr('data-index', newIndex);
                     var qr = {
                         qr_name: $panel.find('.banglaqr-qr-name-input').val().trim(),
                         qr_code_url: $panel.find('.banglaqr-qr-code-url-input').val().trim(),
@@ -379,7 +390,7 @@ jQuery(document).ready(function ($) {
                 });
 
                 qrs = reordered;
-                renderTable();
+                $hiddenInput.val(JSON.stringify(reordered));
             }
         });
     }

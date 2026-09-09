@@ -1,17 +1,17 @@
 <?php
 /**
- * Plugin Name: Bangla QR Payment Gatway by Oi
- * Plugin URI: https://Oitech.com.bd/open-source/
+ * Plugin Name: Bangla QR Payment Gateway by Oi
+ * Plugin URI: https://oitech.com.bd/open-source/
  * Description: A payment gateway supporting bank and mobile QR payments with a scan-to-pay popup and payment receipt upload verification.
  * Version: 1.0.0
  * Author: Oi Technologies
- * Author URI: https://Oitech.com.bd/
+ * Author URI: https://oitech.com.bd/
  * License: MIT
  * Domain Path: /languages
- * Tested up to: 6.6
+ * Tested up to: 6.7
  * Requires at least: 5.6
  * Requires PHP: 7.4
- * License URI: https://opensource.org/license/mit/
+ * License URI: https://opensource.org/licenses/MIT
  * Text Domain: banglaqr-payment-gateway-by-oi
  */
 
@@ -84,7 +84,7 @@ function oi_banglaqr_woocommerce_missing_notice()
 {
     ?>
     <div class="error notice">
-        <p><?php esc_html_e('Bangla QR Payment Gatway by Oi requires WooCommerce to be installed and active. The plugin is currently disabled.', 'banglaqr-payment-gateway-by-oi'); ?>
+        <p><?php esc_html_e('Bangla QR Payment Gateway by Oi requires WooCommerce to be installed and active. The plugin is currently disabled.', 'banglaqr-payment-gateway-by-oi'); ?>
         </p>
     </div>
     <?php
@@ -107,7 +107,7 @@ function oi_banglaqr_register_gateway($gateways)
  */
 function oi_banglaqr_add_payment_charge_fee()
 {
-    if (is_admin() && !defined('DOING_AJAX')) {
+    if ((is_admin() && !defined('DOING_AJAX')) || !WC()->cart) {
         return;
     }
 
@@ -166,16 +166,17 @@ function oi_banglaqr_add_payment_charge_fee()
         return;
     }
 
-    // 3. Base amount: subtotal + shipping
-    $base_amount = WC()->cart->get_subtotal() + WC()->cart->get_shipping_total();
+    // 3. Base amount: net cart total after discounts + shipping
+    $base_amount = WC()->cart->get_cart_contents_total() + WC()->cart->get_shipping_total();
 
-    // Calculate fee
-    $fee = ($base_amount * $charge_percent) / 100;
-    $fee = round($fee);
+    // Calculate fee respecting store decimal precision
+    $decimals = function_exists('wc_get_price_decimals') ? wc_get_price_decimals() : 2;
+    $fee = round(($base_amount * $charge_percent) / 100, $decimals);
 
     if ($fee > 0) {
         // translators: %s is the payment charge percentage.
         $fee_name = sprintf(__('Payment Charge (%s%%)', 'banglaqr-payment-gateway-by-oi'), $charge_percent);
-        WC()->cart->add_fee($fee_name, $fee, true);
+        $is_taxable = apply_filters('oi_banglaqr_fee_is_taxable', false);
+        WC()->cart->add_fee($fee_name, $fee, $is_taxable);
     }
 }

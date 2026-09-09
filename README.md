@@ -72,30 +72,21 @@ Yes, guest customers can checkout and upload their payment screenshots securely.
 
 ## 📝 Changelog
 
-### 1.2.3
-- Added full-size QR code lightbox preview popup on click with close button.
-- Added optional payment Transaction ID input field alongside receipt upload.
-- Support confirming payment with receipt screenshot, transaction ID, or both.
-- Added Transaction ID display and copy support in WooCommerce admin order details.
-
-### 1.2.2
-- Minor updates and compatibility checks.
-
-### 1.2.1
-- Initial public release of BanglaQR Payment Gateway for BanglaQR.
-- Added support for Bangladesh Bank's unified BanglaQR standard.
-- Added QR payment popup with payment proof upload.
-- Added multiple QR account management with sortable interface.
-- Added per-QR processing fee configuration.
-- Added automatic receipt image optimization and compression.
-- Added receipt preview in WooCommerce order details.
-- Added settings shortcut link from the Plugins page.
+### 1.0.0
+- Initial release of BanglaQR Payment Gateway for WooCommerce.
+- Support for Bangladesh Bank's unified BanglaQR standard.
+- Scan-to-pay QR popup modal with payable amount display.
+- Payment proof receipt/screenshot upload and Transaction ID input.
+- Multiple QR account management with sortable interface and active account selection.
+- Per-QR percentage fee calculation.
+- Client-side image optimization and compression.
+- WooCommerce order admin review card with receipt preview and Transaction ID copy.
 
 ---
 
 ## 📢 Update Notice
-= 1.2.3 =
-Upgrade to version 1.2.3 for performance improvements and compatibility checks.
+= 1.0.0 =
+Initial release of BanglaQR Payment Gateway for WooCommerce.
 
 ## ⚖️ License & Copyright
 - Copyright © **Oi Technologies** 
@@ -103,5 +94,5 @@ Upgrade to version 1.2.3 for performance improvements and compatibility checks.
 - Website: https://oitech.com.bd
 - Open Source: https://oitech.com.bd/open-source/
 - Contact: https://oitech.com.bd/helpline/contact-us/
-- Licensed under the **GPLv2 or later**  
+- Licensed under the **MIT License**  
 - ✅ This plugin is **free to use, modify, and distribute** under the license terms.

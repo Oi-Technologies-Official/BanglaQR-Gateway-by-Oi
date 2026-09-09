@@ -1,194 +1,86 @@
 /**
  * Checkout Frontend CSS for Bangla QR Payment Method
- * Clean, premium, Stripe-like aesthetic
+ * Clean, modern, accessible design system
  */
 
 :root {
-    /* These variables are dynamically injected in PHP, but provided here as fallback */
-    --risb-primary: #137833;
-    --risb-primary-hover: #0f6229;
-    --risb-primary-light: #f0fdf4;
-    --risb-primary-border: #bbf7d0;
+    --banglaqr-primary: #137833;
+    --banglaqr-primary-hover: #0f6229;
+    --banglaqr-primary-light: #f0fdf4;
+    --banglaqr-primary-border: #bbf7d0;
 
-    --risb-accent: #E20613;
-    --risb-accent-light: #fef2f2;
-    --risb-accent-border: #fecaca;
+    --banglaqr-accent: #E20613;
+    --banglaqr-accent-light: #fef2f2;
+    --banglaqr-accent-border: #fecaca;
 
-    --risb-text: #0f172a;
-    --risb-text-muted: #475569;
-    --risb-text-light: #64748b;
+    --banglaqr-text: #0f172a;
+    --banglaqr-text-muted: #334155;
+    --banglaqr-text-light: #64748b;
     
-    --risb-bg-dark: rgba(15, 23, 42, 0.75);
-    --risb-card-bg: #ffffff;
-    --risb-border: #e2e8f0;
-    --risb-input-border: #cbd5e1;
+    --banglaqr-bg-dark: rgba(15, 23, 42, 0.75);
+    --banglaqr-card-bg: #ffffff;
+    --banglaqr-border: #e2e8f0;
+    --banglaqr-input-border: #cbd5e1;
     
-    --risb-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --risb-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --risb-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --risb-shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --banglaqr-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --banglaqr-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --banglaqr-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --banglaqr-shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
-/* Base resets for plugin */
-.banglaqr-standalone-wrapper *,
+/* Base resets for modal */
 .banglaqr-modal-overlay * {
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
-/* --- 1. Standalone Payment Form --- */
-.banglaqr-standalone-wrapper {
-    background: var(--risb-card-bg) !important;
-    border: 1px solid var(--risb-border) !important;
-    box-shadow: var(--risb-shadow) !important;
-    border-radius: 16px !important;
-    padding: 32px !important;
-    max-width: 440px !important;
-    margin: 0 auto !important;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.banglaqr-standalone-wrapper:hover {
-    box-shadow: var(--risb-shadow-lg) !important;
-    transform: translateY(-2px);
-}
-
-.banglaqr-standalone-wrapper h3 {
-    color: var(--risb-text) !important;
-    font-size: 22px !important;
-    font-weight: 800 !important;
-    margin: 0 0 8px 0 !important;
-    letter-spacing: -0.5px !important;
-    text-align: center;
-}
-
-.banglaqr-standalone-wrapper p {
-    font-size: 14px !important;
-    color: var(--risb-text-light) !important;
-    margin: 0 0 24px 0 !important;
-    line-height: 1.5 !important;
-    text-align: center;
-}
-
-/* Standalone Form Inputs */
-#banglaqr-standalone-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-#banglaqr-standalone-form label {
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    color: var(--risb-text) !important;
-    margin-bottom: 6px !important;
-    display: block;
-}
-
-#banglaqr-standalone-form input:not([type="file"]) {
-    width: 100% !important;
-    height: 44px !important;
-    border: 1px solid var(--risb-input-border) !important;
-    border-radius: 10px !important;
-    padding: 0 14px !important;
-    font-size: 14px !important;
-    color: var(--risb-text) !important;
-    background-color: #ffffff !important;
-    transition: all 0.2s ease !important;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.02) !important;
-}
-
-#banglaqr-standalone-form input:focus {
-    border-color: var(--risb-primary) !important;
-    outline: none !important;
-    box-shadow: 0 0 0 3px var(--risb-primary-light) !important;
-}
-
-/* Standalone Submit Button */
-#banglaqr-standalone-form button[type="submit"] {
-    background: linear-gradient(180deg, var(--risb-primary) 0%, var(--risb-primary-hover) 100%) !important;
-    color: #ffffff !important;
-    border: none !important;
-    height: 48px !important;
-    border-radius: 10px !important;
-    font-size: 15px !important;
-    font-weight: 700 !important;
-    cursor: pointer !important;
-    transition: all 0.2s ease !important;
-    box-shadow: 0 4px 12px var(--risb-primary-light) !important;
-    margin-top: 8px;
-}
-
-#banglaqr-standalone-form button[type="submit"]:hover {
-    transform: translateY(-1px) !important;
-    box-shadow: 0 6px 16px var(--risb-primary-border) !important;
-}
-
-#banglaqr-standalone-form button[type="submit"]:active {
-    transform: translateY(0) !important;
-}
-
-/* Standalone Upload Area */
-.banglaqr-upload-area {
-    border: 2px dashed var(--risb-input-border) !important;
-    border-radius: 12px !important;
-    padding: 24px !important;
-    text-align: center !important;
-    background-color: #f8fafc !important;
-    cursor: pointer !important;
-    transition: all 0.2s ease !important;
-}
-
-.banglaqr-upload-area:hover {
-    border-color: var(--risb-primary) !important;
-    background-color: var(--risb-primary-light) !important;
-}
-
-/* --- 2. Modal Overlay (WooCommerce Checkout) --- */
+/* --- Modal Overlay (WooCommerce Checkout) --- */
 .banglaqr-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--risb-bg-dark);
+    background-color: var(--banglaqr-bg-dark);
     z-index: 999999;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.25s ease;
     padding: 16px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
-.banglaqr-modal-overlay.risb-active {
+.banglaqr-modal-overlay.is-active {
     opacity: 1;
     pointer-events: auto;
 }
 
 .banglaqr-modal-container {
-    background-color: var(--risb-card-bg);
+    background-color: var(--banglaqr-card-bg);
     border-radius: 20px;
     width: 100%;
     max-width: 460px;
-    box-shadow: var(--risb-shadow-modal);
+    box-shadow: var(--banglaqr-shadow-modal);
     overflow: hidden;
-    transform: translateY(20px) scale(0.98);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: translateY(16px) scale(0.98);
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     flex-direction: column;
     max-height: 90vh;
 }
 
-.banglaqr-modal-overlay.risb-active .banglaqr-modal-container {
+.banglaqr-modal-overlay.is-active .banglaqr-modal-container {
     transform: translateY(0) scale(1);
 }
 
 /* Modal Header with Smooth Gradient */
 .banglaqr-modal-header {
-    padding: 20px 24px;
-    background: linear-gradient(135deg, var(--risb-primary) 0%, var(--risb-primary-hover) 100%);
+    padding: 18px 22px;
+    background: linear-gradient(135deg, var(--banglaqr-modal-primary, var(--banglaqr-primary)) 0%, var(--banglaqr-modal-primary-hover, var(--banglaqr-primary-hover)) 100%);
     color: #ffffff;
     display: flex;
     justify-content: space-between;
@@ -207,16 +99,16 @@
 .banglaqr-modal-subtitle {
     margin: 4px 0 0 0 !important;
     font-size: 13px !important;
-    color: rgba(255, 255, 255, 0.9) !important;
+    color: rgba(255, 255, 255, 0.92) !important;
     font-weight: 500;
 }
 
 .banglaqr-modal-close {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.18);
     border: none;
     color: #ffffff;
     cursor: pointer;
-    padding: 8px;
+    padding: 7px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -226,57 +118,106 @@
     height: 32px;
 }
 
-.banglaqr-modal-close:hover {
+.banglaqr-modal-close:hover,
+.banglaqr-modal-close:focus {
     background-color: #ffffff;
-    color: var(--risb-primary);
+    color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
     transform: rotate(90deg);
+    outline: 2px solid #ffffff;
+}
+
+.banglaqr-modal-close svg {
+    width: 18px;
+    height: 18px;
 }
 
 .banglaqr-modal-body {
-    padding: 24px;
+    padding: 20px;
     overflow-y: auto;
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
     background: #ffffff;
 }
 
-/* QR Box */
+/* Payable Amount Box */
+.banglaqr-payable-amount-box {
+    text-align: center;
+    padding: 10px 14px;
+    background-color: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.banglaqr-payable-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--banglaqr-text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    line-height: 1.2;
+}
+
+.banglaqr-payable-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
+    margin: 3px 0;
+    line-height: 1.2;
+}
+
+.banglaqr-payable-note {
+    font-size: 12px;
+    color: var(--banglaqr-text-muted);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+/* QR Code Display Box */
+.banglaqr-qr-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .banglaqr-qr-box {
-    width: 180px;
-    height: 190px;
+    width: 175px;
+    height: 185px;
     border-radius: 16px;
     background-color: #ffffff;
-    border: 1px solid var(--risb-border);
-    box-shadow: var(--risb-shadow-sm);
+    border: 1px solid var(--banglaqr-border);
+    box-shadow: var(--banglaqr-shadow-sm);
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    justify-content: flex-start !important;
-    padding: 12px;
+    justify-content: center !important;
+    padding: 10px;
     margin: 0 auto !important;
     position: relative;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
+    cursor: pointer;
 }
 
-.banglaqr-qr-box.is-zoomable:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--risb-shadow-lg);
-    border-color: var(--risb-primary);
+.banglaqr-qr-box.is-zoomable:hover,
+.banglaqr-qr-box.is-zoomable:focus {
+    transform: translateY(-3px);
+    box-shadow: var(--banglaqr-shadow-lg);
+    border-color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
+    outline: none;
 }
 
 .banglaqr-qr-box img {
-    width: 150px !important;
-    height: 150px !important;
+    width: 145px !important;
+    height: 145px !important;
     object-fit: contain !important;
-    margin-bottom: 6px !important;
+    margin-bottom: 4px !important;
 }
 
 .banglaqr-qr-box-text {
     font-size: 11px !important;
     font-weight: 800 !important;
-    color: var(--risb-primary) !important;
+    color: var(--banglaqr-modal-primary, var(--banglaqr-primary)) !important;
     text-transform: uppercase !important;
     letter-spacing: 0.5px !important;
 }
@@ -287,28 +228,80 @@
     right: -8px;
     width: 28px;
     height: 28px;
-    background-color: var(--risb-primary);
+    background-color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
     color: #ffffff;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
     transition: all 0.2s ease;
     opacity: 0;
     transform: scale(0.8);
 }
 
-.banglaqr-qr-box.is-zoomable:hover .banglaqr-qr-zoom-badge {
+.banglaqr-qr-zoom-badge svg {
+    width: 16px;
+    height: 16px;
+}
+
+.banglaqr-qr-box.is-zoomable:hover .banglaqr-qr-zoom-badge,
+.banglaqr-qr-box.is-zoomable:focus .banglaqr-qr-zoom-badge {
     opacity: 1;
     transform: scale(1);
 }
 
-/* Upload Dropzone */
+.banglaqr-qr-zoom-hint-text {
+    font-size: 12px;
+    color: var(--banglaqr-text-light);
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+/* Accepted Payment Methods Banner */
+.banglaqr-payment-methods-banner {
+    text-align: center;
+}
+
+.banglaqr-payment-methods-banner img {
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+    border-radius: 6px;
+}
+
+/* Instruction Alert Banner */
+.banglaqr-instruction-banner {
+    background-color: #f1f5f9;
+    border-left: 3px solid var(--banglaqr-modal-primary, var(--banglaqr-primary));
+    border-radius: 6px;
+    padding: 10px 14px;
+}
+
+.banglaqr-instruction-text {
+    margin: 0 !important;
+    font-size: 12px !important;
+    color: var(--banglaqr-text-muted) !important;
+    line-height: 1.45 !important;
+}
+
+/* Upload Receipt Section */
+.banglaqr-upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.banglaqr-upload-label {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: var(--banglaqr-text) !important;
+}
+
 .banglaqr-dropzone {
-    border: 2px dashed var(--risb-input-border);
+    border: 2px dashed var(--banglaqr-input-border);
     border-radius: 12px;
-    padding: 24px 16px;
+    padding: 20px 16px;
     text-align: center;
     background-color: #f8fafc;
     cursor: pointer;
@@ -316,62 +309,245 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .banglaqr-dropzone:hover,
-.banglaqr-dropzone.risb-dragover {
-    border-color: var(--risb-primary);
-    background-color: var(--risb-primary-light);
+.banglaqr-dropzone:focus,
+.banglaqr-dropzone.is-dragover {
+    border-color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
+    background-color: var(--banglaqr-modal-primary-light, var(--banglaqr-primary-light));
+    outline: none;
 }
 
 .banglaqr-upload-icon {
     width: 32px;
     height: 32px;
-    color: var(--risb-text-muted);
+    color: var(--banglaqr-text-light);
     transition: color 0.2s ease;
 }
 
-.banglaqr-dropzone:hover .banglaqr-upload-icon {
-    color: var(--risb-primary);
+.banglaqr-dropzone:hover .banglaqr-upload-icon,
+.banglaqr-dropzone:focus .banglaqr-upload-icon {
+    color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
 }
 
 .banglaqr-upload-text {
-    font-size: 14px !important;
+    font-size: 13px !important;
     font-weight: 600 !important;
-    color: var(--risb-text) !important;
+    color: var(--banglaqr-text) !important;
 }
 
 .banglaqr-upload-subtext {
     font-size: 12px !important;
-    color: var(--risb-text-light) !important;
+    color: var(--banglaqr-text-light) !important;
+}
+
+/* File Preview Card */
+.banglaqr-file-preview-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #ffffff;
+    border: 1px solid var(--banglaqr-border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 8px;
+    box-shadow: var(--banglaqr-shadow-sm);
+}
+
+.banglaqr-file-thumbnail {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    background-color: #f1f5f9;
+    flex-shrink: 0;
+    border: 1px solid var(--banglaqr-border);
+}
+
+.banglaqr-file-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.banglaqr-file-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--banglaqr-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.banglaqr-file-size {
+    font-size: 12px;
+    color: var(--banglaqr-text-light);
+    margin-top: 2px;
+}
+
+.banglaqr-remove-file-btn {
+    background: none;
+    border: none;
+    color: var(--banglaqr-text-light);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.banglaqr-remove-file-btn:hover,
+.banglaqr-remove-file-btn:focus {
+    background-color: var(--banglaqr-accent-light);
+    color: var(--banglaqr-accent);
+}
+
+.banglaqr-remove-file-btn svg {
+    width: 16px;
+    height: 16px;
 }
 
 /* Progress bar */
 .banglaqr-progress-container {
     width: 100%;
-    height: 6px;
+    height: 5px;
     background-color: #e2e8f0;
     border-radius: 4px;
     overflow: hidden;
-    margin-top: 8px;
+    margin-top: 6px;
 }
 
 .banglaqr-progress-bar {
     height: 100%;
     width: 0%;
-    background-color: var(--risb-primary);
+    background-color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
     transition: width 0.2s ease-out;
 }
 
-/* Buttons */
+/* Transaction ID Section */
+.banglaqr-trx-section {
+    margin-top: 2px;
+}
+
+.banglaqr-trx-toggle-btn {
+    width: 100%;
+    background: none;
+    border: 1px dashed var(--banglaqr-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.banglaqr-trx-toggle-btn:hover,
+.banglaqr-trx-toggle-btn:focus {
+    background: var(--banglaqr-modal-primary-light, var(--banglaqr-primary-light));
+    border-color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
+}
+
+.banglaqr-trx-toggle-btn.is-open {
+    background: #f8fafc;
+    border-style: solid;
+}
+
+.banglaqr-trx-toggle-icon {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.banglaqr-trx-toggle-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.banglaqr-trx-input-container {
+    background-color: #f8fafc;
+    border: 1px solid var(--banglaqr-border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 8px;
+}
+
+.banglaqr-trx-label {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: var(--banglaqr-text) !important;
+    display: block;
+}
+
+.banglaqr-trx-input-box {
+    position: relative;
+    margin-top: 6px;
+}
+
+.banglaqr-trx-field-icon {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    color: var(--banglaqr-text-light);
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.banglaqr-trx-input {
+    width: 100% !important;
+    height: 40px !important;
+    border: 1px solid var(--banglaqr-input-border) !important;
+    border-radius: 8px !important;
+    padding: 0 12px 0 38px !important;
+    font-size: 13px !important;
+    font-family: inherit !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+    background-color: #ffffff !important;
+}
+
+.banglaqr-trx-input:focus {
+    border-color: var(--banglaqr-modal-primary, var(--banglaqr-primary)) !important;
+    box-shadow: 0 0 0 3px var(--banglaqr-modal-primary-light, var(--banglaqr-primary-light)) !important;
+    outline: none !important;
+}
+
+.banglaqr-trx-hint {
+    display: block;
+    font-size: 12px;
+    color: var(--banglaqr-text-light);
+    margin-top: 6px;
+    line-height: 1.35;
+}
+
+/* Modal Footer & Buttons */
+.banglaqr-modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--banglaqr-border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    background-color: #fafbfc;
+}
+
 .banglaqr-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 10px;
     font-size: 14px !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
     cursor: pointer;
     transition: all 0.2s ease;
     border: none;
@@ -380,113 +556,39 @@
 }
 
 .banglaqr-btn-submit {
-    background: linear-gradient(180deg, var(--risb-primary) 0%, var(--risb-primary-hover) 100%) !important;
+    background: linear-gradient(180deg, var(--banglaqr-modal-primary, var(--banglaqr-primary)) 0%, var(--banglaqr-modal-primary-hover, var(--banglaqr-primary-hover)) 100%) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 12px var(--risb-primary-light);
+    box-shadow: 0 4px 10px rgba(19, 120, 51, 0.2);
 }
 
-.banglaqr-btn-submit:hover {
+.banglaqr-btn-submit:hover,
+.banglaqr-btn-submit:focus {
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px var(--risb-primary-border);
+    box-shadow: 0 6px 14px rgba(19, 120, 51, 0.3);
+    outline: none;
 }
 
 .banglaqr-btn-submit:active {
     transform: translateY(0);
 }
 
+.banglaqr-btn-submit.loading {
+    opacity: 0.85;
+    cursor: not-allowed;
+    gap: 8px;
+}
+
 .banglaqr-btn-cancel {
     background-color: #ffffff;
-    color: var(--risb-text);
-    border: 1px solid var(--risb-input-border);
+    color: var(--banglaqr-text);
+    border: 1px solid var(--banglaqr-input-border);
 }
 
-.banglaqr-btn-cancel:hover {
+.banglaqr-btn-cancel:hover,
+.banglaqr-btn-cancel:focus {
     background-color: #f8fafc;
     border-color: #94a3b8;
-}
-
-.banglaqr-modal-footer {
-    padding: 16px 24px;
-    border-top: 1px solid var(--risb-border);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    background-color: #fafbfc;
-}
-
-/* Trx Field */
-.banglaqr-trx-input-container {
-    background-color: #f8fafc;
-    border: 1px solid var(--risb-border);
-    border-radius: 12px;
-    padding: 16px;
-}
-
-.banglaqr-trx-input {
-    width: 100%;
-    height: 42px;
-    border: 1px solid var(--risb-input-border);
-    border-radius: 8px;
-    padding: 0 14px 0 38px !important;
-    font-size: 14px !important;
-    font-family: inherit !important;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    background-color: #ffffff;
-}
-
-.banglaqr-trx-input:focus {
-    border-color: var(--risb-primary) !important;
-    box-shadow: 0 0 0 3px var(--risb-primary-light) !important;
-    outline: none !important;
-}
-
-.banglaqr-trx-input-box {
-    position: relative;
-    margin-top: 8px;
-}
-
-.banglaqr-trx-field-icon {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    color: var(--risb-text-light);
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.banglaqr-trx-hint {
-    display: block;
-    font-size: 11px;
-    color: var(--risb-text-light);
-    margin-top: 6px;
-}
-
-.banglaqr-trx-toggle-btn {
-    width: 100%;
-    background: none;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: var(--risb-primary);
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 8px;
-    transition: background 0.2s;
-}
-
-.banglaqr-trx-toggle-btn:hover {
-    background: var(--risb-primary-light);
-}
-
-.banglaqr-trx-toggle-icon {
-    width: 16px;
-    height: 16px;
+    outline: none;
 }
 
 /* Zoom Overlay */
@@ -496,7 +598,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(15, 23, 42, 0.85);
+    background-color: rgba(15, 23, 42, 0.88);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 1000002;
@@ -509,15 +611,17 @@
 .banglaqr-zoom-card {
     background-color: #ffffff;
     border-radius: 20px;
-    padding: 24px;
-    box-shadow: var(--risb-shadow-modal);
-    animation: banglaqr-zoom-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    max-width: 360px;
+    padding: 22px;
+    box-shadow: var(--banglaqr-shadow-modal);
+    animation: banglaqr-zoom-in 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-width: 380px;
     width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 @keyframes banglaqr-zoom-in {
-    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    from { opacity: 0; transform: scale(0.92) translateY(16px); }
     to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
@@ -525,7 +629,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 .banglaqr-zoom-title-box {
@@ -537,14 +641,14 @@
     margin: 4px 0 0 0 !important;
     font-size: 18px !important;
     font-weight: 700 !important;
-    color: var(--risb-text) !important;
+    color: var(--banglaqr-text) !important;
 }
 
 .banglaqr-zoom-badge {
     font-size: 11px;
     font-weight: 700;
-    color: var(--risb-primary);
-    background: var(--risb-primary-light);
+    color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
+    background: var(--banglaqr-modal-primary-light, var(--banglaqr-primary-light));
     padding: 2px 8px;
     border-radius: 12px;
     display: inline-block;
@@ -554,7 +658,7 @@
 .banglaqr-zoom-close {
     background: #f1f5f9;
     border: none;
-    color: var(--risb-text);
+    color: var(--banglaqr-text);
     cursor: pointer;
     width: 32px;
     height: 32px;
@@ -565,58 +669,70 @@
     transition: all 0.2s;
 }
 
-.banglaqr-zoom-close:hover {
-    background: var(--risb-accent-light);
-    color: var(--risb-accent);
+.banglaqr-zoom-close:hover,
+.banglaqr-zoom-close:focus {
+    background: var(--banglaqr-accent-light);
+    color: var(--banglaqr-accent);
+}
+
+.banglaqr-zoom-close svg {
+    width: 18px;
+    height: 18px;
 }
 
 .banglaqr-zoom-img-wrap {
-    border: 2px solid var(--risb-border);
+    border: 2px solid var(--banglaqr-border);
     border-radius: 16px;
-    padding: 16px;
+    padding: 14px;
     width: 100%;
-    height: 300px;
+    max-height: 48vh;
+    min-height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
+    background: #ffffff;
 }
 
 .banglaqr-zoom-img-wrap img {
     max-width: 100%;
-    max-height: 100%;
+    max-height: 44vh;
     object-fit: contain;
 }
 
 .banglaqr-zoom-footer-note {
-    font-size: 13px;
-    color: var(--risb-text-light);
+    font-size: 12px;
+    color: var(--banglaqr-text-light);
     text-align: center;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
+    line-height: 1.4;
 }
 
 .banglaqr-zoom-dismiss-btn {
     width: 100%;
-    height: 44px;
+    height: 42px;
     border-radius: 10px;
     background-color: #f1f5f9;
     border: 1px solid #cbd5e1;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    color: var(--risb-text);
+    color: var(--banglaqr-text);
     transition: all 0.2s ease;
     cursor: pointer;
 }
-.banglaqr-zoom-dismiss-btn:hover {
+
+.banglaqr-zoom-dismiss-btn:hover,
+.banglaqr-zoom-dismiss-btn:focus {
     background-color: #e2e8f0;
 }
 
+/* Error Banner */
 .banglaqr-modal-error {
-    background-color: var(--risb-accent-light);
-    border: 1px solid var(--risb-accent-border);
+    background-color: var(--banglaqr-accent-light);
+    border: 1px solid var(--banglaqr-accent-border);
     border-radius: 8px;
-    padding: 12px 16px;
-    color: var(--risb-accent);
+    padding: 10px 14px;
+    color: var(--banglaqr-accent);
     font-size: 13px;
     font-weight: 600;
     line-height: 1.4;
@@ -625,26 +741,26 @@
 
 /* Common spinners and animations */
 .banglaqr-spinner {
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
     border-top-color: #ffffff;
     border-radius: 50%;
-    animation: risb-spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    animation: banglaqr-spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     display: inline-block;
 }
 
-@keyframes risb-spin {
+@keyframes banglaqr-spin {
     to { transform: rotate(360deg); }
 }
 
 .banglaqr-shake {
-    animation: risb-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    animation: banglaqr-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
-@keyframes risb-shake {
+@keyframes banglaqr-shake {
     10%, 90% { transform: translateX(-2px); }
     20%, 80% { transform: translateX(4px); }
-    30%, 50%, 70% { transform: translateX(-8px); }
-    40%, 60% { transform: translateX(8px); }
+    30%, 50%, 70% { transform: translateX(-6px); }
+    40%, 60% { transform: translateX(6px); }
 }
