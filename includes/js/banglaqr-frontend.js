@@ -72,9 +72,15 @@ jQuery(document).ready(function ($) {
         html += '        <h3 id="banglaqr-modal-title">' + escHtml('Bangla QR Payment') + '</h3>';
         html += '        <p class="banglaqr-modal-subtitle">' + escHtml('Scan QR & submit payment proof') + '</p>';
         html += '      </div>';
-        html += '      <button type="button" class="banglaqr-modal-close" id="banglaqr-modal-close-btn" aria-label="Close modal">';
-        html += '        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>';
-        html += '      </button>';
+        html += '      <div style="display:flex; align-items:center; gap: 12px;">';
+        html += '        <div class="banglaqr-countdown-timer" id="banglaqr-countdown-timer">';
+        html += '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+        html += '          <span id="banglaqr-timer-text">15:00</span>';
+        html += '        </div>';
+        html += '        <button type="button" class="banglaqr-modal-close" id="banglaqr-modal-close-btn" aria-label="Close modal">';
+        html += '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>';
+        html += '        </button>';
+        html += '      </div>';
         html += '    </div>';
 
         // Body
@@ -115,6 +121,39 @@ jQuery(document).ready(function ($) {
             html += '      <div class="banglaqr-instruction-banner">';
             html += '        <p class="banglaqr-instruction-text">Scan this QR code using your bank or financial app to make payment, then upload your receipt or provide Transaction ID below.</p>';
             html += '      </div>';
+
+            if (oi_banglaqr_params.enable_manual_payment === 'yes') {
+                var manualAccounts = [
+                    { name: 'bKash', number: oi_banglaqr_params.manual_bkash },
+                    { name: 'Nagad', number: oi_banglaqr_params.manual_nagad },
+                    { name: 'Rocket', number: oi_banglaqr_params.manual_rocket },
+                    { name: 'Upay', number: oi_banglaqr_params.manual_upay },
+                    { name: 'CellFin', number: oi_banglaqr_params.manual_cellfin }
+                ];
+                
+                var hasManual = false;
+                var manualHtml = '      <div class="banglaqr-manual-accounts">';
+                manualAccounts.forEach(function(acc) {
+                    if (acc.number && acc.number.trim() !== '') {
+                        hasManual = true;
+                        manualHtml += '        <div class="banglaqr-manual-account-item">';
+                        manualHtml += '          <div class="banglaqr-manual-account-details">';
+                        manualHtml += '            <span class="banglaqr-manual-account-name">' + escHtml(acc.name) + '</span>';
+                        manualHtml += '            <span class="banglaqr-manual-account-number">' + escHtml(acc.number) + '</span>';
+                        manualHtml += '          </div>';
+                        manualHtml += '          <button type="button" class="banglaqr-manual-copy-btn" data-number="' + escAttr(acc.number) + '" title="Copy Number">';
+                        manualHtml += '            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+                        manualHtml += '            <span>Copy</span>';
+                        manualHtml += '          </button>';
+                        manualHtml += '        </div>';
+                    }
+                });
+                manualHtml += '      </div>';
+                
+                if (hasManual) {
+                    html += manualHtml;
+                }
+            }
         } else {
             html += '      <div class="banglaqr-modal-error" style="display:block;">';
             html += '        No active QR codes found. Please contact the site administrator.';
@@ -211,6 +250,48 @@ jQuery(document).ready(function ($) {
 
     // Bind events
     function setupModalEvents() {
+        // Copy to clipboard
+        $('.banglaqr-manual-copy-btn').on('click', function(e) {
+            e.preventDefault();
+            var btn = $(this);
+            var num = btn.data('number');
+            navigator.clipboard.writeText(num).then(function() {
+                var originalHtml = btn.html();
+                btn.html('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Copied</span>');
+                btn.addClass('copied');
+                setTimeout(function() {
+                    btn.html(originalHtml);
+                    btn.removeClass('copied');
+                }, 2000);
+            });
+        });
+
+        // Countdown Timer
+        var timeLeft = 15 * 60; // 15 minutes in seconds
+        var timerDisplay = $('#banglaqr-timer-text');
+        var timerContainer = $('#banglaqr-countdown-timer');
+        
+        window.banglaqrTimerInterval = setInterval(function() {
+            timeLeft--;
+            var minutes = Math.floor(timeLeft / 60);
+            var seconds = timeLeft % 60;
+            
+            var displayStr = (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
+            timerDisplay.text(displayStr);
+            
+            if (timeLeft <= 60) {
+                timerContainer.addClass('danger');
+            }
+            
+            if (timeLeft <= 0) {
+                clearInterval(window.banglaqrTimerInterval);
+                showError('Session expired. Please close this window and try again.');
+                $('#banglaqr-btn-submit').prop('disabled', true).css({ 'opacity': '0.5', 'cursor': 'not-allowed' });
+                $('#banglaqr-file-input').prop('disabled', true);
+                $('#banglaqr-trx-input').prop('disabled', true);
+            }
+        }, 1000);
+
         // Cancel/Close modal
         $('#banglaqr-modal-close-btn, #banglaqr-btn-cancel').on('click', function (e) {
             e.preventDefault();
@@ -561,6 +642,24 @@ jQuery(document).ready(function ($) {
         }
     }
 
+    function playSuccessAnimationAndSubmit() {
+        var successHtml = '<div class="banglaqr-success-container">';
+        successHtml += '  <div class="banglaqr-success-icon">';
+        successHtml += '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        successHtml += '  </div>';
+        successHtml += '  <div class="banglaqr-success-title">Payment Submitted</div>';
+        successHtml += '  <div class="banglaqr-success-subtitle">Please wait while we process your order...</div>';
+        successHtml += '</div>';
+
+        $('#banglaqr-modal .banglaqr-modal-container').html(successHtml);
+
+        setTimeout(function() {
+            uploadInProgress = false;
+            closeModal();
+            $('form.checkout').submit();
+        }, 1500);
+    }
+
     // Submit with Transaction ID Only (No Image Upload)
     function submitWithTrxIdOnly(trxId) {
         uploadInProgress = true;
@@ -583,10 +682,8 @@ jQuery(document).ready(function ($) {
         $('#banglaqr-btn-cancel').prop('disabled', true);
         $submitBtn.prop('disabled', true).addClass('loading').html('<span class="banglaqr-spinner"></span> <span>Placing Order...</span>');
 
-        // Submit checkout form
-        uploadInProgress = false;
-        closeModal();
-        $('form.checkout').submit();
+        // Play animation and submit
+        playSuccessAnimationAndSubmit();
     }
 
     // AJAX Upload and Compress (With optional TrxID)
@@ -662,10 +759,7 @@ jQuery(document).ready(function ($) {
 
                     $submitBtn.html('<span class="banglaqr-spinner"></span> <span>Placing Order...</span>');
 
-                    uploadInProgress = false;
-                    closeModal();
-                    // Submit checkout form
-                    $('form.checkout').submit();
+                    playSuccessAnimationAndSubmit();
                 } else {
                     handleUploadError(response && response.data && response.data.message ? response.data.message : 'An error occurred during file upload.');
                 }

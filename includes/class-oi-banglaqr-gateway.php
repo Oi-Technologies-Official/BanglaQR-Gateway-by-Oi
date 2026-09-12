@@ -138,6 +138,47 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                     'hidden'    => __('Hidden', 'banglaqr-payment-gateway-by-oi'),
                 ),
             ),
+            'enable_manual_payment' => array(
+                'title' => __('Enable Manual Payment Numbers', 'banglaqr-payment-gateway-by-oi'),
+                'type' => 'checkbox',
+                'label' => __('Show manual payment account numbers as an alternative to QR scanning', 'banglaqr-payment-gateway-by-oi'),
+                'default' => 'no',
+            ),
+            'manual_bkash' => array(
+                'title' => __('bKash Number', 'banglaqr-payment-gateway-by-oi'),
+                'type' => 'text',
+                'description' => __('Enter your bKash personal/agent number.', 'banglaqr-payment-gateway-by-oi'),
+                'default' => '',
+                'desc_tip' => true,
+            ),
+            'manual_nagad' => array(
+                'title' => __('Nagad Number', 'banglaqr-payment-gateway-by-oi'),
+                'type' => 'text',
+                'description' => __('Enter your Nagad personal/agent number.', 'banglaqr-payment-gateway-by-oi'),
+                'default' => '',
+                'desc_tip' => true,
+            ),
+            'manual_rocket' => array(
+                'title' => __('Rocket Number', 'banglaqr-payment-gateway-by-oi'),
+                'type' => 'text',
+                'description' => __('Enter your Rocket personal/agent number.', 'banglaqr-payment-gateway-by-oi'),
+                'default' => '',
+                'desc_tip' => true,
+            ),
+            'manual_upay' => array(
+                'title' => __('Upay Number', 'banglaqr-payment-gateway-by-oi'),
+                'type' => 'text',
+                'description' => __('Enter your Upay personal/agent number.', 'banglaqr-payment-gateway-by-oi'),
+                'default' => '',
+                'desc_tip' => true,
+            ),
+            'manual_cellfin' => array(
+                'title' => __('CellFin Number', 'banglaqr-payment-gateway-by-oi'),
+                'type' => 'text',
+                'description' => __('Enter your CellFin personal/agent number.', 'banglaqr-payment-gateway-by-oi'),
+                'default' => '',
+                'desc_tip' => true,
+            ),
         );
     }
 
@@ -160,6 +201,14 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         $order_status = $this->get_option('order_status', 'on-hold');
         $receipt_rule = $this->get_option('receipt_rule', 'optional');
         $trxid_rule = $this->get_option('trxid_rule', 'optional');
+        
+        $enable_manual_payment = $this->get_option('enable_manual_payment', 'no');
+        $manual_bkash = $this->get_option('manual_bkash', '');
+        $manual_nagad = $this->get_option('manual_nagad', '');
+        $manual_rocket = $this->get_option('manual_rocket', '');
+        $manual_upay = $this->get_option('manual_upay', '');
+        $manual_cellfin = $this->get_option('manual_cellfin', '');
+        
         $qrs = $this->get_option('qrs_table', array());
 
         if (!is_array($qrs) || empty($qrs)) {
@@ -332,6 +381,49 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                             </div>
                         </div> <!-- End Checkout Rules Section -->
 
+                        <!-- Manual Payment Accounts Section -->
+                        <div class="banglaqr-settings-section">
+                            <div class="banglaqr-section-header">
+                                <h2><?php esc_html_e('Manual Payment Accounts', 'banglaqr-payment-gateway-by-oi'); ?></h2>
+                                <p><?php esc_html_e('Configure manual numbers that customers can copy if they cannot scan the QR.', 'banglaqr-payment-gateway-by-oi'); ?></p>
+                            </div>
+                            <div class="banglaqr-section-body">
+                                <div class="banglaqr-grid-field" style="margin-bottom: 16px;">
+                                    <label for="woocommerce_oi_banglaqr_enable_manual_payment" style="font-weight: 600; font-size: 13px; color: #1e293b; display: flex; align-items: center; gap: 8px;">
+                                        <input type="checkbox" name="woocommerce_oi_banglaqr_enable_manual_payment" id="woocommerce_oi_banglaqr_enable_manual_payment" value="1" <?php checked($enable_manual_payment, 'yes'); ?> />
+                                        <?php esc_html_e('Enable Manual Payment Numbers', 'banglaqr-payment-gateway-by-oi'); ?>
+                                    </label>
+                                </div>
+                                <div class="banglaqr-card-inputs-wrapper" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 16px;">
+                                    <!-- bKash -->
+                                    <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
+                                        <label for="woocommerce_oi_banglaqr_manual_bkash" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('bKash Number', 'banglaqr-payment-gateway-by-oi'); ?></label>
+                                        <input type="text" name="woocommerce_oi_banglaqr_manual_bkash" id="woocommerce_oi_banglaqr_manual_bkash" value="<?php echo esc_attr($manual_bkash); ?>" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
+                                    </div>
+                                    <!-- Nagad -->
+                                    <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
+                                        <label for="woocommerce_oi_banglaqr_manual_nagad" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Nagad Number', 'banglaqr-payment-gateway-by-oi'); ?></label>
+                                        <input type="text" name="woocommerce_oi_banglaqr_manual_nagad" id="woocommerce_oi_banglaqr_manual_nagad" value="<?php echo esc_attr($manual_nagad); ?>" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
+                                    </div>
+                                    <!-- Rocket -->
+                                    <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
+                                        <label for="woocommerce_oi_banglaqr_manual_rocket" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Rocket Number', 'banglaqr-payment-gateway-by-oi'); ?></label>
+                                        <input type="text" name="woocommerce_oi_banglaqr_manual_rocket" id="woocommerce_oi_banglaqr_manual_rocket" value="<?php echo esc_attr($manual_rocket); ?>" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
+                                    </div>
+                                    <!-- Upay -->
+                                    <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
+                                        <label for="woocommerce_oi_banglaqr_manual_upay" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Upay Number', 'banglaqr-payment-gateway-by-oi'); ?></label>
+                                        <input type="text" name="woocommerce_oi_banglaqr_manual_upay" id="woocommerce_oi_banglaqr_manual_upay" value="<?php echo esc_attr($manual_upay); ?>" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
+                                    </div>
+                                    <!-- CellFin -->
+                                    <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
+                                        <label for="woocommerce_oi_banglaqr_manual_cellfin" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('CellFin Number', 'banglaqr-payment-gateway-by-oi'); ?></label>
+                                        <input type="text" name="woocommerce_oi_banglaqr_manual_cellfin" id="woocommerce_oi_banglaqr_manual_cellfin" value="<?php echo esc_attr($manual_cellfin); ?>" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- End Manual Payment Accounts Section -->
+
                         <!-- QR Accounts Section -->
                         <div class="banglaqr-settings-section">
                             <div class="banglaqr-section-header">
@@ -485,6 +577,12 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             'i18n_terms' => __('You must accept the terms and conditions.', 'banglaqr-payment-gateway-by-oi'),
             'receipt_rule' => isset($settings['receipt_rule']) ? $settings['receipt_rule'] : 'optional',
             'trxid_rule' => isset($settings['trxid_rule']) ? $settings['trxid_rule'] : 'optional',
+            'enable_manual_payment' => isset($settings['enable_manual_payment']) ? $settings['enable_manual_payment'] : 'no',
+            'manual_bkash' => isset($settings['manual_bkash']) ? $settings['manual_bkash'] : '',
+            'manual_nagad' => isset($settings['manual_nagad']) ? $settings['manual_nagad'] : '',
+            'manual_rocket' => isset($settings['manual_rocket']) ? $settings['manual_rocket'] : '',
+            'manual_upay' => isset($settings['manual_upay']) ? $settings['manual_upay'] : '',
+            'manual_cellfin' => isset($settings['manual_cellfin']) ? $settings['manual_cellfin'] : '',
         ));
     }
 
