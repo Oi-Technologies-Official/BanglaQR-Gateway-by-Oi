@@ -31,6 +31,10 @@ Backend administrators can configure multiple QR codes, assign customized proces
 - **Per-QR Percentage Charges:** Define separate bank fees or processing charges (e.g., 1.5% for credit cards, 0.7% for bKash) dynamically calculated and added to the checkout total.
 - **Proof of Payment Upload:** Customers can upload screenshots or receipts directly inside the checkout popup.
 - **Automated Image Optimization:** Uploaded receipts are auto-rotated, scaled to 1200px, and compressed to 70% quality on-the-fly.
+- **Manual Payment Accounts:** Fallback manual payment numbers (bKash, Nagad, Rocket, Upay, CellFin) with one-click copy buttons matching brand colors.
+- **Smart Checkout Rules:** Configure whether Receipt Upload and Transaction ID fields are mandatory, optional, or hidden.
+- **Transaction ID Smart Validation:** Automatically sanitizes TrxID inputs to enforce uppercase alphanumeric format.
+- **Enhanced UI/UX:** Zoomable receipt previews, custom theme-inherited fonts, countdown timer resets, and a beautiful pulsing success animation.
 - **Drag-and-Drop QR Manager:** Sort and prioritize multiple QR accounts using a sortable settings panel.
 - **Settings Access Shortcut:** Quick "Settings" shortcut link on the WordPress plugin lists page.
 - **Attachment Preview:** Preview and verify uploaded receipt slips inside the order details page.
@@ -73,6 +77,15 @@ Yes, guest customers can checkout and upload their payment screenshots securely.
 ## 📝 Changelog
 
 ### 1.0.0
+- **New Feature:** Added Manual Payment Accounts (bKash, Nagad, Rocket, etc.) with brand-colored copy buttons for customers who cannot scan the QR.
+- **New Feature:** Added Checkout Rules & Status settings. Admins can now configure the Receipt and TrxID fields as Mandatory, Optional, or Hidden.
+- **New Feature:** Added click-to-zoom preview for uploaded receipt thumbnails in the checkout popup.
+- **Enhancement:** Implemented Transaction ID Smart Validation (auto-converts to uppercase alphanumeric) to prevent typos.
+- **Enhancement:** Added a beautiful, dynamic pulse animation upon successful payment submission.
+- **Enhancement:** Modal font-family now perfectly inherits the active WordPress theme typography.
+- **Enhancement:** Completely rewrote all frontend and backend English text for maximum clarity and professionalism.
+- **Bug Fix:** Fixed a memory leak where the 15-minute countdown timer would stack and count down too fast if the modal was closed and reopened.
+- **Bug Fix:** Fixed vertical text alignment for dropdown fields in the WordPress admin panel.
 - Initial release of BanglaQR Payment Gateway for WooCommerce.
 - Support for Bangladesh Bank's unified BanglaQR standard.
 - Scan-to-pay QR popup modal with payable amount display.

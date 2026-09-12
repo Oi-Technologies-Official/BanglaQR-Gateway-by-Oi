@@ -329,7 +329,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                         <label for="woocommerce_oi_banglaqr_description" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Gateway Description', 'banglaqr-payment-gateway-by-oi'); ?></label>
                                         <textarea name="woocommerce_oi_banglaqr_description" id="woocommerce_oi_banglaqr_description" rows="3" placeholder="e.g. Scan the QR code to make payment..." class="banglaqr-general-textarea" style="width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:10px 14px; font-size:13px; font-family:inherit; box-sizing:border-box;"><?php echo esc_textarea($description); ?></textarea>
                                         <p class="banglaqr-field-tip" style="margin:4px 0 0 0; color:#64748b; font-size:12px;">
-                                            <?php esc_html_e('The description content shown to customers under the gateway title on checkout (HTML tags are supported).', 'banglaqr-payment-gateway-by-oi'); ?>
+                                            <?php esc_html_e('The description shown to customers at checkout (HTML is supported).', 'banglaqr-payment-gateway-by-oi'); ?>
                                         </p>
                                     </div>
                                 </div>
@@ -340,7 +340,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                         <div class="banglaqr-settings-section">
                             <div class="banglaqr-section-header">
                                 <h2><?php esc_html_e('Checkout Rules & Status', 'banglaqr-payment-gateway-by-oi'); ?></h2>
-                                <p><?php esc_html_e('Control the checkout fields requirement and the default order status.', 'banglaqr-payment-gateway-by-oi'); ?></p>
+                                <p><?php esc_html_e('Set which checkout fields are required and choose the default order status.', 'banglaqr-payment-gateway-by-oi'); ?></p>
                             </div>
                             <div class="banglaqr-section-body" style="display: flex; gap: 24px;">
                                 
@@ -385,7 +385,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                         <div class="banglaqr-settings-section">
                             <div class="banglaqr-section-header">
                                 <h2><?php esc_html_e('Manual Payment Accounts', 'banglaqr-payment-gateway-by-oi'); ?></h2>
-                                <p><?php esc_html_e('Configure manual numbers that customers can copy if they cannot scan the QR.', 'banglaqr-payment-gateway-by-oi'); ?></p>
+                                <p><?php esc_html_e('Add manual payment numbers for customers who cannot scan the QR code.', 'banglaqr-payment-gateway-by-oi'); ?></p>
                             </div>
                             <div class="banglaqr-section-body">
                                 <div class="banglaqr-grid-field" style="margin-bottom: 16px;">
@@ -428,7 +428,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                         <div class="banglaqr-settings-section">
                             <div class="banglaqr-section-header">
                                 <h2><?php esc_html_e('Manage QR Accounts', 'banglaqr-payment-gateway-by-oi'); ?></h2>
-                                <p><?php esc_html_e('Add QR codes that customers can scan. Only one QR can be active at a time.', 'banglaqr-payment-gateway-by-oi'); ?></p>
+                                <p><?php esc_html_e('Add QR codes for customers to scan. Only one QR code can be active at a time.', 'banglaqr-payment-gateway-by-oi'); ?></p>
                             </div>
                             <div class="banglaqr-section-body">
                                 <!-- Accordion Container -->
@@ -568,10 +568,9 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             'paymentpage_img_url' => OI_BANGLAQR_URL . 'includes/img/banglaqr-paymentpage.png',
             'order_total' => $formatted_total,
             'payment_charge' => $charge_percent,
-            'error_no_file' => __('Please upload your payment receipt or enter your payment Transaction ID to confirm your order.', 'banglaqr-payment-gateway-by-oi'),
-            'error_invalid_file' => __('Invalid file format. Only JPEG, PNG, WEBP, and GIF images are allowed.', 'banglaqr-payment-gateway-by-oi'),
-            // translators: %s is the max file size text (e.g. 5MB)
-            'error_file_too_large' => sprintf(__('The selected file is too large. Maximum size allowed is %s.', 'banglaqr-payment-gateway-by-oi'), $allowed_max_size_mb . 'MB'),
+            'error_no_file' => __('Please upload a payment receipt or enter your Transaction ID to confirm your order.', 'banglaqr-payment-gateway-by-oi'),
+            'error_invalid_file' => __('Invalid file format. Only JPEG, PNG, WEBP, and GIF are allowed.', 'banglaqr-payment-gateway-by-oi'),
+            'error_file_too_large' => sprintf(__('The file is too large. Maximum size is %s.', 'banglaqr-payment-gateway-by-oi'), $allowed_max_size_mb . 'MB'),
             'i18n_required_field' => __('%s is a required field.', 'banglaqr-payment-gateway-by-oi'),
             'i18n_valid_email' => __('Please enter a valid email address for %s.', 'banglaqr-payment-gateway-by-oi'),
             'i18n_terms' => __('You must accept the terms and conditions.', 'banglaqr-payment-gateway-by-oi'),
@@ -642,18 +641,18 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             $has_trx_id = !empty($_POST['oi_banglaqr_transaction_id']) && trim(sanitize_text_field(wp_unslash($_POST['oi_banglaqr_transaction_id']))) !== '';
 
             if ($receipt_rule === 'mandatory' && !$has_receipt) {
-                wc_add_notice(__('Please upload your payment receipt screenshot to complete the order.', 'banglaqr-payment-gateway-by-oi'), 'error');
+                wc_add_notice(__('Please upload a payment receipt to complete your order.', 'banglaqr-payment-gateway-by-oi'), 'error');
             }
 
             if ($trxid_rule === 'mandatory' && !$has_trx_id) {
-                wc_add_notice(__('Please enter your payment Transaction ID to complete the order.', 'banglaqr-payment-gateway-by-oi'), 'error');
+                wc_add_notice(__('Please enter your Transaction ID to complete your order.', 'banglaqr-payment-gateway-by-oi'), 'error');
             }
 
             // Fallback: If both are optional, require at least one (unless both are hidden)
             if ($receipt_rule !== 'hidden' || $trxid_rule !== 'hidden') {
                 if ($receipt_rule !== 'mandatory' && $trxid_rule !== 'mandatory') {
                     if (!$has_receipt && !$has_trx_id) {
-                        wc_add_notice(__('Please provide either a payment receipt or a Transaction ID to complete the order.', 'banglaqr-payment-gateway-by-oi'), 'error');
+                        wc_add_notice(__('Please provide a payment receipt or a Transaction ID to complete your order.', 'banglaqr-payment-gateway-by-oi'), 'error');
                     }
                 }
             }
@@ -732,11 +731,11 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
 
         // 2. Fallback: Standard $_FILES handling
         if (empty($_FILES['oi_banglaqr_file']) || !empty($_FILES['oi_banglaqr_file']['error'])) {
-            $error_message = __('No file uploaded or file error.', 'banglaqr-payment-gateway-by-oi');
+            $error_message = __('No file uploaded or file error occurred.', 'banglaqr-payment-gateway-by-oi');
             if (!empty($_FILES['oi_banglaqr_file']['error'])) {
                 $error_code = intval($_FILES['oi_banglaqr_file']['error']);
                 if ($error_code === UPLOAD_ERR_INI_SIZE || $error_code === UPLOAD_ERR_FORM_SIZE) {
-                    $error_message = __('The uploaded file exceeds the server upload limit. Please choose a smaller image or contact the site administrator.', 'banglaqr-payment-gateway-by-oi');
+                    $error_message = __('The uploaded file exceeds the maximum size limit. Please choose a smaller image.', 'banglaqr-payment-gateway-by-oi');
                 }
             }
             wp_send_json_error(array('message' => $error_message));

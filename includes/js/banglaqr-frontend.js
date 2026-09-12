@@ -119,7 +119,7 @@ jQuery(document).ready(function ($) {
 
             // Instruction Alert Banner
             html += '      <div class="banglaqr-instruction-banner">';
-            html += '        <p class="banglaqr-instruction-text">Scan this QR code using your bank or financial app to make payment, then upload your receipt or provide Transaction ID below.</p>';
+            html += '        <p class="banglaqr-instruction-text">Scan this QR code using your bank app to make a payment. Then, upload your receipt or enter the Transaction ID below.</p>';
             html += '      </div>';
 
             if (oi_banglaqr_params.enable_manual_payment === 'yes') {
@@ -662,7 +662,7 @@ jQuery(document).ready(function ($) {
             
             if (timeLeft <= 0) {
                 clearInterval(window.banglaqrTimerInterval);
-                showError('Session expired. Please close this window and try again.');
+                showError('Session expired. Please refresh the page and try again.');
                 $('#banglaqr-btn-submit').prop('disabled', true).css({ 'opacity': '0.5', 'cursor': 'not-allowed' });
                 $('#banglaqr-file-input').prop('disabled', true);
                 $('#banglaqr-trx-input').prop('disabled', true);
@@ -706,8 +706,8 @@ jQuery(document).ready(function ($) {
         successHtml += '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
         successHtml += '    </div>';
         successHtml += '  </div>';
-        successHtml += '  <div class="banglaqr-success-title">Payment Submitted</div>';
-        successHtml += '  <div class="banglaqr-success-subtitle">Please wait while we process your order...</div>';
+        successHtml += '  <div class="banglaqr-success-title">Payment Submitted!</div>';
+        successHtml += '  <div class="banglaqr-success-subtitle">Please wait while we process your order.</div>';
         successHtml += '</div>';
 
         $('#banglaqr-modal .banglaqr-modal-container').html(successHtml);
@@ -820,11 +820,11 @@ jQuery(document).ready(function ($) {
 
                     playSuccessAnimationAndSubmit();
                 } else {
-                    handleUploadError(response && response.data && response.data.message ? response.data.message : 'An error occurred during file upload.');
+                    handleUploadError(response && response.data && response.data.message ? response.data.message : 'An error occurred while uploading the file.');
                 }
             },
             error: function () {
-                handleUploadError('Network error or server unavailable. Please try again.');
+                handleUploadError('Network error. Please check your connection and try again.');
             }
         });
     }
