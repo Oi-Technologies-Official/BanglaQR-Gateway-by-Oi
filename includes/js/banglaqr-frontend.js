@@ -86,7 +86,7 @@ jQuery(document).ready(function ($) {
             html += '        <div class="banglaqr-payable-label">Payable Amount</div>';
             html += '        <div class="banglaqr-payable-value" id="banglaqr-modal-payable-val">' + escHtml(total) + '</div>';
             if (charge > 0) {
-                html += '        <div class="banglaqr-payable-note">(Includes ' + charge + '% bank charge)</div>';
+                html += '        <div class="banglaqr-payable-note">(Includes ' + charge + '% bank transaction charge)</div>';
             } else {
                 html += '        <div class="banglaqr-payable-note">(No extra charge)</div>';
             }
@@ -122,36 +122,54 @@ jQuery(document).ready(function ($) {
         }
 
         // Upload Receipt Section
-        html += '      <div class="banglaqr-upload-section">';
-        html += '        <label class="banglaqr-upload-label" for="banglaqr-file-input">' + escHtml('Upload Payment Screenshot / Receipt') + '</label>';
-        html += '        <div id="banglaqr-dropzone" class="banglaqr-dropzone" tabindex="0" role="button" aria-label="Upload payment screenshot">';
-        html += '          <svg class="banglaqr-upload-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>';
-        html += '          <span class="banglaqr-upload-text">Drag & drop receipt here or click to browse</span>';
-        html += '          <span class="banglaqr-upload-subtext">Max size: ' + oi_banglaqr_params.text_max_file_size + ' (JPEG, PNG, WEBP, GIF)</span>';
-        html += '          <input type="file" id="banglaqr-file-input" style="display:none;" accept="image/jpeg,image/png,image/webp,image/gif" />';
-        html += '        </div>';
-        html += '        <div id="banglaqr-file-preview-container"></div>';
-        html += '      </div>';
+        if (oi_banglaqr_params.receipt_rule !== 'hidden') {
+            var receiptLabel = 'Upload Payment Screenshot / Receipt';
+            if (oi_banglaqr_params.receipt_rule === 'mandatory') {
+                receiptLabel += ' <span style="color:#ef4444;">*</span>';
+            }
+            html += '      <div class="banglaqr-upload-section">';
+            html += '        <label class="banglaqr-upload-label" for="banglaqr-file-input">' + receiptLabel + '</label>';
+            html += '        <div id="banglaqr-dropzone" class="banglaqr-dropzone" tabindex="0" role="button" aria-label="Upload payment screenshot">';
+            html += '          <svg class="banglaqr-upload-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>';
+            html += '          <span class="banglaqr-upload-text">Drag & drop receipt here or click to browse</span>';
+            html += '          <span class="banglaqr-upload-subtext">Max size: ' + oi_banglaqr_params.text_max_file_size + ' (JPEG, PNG, WEBP, GIF)</span>';
+            html += '          <input type="file" id="banglaqr-file-input" style="display:none;" accept="image/jpeg,image/png,image/webp,image/gif" />';
+            html += '        </div>';
+            html += '        <div id="banglaqr-file-preview-container"></div>';
+            html += '      </div>';
+        }
 
         // Transaction ID Section
-        html += '      <div class="banglaqr-trx-section">';
-        html += '        <div class="banglaqr-trx-toggle-wrap">';
-        html += '          <button type="button" class="banglaqr-trx-toggle-btn" id="banglaqr-trx-toggle-btn" aria-expanded="false" aria-controls="banglaqr-trx-input-container">';
-        html += '            <span class="banglaqr-trx-toggle-icon">';
-        html += '              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
-        html += '            </span>';
-        html += '            <span class="banglaqr-trx-toggle-text">Or provide your payment Transaction ID instead</span>';
-        html += '          </button>';
-        html += '        </div>';
-        html += '        <div class="banglaqr-trx-input-container" id="banglaqr-trx-input-container" style="display:none;">';
-        html += '          <label class="banglaqr-trx-label" for="banglaqr-trx-input">Payment Transaction ID / TrxID</label>';
-        html += '          <div class="banglaqr-trx-input-box">';
-        html += '            <svg class="banglaqr-trx-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>';
-        html += '            <input type="text" id="banglaqr-trx-input" class="banglaqr-trx-input" placeholder="e.g. 9K28DF109X or Bank Ref" autocomplete="off" />';
-        html += '          </div>';
-        html += '          <span class="banglaqr-trx-hint">Enter the Transaction ID or reference number from your receipt.</span>';
-        html += '        </div>';
-        html += '      </div>';
+        if (oi_banglaqr_params.trxid_rule !== 'hidden') {
+            var trxIdLabel = 'Payment Transaction ID / TrxID';
+            if (oi_banglaqr_params.trxid_rule === 'mandatory') {
+                trxIdLabel += ' <span style="color:#ef4444;">*</span>';
+            }
+            var hideToggle = (oi_banglaqr_params.receipt_rule === 'hidden');
+            
+            html += '      <div class="banglaqr-trx-section">';
+            if (!hideToggle) {
+                html += '        <div class="banglaqr-trx-toggle-wrap">';
+                html += '          <button type="button" class="banglaqr-trx-toggle-btn" id="banglaqr-trx-toggle-btn" aria-expanded="false" aria-controls="banglaqr-trx-input-container">';
+                html += '            <span class="banglaqr-trx-toggle-icon">';
+                html += '              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
+                html += '            </span>';
+                html += '            <span class="banglaqr-trx-toggle-text">Or provide your payment Transaction ID instead</span>';
+                html += '          </button>';
+                html += '        </div>';
+            }
+            
+            var containerStyle = hideToggle ? 'display:block;' : 'display:none;';
+            html += '        <div class="banglaqr-trx-input-container" id="banglaqr-trx-input-container" style="' + containerStyle + '">';
+            html += '          <label class="banglaqr-trx-label" for="banglaqr-trx-input">' + trxIdLabel + '</label>';
+            html += '          <div class="banglaqr-trx-input-box">';
+            html += '            <svg class="banglaqr-trx-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>';
+            html += '            <input type="text" id="banglaqr-trx-input" class="banglaqr-trx-input" placeholder="e.g. 9K28DF109X or Bank Ref" autocomplete="off" />';
+            html += '          </div>';
+            html += '          <span class="banglaqr-trx-hint">Enter the Transaction ID or reference number from your receipt.</span>';
+            html += '        </div>';
+            html += '      </div>';
+        }
 
         html += '    </div>'; // Close modal-body
 
@@ -289,10 +307,24 @@ jQuery(document).ready(function ($) {
 
             var trxId = $('#banglaqr-trx-input').val() ? $.trim($('#banglaqr-trx-input').val()) : '';
 
-            // User must provide at least one proof: File OR Transaction ID
-            if (!selectedFile && !trxId) {
-                showError(oi_banglaqr_params.error_no_file);
+            // Validate required fields based on rules
+            if (oi_banglaqr_params.receipt_rule === 'mandatory' && !selectedFile) {
+                showError('Please upload your payment receipt screenshot to complete the order.');
                 return;
+            }
+
+            if (oi_banglaqr_params.trxid_rule === 'mandatory' && !trxId) {
+                showError('Please enter your payment Transaction ID to complete the order.');
+                return;
+            }
+
+            if (oi_banglaqr_params.receipt_rule !== 'hidden' || oi_banglaqr_params.trxid_rule !== 'hidden') {
+                if (oi_banglaqr_params.receipt_rule !== 'mandatory' && oi_banglaqr_params.trxid_rule !== 'mandatory') {
+                    if (!selectedFile && !trxId) {
+                        showError(oi_banglaqr_params.error_no_file);
+                        return;
+                    }
+                }
             }
 
             // If file is selected, validate it

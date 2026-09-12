@@ -3,7 +3,7 @@
  * Clean, minimal, unified accordion-based architecture
  */
 
- :root {
+:root {
     --banglaqr-primary: #137833;
     --banglaqr-primary-hover: #0f6229;
     --banglaqr-primary-light: #f0fdf4;
@@ -16,20 +16,21 @@
     --banglaqr-bg: #f8fafc;
     --banglaqr-card-bg: #ffffff;
     --banglaqr-border: #e2e8f0;
-    
+
     --banglaqr-text: #0f172a;
     --banglaqr-text-muted: #64748b;
     --banglaqr-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
     --banglaqr-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+    --banglaqr-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .banglaqr-admin-dashboard-wrap {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--banglaqr-text);
     width: 100%;
-    max-width: 900px; /* added max-width so it's not too stretched */
-    margin: 24px auto 24px 0;
-    padding: 24px; /* Increased padding */
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 24px;
     background: #f8fafc;
     border-radius: 12px;
 }
@@ -42,7 +43,7 @@
 .banglaqr-dashboard-header {
     background: var(--banglaqr-card-bg);
     border: 1px solid var(--banglaqr-border);
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 24px;
     margin-bottom: 24px;
     display: flex;
@@ -83,7 +84,7 @@
 
 /* Primary Button */
 .banglaqr-admin-dashboard-wrap .button-primary {
-    background: linear-gradient(180deg, var(--banglaqr-primary) 0%, var(--banglaqr-primary-hover) 100%) !important;
+    background: linear-gradient(135deg, var(--banglaqr-primary) 0%, var(--banglaqr-primary-hover) 100%) !important;
     border: none !important;
     border-radius: 8px !important;
     color: #ffffff !important;
@@ -91,7 +92,7 @@
     padding: 0 20px !important;
     height: 38px !important;
     line-height: 38px !important;
-    box-shadow: 0 2px 4px rgba(19, 120, 51, 0.15) !important;
+    box-shadow: 0 4px 10px rgba(19, 120, 51, 0.2) !important;
     text-shadow: none !important;
     transition: all 0.2s ease !important;
     display: inline-flex;
@@ -100,13 +101,14 @@
 }
 
 .banglaqr-admin-dashboard-wrap .button-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(19, 120, 51, 0.25) !important;
-    background: linear-gradient(180deg, var(--banglaqr-primary-hover) 0%, #0d5423 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(19, 120, 51, 0.25) !important;
+    background: linear-gradient(135deg, var(--banglaqr-primary-hover) 0%, #0d5423 100%) !important;
 }
 
 .banglaqr-admin-dashboard-wrap .button-primary:active {
-    transform: translateY(0);
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(19, 120, 51, 0.15) !important;
 }
 
 /* Secondary Button */
@@ -116,7 +118,7 @@
     border-radius: 8px !important;
     color: var(--banglaqr-text) !important;
     font-weight: 600 !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     transition: all 0.2s ease !important;
 }
 
@@ -129,7 +131,7 @@
 .banglaqr-settings-section {
     background: var(--banglaqr-card-bg);
     border: 1px solid var(--banglaqr-border);
-    border-radius: 12px;
+    border-radius: 16px;
     box-shadow: var(--banglaqr-shadow);
     margin-bottom: 24px;
     overflow: hidden;
@@ -168,7 +170,7 @@
     background-color: #ffffff !important;
     color: var(--banglaqr-text) !important;
     transition: all 0.2s ease !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.02) inset !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) inset !important;
 }
 
 .banglaqr-general-input:focus,
@@ -201,7 +203,10 @@
 .banglaqr-slider {
     position: absolute;
     cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: #cbd5e1;
     transition: .3s;
     border-radius: 24px;
@@ -217,14 +222,14 @@
     background-color: white;
     transition: .3s;
     border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-input:checked + .banglaqr-slider {
+input:checked+.banglaqr-slider {
     background-color: var(--banglaqr-primary);
 }
 
-input:checked + .banglaqr-slider:before {
+input:checked+.banglaqr-slider:before {
     transform: translateX(20px);
 }
 
@@ -250,7 +255,8 @@ input:checked + .banglaqr-slider:before {
 }
 
 .banglaqr-qr-accordion-item.ui-sortable-helper {
-    box-shadow: var(--banglaqr-shadow-hover);
+    box-shadow: var(--banglaqr-shadow-lg);
+    transform: scale(1.02);
 }
 
 .banglaqr-qr-accordion-item.is-expanded {
@@ -391,7 +397,7 @@ input:checked + .banglaqr-slider:before {
     align-items: center;
     justify-content: center;
     padding: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .banglaqr-large-qr-preview-box img {
@@ -425,6 +431,28 @@ input:checked + .banglaqr-slider:before {
     gap: 8px;
     align-items: center;
     width: 100%;
+}
+
+.banglaqr-logo-preview-box {
+    width: 38px;
+    height: 38px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 4px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.banglaqr-logo-preview-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
 }
 
 .banglaqr-panel-actions {

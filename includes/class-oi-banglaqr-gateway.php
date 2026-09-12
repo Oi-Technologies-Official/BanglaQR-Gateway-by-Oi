@@ -104,6 +104,40 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                 'default' => '#137833',
                 'desc_tip' => true,
             ),
+            'order_status' => array(
+                'title' => __('Order Status After Payment', 'banglaqr-payment-gateway-by-oi'),
+                'type' => 'select',
+                'description' => __('Choose the default order status after a user submits their payment details via Bangla QR.', 'banglaqr-payment-gateway-by-oi'),
+                'default' => 'on-hold',
+                'options' => array(
+                    'on-hold'    => __('On-Hold', 'banglaqr-payment-gateway-by-oi'),
+                    'processing' => __('Processing', 'banglaqr-payment-gateway-by-oi'),
+                    'completed'  => __('Completed', 'banglaqr-payment-gateway-by-oi'),
+                    'pending'    => __('Pending Payment', 'banglaqr-payment-gateway-by-oi'),
+                ),
+            ),
+            'receipt_rule' => array(
+                'title' => __('Receipt Upload Rule', 'banglaqr-payment-gateway-by-oi'),
+                'type' => 'select',
+                'description' => __('Set the requirement rule for the payment receipt screenshot.', 'banglaqr-payment-gateway-by-oi'),
+                'default' => 'optional',
+                'options' => array(
+                    'mandatory' => __('Mandatory', 'banglaqr-payment-gateway-by-oi'),
+                    'optional'  => __('Optional', 'banglaqr-payment-gateway-by-oi'),
+                    'hidden'    => __('Hidden', 'banglaqr-payment-gateway-by-oi'),
+                ),
+            ),
+            'trxid_rule' => array(
+                'title' => __('Transaction ID Rule', 'banglaqr-payment-gateway-by-oi'),
+                'type' => 'select',
+                'description' => __('Set the requirement rule for the Transaction ID field.', 'banglaqr-payment-gateway-by-oi'),
+                'default' => 'optional',
+                'options' => array(
+                    'mandatory' => __('Mandatory', 'banglaqr-payment-gateway-by-oi'),
+                    'optional'  => __('Optional', 'banglaqr-payment-gateway-by-oi'),
+                    'hidden'    => __('Hidden', 'banglaqr-payment-gateway-by-oi'),
+                ),
+            ),
         );
     }
 
@@ -122,6 +156,10 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         }
         $description = $this->get_option('description', '');
         $theme_color = $this->get_option('theme_color', '#137833');
+        
+        $order_status = $this->get_option('order_status', 'on-hold');
+        $receipt_rule = $this->get_option('receipt_rule', 'optional');
+        $trxid_rule = $this->get_option('trxid_rule', 'optional');
         $qrs = $this->get_option('qrs_table', array());
 
         if (!is_array($qrs) || empty($qrs)) {
@@ -248,6 +286,51 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                 </div>
                             </div>
                         </div> <!-- End General Settings Section -->
+
+                        <!-- Checkout Rules Section -->
+                        <div class="banglaqr-settings-section">
+                            <div class="banglaqr-section-header">
+                                <h2><?php esc_html_e('Checkout Rules & Status', 'banglaqr-payment-gateway-by-oi'); ?></h2>
+                                <p><?php esc_html_e('Control the checkout fields requirement and the default order status.', 'banglaqr-payment-gateway-by-oi'); ?></p>
+                            </div>
+                            <div class="banglaqr-section-body" style="display: flex; gap: 24px;">
+                                
+                                <div class="banglaqr-card-inputs-wrapper" style="flex: 1; display: flex; flex-direction: row; flex-wrap: wrap; gap: 24px;">
+                                    
+                                    <!-- Order Status -->
+                                    <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
+                                        <label for="woocommerce_oi_banglaqr_order_status" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Order Status After Payment', 'banglaqr-payment-gateway-by-oi'); ?></label>
+                                        <select name="woocommerce_oi_banglaqr_order_status" id="woocommerce_oi_banglaqr_order_status" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;">
+                                            <option value="on-hold" <?php selected($order_status, 'on-hold'); ?>><?php esc_html_e('On-Hold', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="processing" <?php selected($order_status, 'processing'); ?>><?php esc_html_e('Processing', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="completed" <?php selected($order_status, 'completed'); ?>><?php esc_html_e('Completed', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="pending" <?php selected($order_status, 'pending'); ?>><?php esc_html_e('Pending Payment', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Receipt Rule -->
+                                    <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
+                                        <label for="woocommerce_oi_banglaqr_receipt_rule" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Receipt Upload Rule', 'banglaqr-payment-gateway-by-oi'); ?></label>
+                                        <select name="woocommerce_oi_banglaqr_receipt_rule" id="woocommerce_oi_banglaqr_receipt_rule" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;">
+                                            <option value="mandatory" <?php selected($receipt_rule, 'mandatory'); ?>><?php esc_html_e('Mandatory', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="optional" <?php selected($receipt_rule, 'optional'); ?>><?php esc_html_e('Optional', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="hidden" <?php selected($receipt_rule, 'hidden'); ?>><?php esc_html_e('Hidden', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                        </select>
+                                    </div>
+
+                                    <!-- TrxID Rule -->
+                                    <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
+                                        <label for="woocommerce_oi_banglaqr_trxid_rule" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Transaction ID Rule', 'banglaqr-payment-gateway-by-oi'); ?></label>
+                                        <select name="woocommerce_oi_banglaqr_trxid_rule" id="woocommerce_oi_banglaqr_trxid_rule" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;">
+                                            <option value="mandatory" <?php selected($trxid_rule, 'mandatory'); ?>><?php esc_html_e('Mandatory', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="optional" <?php selected($trxid_rule, 'optional'); ?>><?php esc_html_e('Optional', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="hidden" <?php selected($trxid_rule, 'hidden'); ?>><?php esc_html_e('Hidden', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                        </select>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div> <!-- End Checkout Rules Section -->
 
                         <!-- QR Accounts Section -->
                         <div class="banglaqr-settings-section">
@@ -400,6 +483,8 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             'i18n_required_field' => __('%s is a required field.', 'banglaqr-payment-gateway-by-oi'),
             'i18n_valid_email' => __('Please enter a valid email address for %s.', 'banglaqr-payment-gateway-by-oi'),
             'i18n_terms' => __('You must accept the terms and conditions.', 'banglaqr-payment-gateway-by-oi'),
+            'receipt_rule' => isset($settings['receipt_rule']) ? $settings['receipt_rule'] : 'optional',
+            'trxid_rule' => isset($settings['trxid_rule']) ? $settings['trxid_rule'] : 'optional',
         ));
     }
 
@@ -450,13 +535,29 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Missing
         if (isset($_POST['payment_method']) && sanitize_text_field(wp_unslash($_POST['payment_method'])) === $this->id) {
+            $receipt_rule = $this->get_option('receipt_rule', 'optional');
+            $trxid_rule = $this->get_option('trxid_rule', 'optional');
+
             // phpcs:ignore WordPress.Security.NonceVerification.Missing
             $has_receipt = !empty($_POST['oi_banglaqr_receipt_id']);
             // phpcs:ignore WordPress.Security.NonceVerification.Missing
             $has_trx_id = !empty($_POST['oi_banglaqr_transaction_id']) && trim(sanitize_text_field(wp_unslash($_POST['oi_banglaqr_transaction_id']))) !== '';
 
-            if (!$has_receipt && !$has_trx_id) {
-                wc_add_notice(__('Please upload your payment receipt or enter your payment Transaction ID to complete the order via Bangla QR Payment.', 'banglaqr-payment-gateway-by-oi'), 'error');
+            if ($receipt_rule === 'mandatory' && !$has_receipt) {
+                wc_add_notice(__('Please upload your payment receipt screenshot to complete the order.', 'banglaqr-payment-gateway-by-oi'), 'error');
+            }
+
+            if ($trxid_rule === 'mandatory' && !$has_trx_id) {
+                wc_add_notice(__('Please enter your payment Transaction ID to complete the order.', 'banglaqr-payment-gateway-by-oi'), 'error');
+            }
+
+            // Fallback: If both are optional, require at least one (unless both are hidden)
+            if ($receipt_rule !== 'hidden' || $trxid_rule !== 'hidden') {
+                if ($receipt_rule !== 'mandatory' && $trxid_rule !== 'mandatory') {
+                    if (!$has_receipt && !$has_trx_id) {
+                        wc_add_notice(__('Please provide either a payment receipt or a Transaction ID to complete the order.', 'banglaqr-payment-gateway-by-oi'), 'error');
+                    }
+                }
             }
         }
     }
@@ -661,8 +762,9 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             $order_note .= ' (' . implode(' | ', $note_details) . ')';
         }
 
-        // Set order status to on-hold (awaiting verification)
-        $order->update_status('on-hold', $order_note);
+        // Set order status based on admin configuration
+        $order_status = $this->get_option('order_status', 'on-hold');
+        $order->update_status($order_status, $order_note);
 
         // Reduce stock levels
         wc_reduce_stock_levels($order_id);
