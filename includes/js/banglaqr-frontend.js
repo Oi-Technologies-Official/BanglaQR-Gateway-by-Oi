@@ -136,15 +136,16 @@ jQuery(document).ready(function ($) {
                 manualAccounts.forEach(function(acc) {
                     if (acc.number && acc.number.trim() !== '') {
                         hasManual = true;
-                        manualHtml += '        <div class="banglaqr-manual-account-item">';
-                        manualHtml += '          <div class="banglaqr-manual-account-details">';
-                        manualHtml += '            <span class="banglaqr-manual-account-name">' + escHtml(acc.name) + '</span>';
+                        var brandClass = 'banglaqr-brand-' + acc.name.toLowerCase();
+                        manualHtml += '        <div class="banglaqr-manual-account-item ' + brandClass + '">';
+                        manualHtml += '          <span class="banglaqr-manual-account-name">' + escHtml(acc.name) + '</span>';
+                        manualHtml += '          <div class="banglaqr-manual-account-number-wrap">';
                         manualHtml += '            <span class="banglaqr-manual-account-number">' + escHtml(acc.number) + '</span>';
+                        manualHtml += '            <button type="button" class="banglaqr-manual-copy-btn" data-number="' + escAttr(acc.number) + '" title="Copy Number">';
+                        manualHtml += '              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+                        manualHtml += '              <span>Copy</span>';
+                        manualHtml += '            </button>';
                         manualHtml += '          </div>';
-                        manualHtml += '          <button type="button" class="banglaqr-manual-copy-btn" data-number="' + escAttr(acc.number) + '" title="Copy Number">';
-                        manualHtml += '            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
-                        manualHtml += '            <span>Copy</span>';
-                        manualHtml += '          </button>';
                         manualHtml += '        </div>';
                     }
                 });
