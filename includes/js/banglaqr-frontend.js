@@ -267,31 +267,7 @@ jQuery(document).ready(function ($) {
             });
         });
 
-        // Countdown Timer
-        var timeLeft = 15 * 60; // 15 minutes in seconds
-        var timerDisplay = $('#banglaqr-timer-text');
-        var timerContainer = $('#banglaqr-countdown-timer');
-        
-        window.banglaqrTimerInterval = setInterval(function() {
-            timeLeft--;
-            var minutes = Math.floor(timeLeft / 60);
-            var seconds = timeLeft % 60;
-            
-            var displayStr = (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
-            timerDisplay.text(displayStr);
-            
-            if (timeLeft <= 60) {
-                timerContainer.addClass('danger');
-            }
-            
-            if (timeLeft <= 0) {
-                clearInterval(window.banglaqrTimerInterval);
-                showError('Session expired. Please close this window and try again.');
-                $('#banglaqr-btn-submit').prop('disabled', true).css({ 'opacity': '0.5', 'cursor': 'not-allowed' });
-                $('#banglaqr-file-input').prop('disabled', true);
-                $('#banglaqr-trx-input').prop('disabled', true);
-            }
-        }, 1000);
+        // Countdown Timer logic is now handled by startTimer() when modal opens
 
         // Cancel/Close modal
         $('#banglaqr-modal-close-btn, #banglaqr-btn-cancel').on('click', function (e) {
@@ -572,7 +548,7 @@ jQuery(document).ready(function ($) {
 
             $('#banglaqr-file-preview-container').html(
                 '<div class="banglaqr-file-preview-card">' +
-                '  <div class="banglaqr-file-thumbnail" style="background-image: url(' + currentObjectUrl + ')"></div>' +
+                '  <div class="banglaqr-file-thumbnail" id="banglaqr-file-thumbnail-btn" style="background-image: url(' + currentObjectUrl + '); cursor: pointer;" title="Click to enlarge"></div>' +
                 '  <div class="banglaqr-file-info">' +
                 '    <div class="banglaqr-file-name" title="' + escAttr(file.name) + '">' + escHtml(file.name) + '</div>' +
                 '    <div class="banglaqr-file-size">' + sizeInMb + '</div>' +
@@ -591,6 +567,33 @@ jQuery(document).ready(function ($) {
                 e.preventDefault();
                 if (uploadInProgress) return;
                 resetFileSelector();
+            });
+
+            // Bind zoom action
+            $('#banglaqr-file-thumbnail-btn').on('click', function (e) {
+                e.preventDefault();
+                var zoomHtml = '  <div id="banglaqr-receipt-zoom-overlay" class="banglaqr-zoom-overlay is-active" style="display:flex; z-index: 1000000;" role="dialog" aria-modal="true">';
+                zoomHtml += '    <div class="banglaqr-zoom-card">';
+                zoomHtml += '      <div class="banglaqr-zoom-header">';
+                zoomHtml += '        <div class="banglaqr-zoom-title-box"><h4 class="banglaqr-zoom-title">Payment Receipt</h4></div>';
+                zoomHtml += '        <button type="button" class="banglaqr-zoom-close" id="banglaqr-receipt-zoom-close-btn">';
+                zoomHtml += '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12" /></svg>';
+                zoomHtml += '        </button>';
+                zoomHtml += '      </div>';
+                zoomHtml += '      <div class="banglaqr-zoom-img-wrap">';
+                zoomHtml += '        <img src="' + currentObjectUrl + '" class="banglaqr-zoom-img" />';
+                zoomHtml += '      </div>';
+                zoomHtml += '      <button type="button" class="banglaqr-zoom-dismiss-btn" id="banglaqr-receipt-zoom-dismiss-btn">Close Full View</button>';
+                zoomHtml += '    </div>';
+                zoomHtml += '  </div>';
+
+                $('body').append(zoomHtml);
+
+                $('#banglaqr-receipt-zoom-close-btn, #banglaqr-receipt-zoom-dismiss-btn, #banglaqr-receipt-zoom-overlay').on('click', function(e) {
+                    if (e.target.id === 'banglaqr-receipt-zoom-overlay' || e.currentTarget.tagName === 'BUTTON') {
+                        $('#banglaqr-receipt-zoom-overlay').remove();
+                    }
+                });
             });
         });
     }
@@ -619,10 +622,50 @@ jQuery(document).ready(function ($) {
         $('#banglaqr-error-banner').fadeOut(100).removeClass('banglaqr-shake').empty();
     }
 
+    var timeLeft = 15 * 60;
+
+    function startTimer() {
+        if (window.banglaqrTimerInterval) {
+            clearInterval(window.banglaqrTimerInterval);
+        }
+        
+        timeLeft = 15 * 60; // reset to 15 mins
+        var timerDisplay = $('#banglaqr-timer-text');
+        var timerContainer = $('#banglaqr-countdown-timer');
+        
+        timerDisplay.text('15:00');
+        timerContainer.removeClass('danger');
+        $('#banglaqr-btn-submit').prop('disabled', false).css({ 'opacity': '1', 'cursor': 'pointer' });
+        $('#banglaqr-file-input').prop('disabled', false);
+        $('#banglaqr-trx-input').prop('disabled', false);
+
+        window.banglaqrTimerInterval = setInterval(function() {
+            timeLeft--;
+            var minutes = Math.floor(timeLeft / 60);
+            var seconds = timeLeft % 60;
+            
+            var displayStr = (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
+            timerDisplay.text(displayStr);
+            
+            if (timeLeft <= 60) {
+                timerContainer.addClass('danger');
+            }
+            
+            if (timeLeft <= 0) {
+                clearInterval(window.banglaqrTimerInterval);
+                showError('Session expired. Please close this window and try again.');
+                $('#banglaqr-btn-submit').prop('disabled', true).css({ 'opacity': '0.5', 'cursor': 'not-allowed' });
+                $('#banglaqr-file-input').prop('disabled', true);
+                $('#banglaqr-trx-input').prop('disabled', true);
+            }
+        }, 1000);
+    }
+
     function openModal() {
         $lastActiveElement = document.activeElement;
         buildModalHtml();
         updateModalAmounts();
+        startTimer();
 
         // Show overlay
         $('#banglaqr-modal').addClass('is-active');
@@ -635,6 +678,10 @@ jQuery(document).ready(function ($) {
     }
 
     function closeModal() {
+        if (window.banglaqrTimerInterval) {
+            clearInterval(window.banglaqrTimerInterval);
+        }
+
         $('#banglaqr-modal').removeClass('is-active');
         $('body').css('overflow', ''); // restore scroll
 
@@ -645,8 +692,10 @@ jQuery(document).ready(function ($) {
 
     function playSuccessAnimationAndSubmit() {
         var successHtml = '<div class="banglaqr-success-container">';
-        successHtml += '  <div class="banglaqr-success-icon">';
-        successHtml += '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        successHtml += '  <div class="banglaqr-success-icon-wrap">';
+        successHtml += '    <div class="banglaqr-success-icon">';
+        successHtml += '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        successHtml += '    </div>';
         successHtml += '  </div>';
         successHtml += '  <div class="banglaqr-success-title">Payment Submitted</div>';
         successHtml += '  <div class="banglaqr-success-subtitle">Please wait while we process your order...</div>';
@@ -658,7 +707,7 @@ jQuery(document).ready(function ($) {
             uploadInProgress = false;
             closeModal();
             $('form.checkout').submit();
-        }, 1500);
+        }, 2500);
     }
 
     // Submit with Transaction ID Only (No Image Upload)

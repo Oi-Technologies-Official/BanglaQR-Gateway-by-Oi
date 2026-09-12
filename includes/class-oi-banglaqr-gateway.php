@@ -349,7 +349,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                     <!-- Order Status -->
                                     <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
                                         <label for="woocommerce_oi_banglaqr_order_status" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Order Status After Payment', 'banglaqr-payment-gateway-by-oi'); ?></label>
-                                        <select name="woocommerce_oi_banglaqr_order_status" id="woocommerce_oi_banglaqr_order_status" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;">
+                                        <select name="woocommerce_oi_banglaqr_order_status" id="woocommerce_oi_banglaqr_order_status" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 12px; font-size: 13px; height: 38px; line-height: 36px; box-sizing: border-box; vertical-align: middle;">
                                             <option value="on-hold" <?php selected($order_status, 'on-hold'); ?>><?php esc_html_e('On-Hold', 'banglaqr-payment-gateway-by-oi'); ?></option>
                                             <option value="processing" <?php selected($order_status, 'processing'); ?>><?php esc_html_e('Processing', 'banglaqr-payment-gateway-by-oi'); ?></option>
                                             <option value="completed" <?php selected($order_status, 'completed'); ?>><?php esc_html_e('Completed', 'banglaqr-payment-gateway-by-oi'); ?></option>
@@ -360,7 +360,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                     <!-- Receipt Rule -->
                                     <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
                                         <label for="woocommerce_oi_banglaqr_receipt_rule" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Receipt Upload Rule', 'banglaqr-payment-gateway-by-oi'); ?></label>
-                                        <select name="woocommerce_oi_banglaqr_receipt_rule" id="woocommerce_oi_banglaqr_receipt_rule" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;">
+                                        <select name="woocommerce_oi_banglaqr_receipt_rule" id="woocommerce_oi_banglaqr_receipt_rule" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 12px; font-size: 13px; height: 38px; line-height: 36px; box-sizing: border-box; vertical-align: middle;">
                                             <option value="mandatory" <?php selected($receipt_rule, 'mandatory'); ?>><?php esc_html_e('Mandatory', 'banglaqr-payment-gateway-by-oi'); ?></option>
                                             <option value="optional" <?php selected($receipt_rule, 'optional'); ?>><?php esc_html_e('Optional', 'banglaqr-payment-gateway-by-oi'); ?></option>
                                             <option value="hidden" <?php selected($receipt_rule, 'hidden'); ?>><?php esc_html_e('Hidden', 'banglaqr-payment-gateway-by-oi'); ?></option>
@@ -370,7 +370,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                     <!-- TrxID Rule -->
                                     <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
                                         <label for="woocommerce_oi_banglaqr_trxid_rule" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Transaction ID Rule', 'banglaqr-payment-gateway-by-oi'); ?></label>
-                                        <select name="woocommerce_oi_banglaqr_trxid_rule" id="woocommerce_oi_banglaqr_trxid_rule" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;">
+                                        <select name="woocommerce_oi_banglaqr_trxid_rule" id="woocommerce_oi_banglaqr_trxid_rule" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 12px; font-size: 13px; height: 38px; line-height: 36px; box-sizing: border-box; vertical-align: middle;">
                                             <option value="mandatory" <?php selected($trxid_rule, 'mandatory'); ?>><?php esc_html_e('Mandatory', 'banglaqr-payment-gateway-by-oi'); ?></option>
                                             <option value="optional" <?php selected($trxid_rule, 'optional'); ?>><?php esc_html_e('Optional', 'banglaqr-payment-gateway-by-oi'); ?></option>
                                             <option value="hidden" <?php selected($trxid_rule, 'hidden'); ?>><?php esc_html_e('Hidden', 'banglaqr-payment-gateway-by-oi'); ?></option>
