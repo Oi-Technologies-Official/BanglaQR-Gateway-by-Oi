@@ -269,6 +269,15 @@ jQuery(document).ready(function ($) {
 
         // Countdown Timer logic is now handled by startTimer() when modal opens
 
+        // TrxID Smart Validation (Alphanumeric only, uppercase)
+        $('#banglaqr-trx-input').on('input', function() {
+            var val = $(this).val();
+            var sanitized = val.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+            if (val !== sanitized) {
+                $(this).val(sanitized);
+            }
+        });
+
         // Cancel/Close modal
         $('#banglaqr-modal-close-btn, #banglaqr-btn-cancel').on('click', function (e) {
             e.preventDefault();
