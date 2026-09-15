@@ -103,7 +103,7 @@ Initial release of BanglaQR Payment Gateway for WooCommerce.
 
 ## ⚖️ License & Copyright
 - Copyright © **Oi Technologies** 
-- Email: support@oitech.com.bd
+- Email: [support@oitech.com.bd](mailto:support@oitech.com.bd)
 - Website: https://oitech.com.bd
 - Open Source: https://oitech.com.bd/open-source/
 - Contact: https://oitech.com.bd/helpline/contact-us/
