@@ -796,6 +796,21 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    flex: 0 0 70px;
+}
+
+/* Brand Colors for MFS text */
+.banglaqr-brand-bkash .banglaqr-manual-account-name { color: #e2136e; }
+.banglaqr-brand-nagad .banglaqr-manual-account-name { color: #f7931e; }
+.banglaqr-brand-rocket .banglaqr-manual-account-name { color: #8c1595; }
+.banglaqr-brand-upay .banglaqr-manual-account-name { color: #eab308; }
+.banglaqr-brand-cellfin .banglaqr-manual-account-name { color: #16a34a; }
+
+.banglaqr-manual-account-number-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
 }
 
 .banglaqr-manual-account-number {
@@ -803,6 +818,8 @@
     font-weight: 700;
     color: #0f172a;
     font-family: monospace;
+    flex: 1;
+    text-align: center;
 }
 
 .banglaqr-manual-copy-btn {
