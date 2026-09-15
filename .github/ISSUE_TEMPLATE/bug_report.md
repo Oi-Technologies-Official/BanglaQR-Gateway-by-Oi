@@ -1,38 +1,39 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
+title: Bug report
 labels: ''
 assignees: ''
 
 ---
 
 **Describe the bug**
-A clear and concise description of what the bug is.
+Uploaded payment receipts were accessible via direct URL without verifying ownership. Any user (including unauthenticated guests) who guessed or obtained a receipt file URL could view another customer's uploaded payment proof — a classic Insecure Direct Object Reference (IDOR) vulnerability.
 
 **To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+1. Complete a checkout as Customer A and upload a payment receipt.
+2. Copy the direct URL of the uploaded receipt file (e.g., `.../uploads/banglaqr-receipts/abc123.jpg`).
+3. Log out, or open the URL in a private/incognito window as an unrelated user.
+4. Observe that the receipt image is displayed publicly without any ownership check.
 
 **Expected behavior**
-A clear and concise description of what you expected to happen.
+Uploaded receipts should be tied to the WooCommerce user session that created them. Only the uploading customer and shop administrators should be able to access the receipt file. Direct access by any other party should return `403 Forbidden`.
 
 **Screenshots**
-If applicable, add screenshots to help explain your problem.
+N/A — reported via code audit.
 
 **Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+ - OS: Windows 11
+ - Browser: Chrome
+ - Version: 120
 
 **Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+ - Device: Any
+ - OS: Any
+ - Browser: Any
+ - Version: Any
 
 **Additional context**
-Add any other context about the problem here.
+**Severity:** High (Security)  
+**Fix applied in:** v0.2.0  
+Receipts are now tied to the WooCommerce user session, and access is validated server-side before serving the file.
