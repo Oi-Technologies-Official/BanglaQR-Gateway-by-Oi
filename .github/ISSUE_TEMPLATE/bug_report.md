@@ -1,39 +1,46 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: Bug report
-labels: ''
+name: "🐛 Bug Report"
+about: Create a report to help us improve the BanglaQR Payment Gateway
+title: '[BUG] '
+labels: 'bug, triage'
 assignees: ''
-
 ---
 
-**Describe the bug**
-Uploaded payment receipts were accessible via direct URL without verifying ownership. Any user (including unauthenticated guests) who guessed or obtained a receipt file URL could view another customer's uploaded payment proof — a classic Insecure Direct Object Reference (IDOR) vulnerability.
+## 🐛 Bug Description
+<!-- A clear and concise description of what the bug is. Please describe what happens and what you expected to happen instead. -->
 
-**To Reproduce**
-1. Complete a checkout as Customer A and upload a payment receipt.
-2. Copy the direct URL of the uploaded receipt file (e.g., `.../uploads/banglaqr-receipts/abc123.jpg`).
-3. Log out, or open the URL in a private/incognito window as an unrelated user.
-4. Observe that the receipt image is displayed publicly without any ownership check.
+## 🔄 Steps to Reproduce
+<!-- Please provide detailed steps so we can reproduce the issue: -->
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
-**Expected behavior**
-Uploaded receipts should be tied to the WooCommerce user session that created them. Only the uploading customer and shop administrators should be able to access the receipt file. Direct access by any other party should return `403 Forbidden`.
+## ✔️ Expected Behavior
+<!-- A clear and concise description of what you expected to happen. -->
 
-**Screenshots**
-N/A — reported via code audit.
+## 📸 Screenshots / Video
+<!-- If applicable, add screenshots or a screen recording to help explain your problem. -->
 
+## 🖥️ Environment Details
 **Desktop (please complete the following information):**
- - OS: Windows 11
- - Browser: Chrome
- - Version: 120
+ - OS: [e.g. Windows 11, macOS Sonoma]
+ - Browser: [e.g. Chrome, Firefox, Safari]
+ - Version: [e.g. 120.0]
 
 **Smartphone (please complete the following information):**
- - Device: Any
- - OS: Any
- - Browser: Any
- - Version: Any
+ - Device: [e.g. iPhone 15, Samsung Galaxy S23]
+ - OS: [e.g. iOS 17, Android 14]
+ - Browser: [e.g. Chrome, Safari]
 
-**Additional context**
-**Severity:** High (Security)  
-**Fix applied in:** v0.2.0  
-Receipts are now tied to the WooCommerce user session, and access is validated server-side before serving the file.
+**Plugin & WordPress Details:**
+ - WordPress Version: [e.g. 6.4]
+ - WooCommerce Version: [e.g. 8.5]
+ - Plugin Version: [e.g. 0.2.0]
+ - PHP Version: [e.g. 7.4, 8.1]
+
+## 📋 Error Logs / Additional Context
+<!-- Add any other context about the problem here. If you have any PHP fatal errors from your error_log or browser console errors, please paste them below. -->
+```text
+Paste your error logs here...
+```
