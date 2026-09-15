@@ -11,7 +11,7 @@ A WooCommerce payment gateway supporting bank and mobile QR payments with a scan
 - **Requires at least:** WordPress 5.6
 - **Tested up to:** WordPress 7.0 
 - **Requires PHP:** 7.4  
-- **Stable tag:** 1.0.0
+- **Stable tag:** 0.2.0
 - **License:** [MIT](https://opensource.org/license/mit/)
 
 ---
@@ -73,33 +73,6 @@ Yes, guest customers can checkout and upload their payment screenshots securely.
 5. Customer payment receipt/screenshot. ![Customer payment receipt/screenshot](assets/screenshot-5.png)
 
 ---
-
-## 📝 Changelog
-
-### 1.0.0
-- **New Feature:** Added Manual Payment Accounts (bKash, Nagad, Rocket, etc.) with brand-colored copy buttons for customers who cannot scan the QR.
-- **New Feature:** Added Checkout Rules & Status settings. Admins can now configure the Receipt and TrxID fields as Mandatory, Optional, or Hidden.
-- **New Feature:** Added click-to-zoom preview for uploaded receipt thumbnails in the checkout popup.
-- **Enhancement:** Implemented Transaction ID Smart Validation (auto-converts to uppercase alphanumeric) to prevent typos.
-- **Enhancement:** Added a beautiful, dynamic pulse animation upon successful payment submission.
-- **Enhancement:** Modal font-family now perfectly inherits the active WordPress theme typography.
-- **Enhancement:** Completely rewrote all frontend and backend English text for maximum clarity and professionalism.
-- **Bug Fix:** Fixed a memory leak where the 15-minute countdown timer would stack and count down too fast if the modal was closed and reopened.
-- **Bug Fix:** Fixed vertical text alignment for dropdown fields in the WordPress admin panel.
-- Initial release of BanglaQR Payment Gateway for WooCommerce.
-- Support for Bangladesh Bank's unified BanglaQR standard.
-- Scan-to-pay QR popup modal with payable amount display.
-- Payment proof receipt/screenshot upload and Transaction ID input.
-- Multiple QR account management with sortable interface and active account selection.
-- Per-QR percentage fee calculation.
-- Client-side image optimization and compression.
-- WooCommerce order admin review card with receipt preview and Transaction ID copy.
-
----
-
-## 📢 Update Notice
-= 1.0.0 =
-Initial release of BanglaQR Payment Gateway for WooCommerce.
 
 ## ⚖️ License & Copyright
 - Copyright © **Oi Technologies** 

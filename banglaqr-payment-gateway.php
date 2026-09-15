@@ -3,7 +3,7 @@
  * Plugin Name: Bangla QR Payment Gateway by Oi
  * Plugin URI: https://oitech.com.bd/open-source/
  * Description: A payment gateway supporting bank and mobile QR payments with a scan-to-pay popup and payment receipt upload verification.
- * Version: 1.0.0
+ * Version: 0.2.0
  * Author: Oi Technologies
  * Author URI: https://oitech.com.bd/
  * License: MIT
@@ -18,7 +18,7 @@
 defined('ABSPATH') || exit;
 
 // Define plugin-wide constants
-define('OI_BANGLAQR_VERSION', '1.0.0');
+define('OI_BANGLAQR_VERSION', '0.2.0');
 define('OI_BANGLAQR_PATH', plugin_dir_path(__FILE__));
 define('OI_BANGLAQR_URL', plugin_dir_url(__FILE__));
 define('OI_BANGLAQR_BASENAME', plugin_basename(__FILE__));
@@ -180,3 +180,55 @@ function oi_banglaqr_add_payment_charge_fee()
         WC()->cart->add_fee($fee_name, $fee, $is_taxable);
     }
 }
+
+/**
+ * Schedule a daily cleanup event for pending uploads to prevent storage exhaustion.
+ */
+function oi_banglaqr_activate_plugin()
+{
+    if (!wp_next_scheduled('oi_banglaqr_daily_cleanup')) {
+        wp_schedule_event(time(), 'daily', 'oi_banglaqr_daily_cleanup');
+    }
+}
+register_activation_hook(__FILE__, 'oi_banglaqr_activate_plugin');
+
+/**
+ * Clear the scheduled event on plugin deactivation.
+ */
+function oi_banglaqr_deactivate_plugin()
+{
+    wp_clear_scheduled_hook('oi_banglaqr_daily_cleanup');
+}
+register_deactivation_hook(__FILE__, 'oi_banglaqr_deactivate_plugin');
+
+/**
+ * Cleanup orphaned pending receipt uploads older than 24 hours.
+ */
+function oi_banglaqr_cleanup_pending_receipts()
+{
+    $args = array(
+        'post_type' => 'attachment',
+        'post_status' => 'any',
+        'posts_per_page' => 100,
+        'date_query' => array(
+            array(
+                'column' => 'post_date_gmt',
+                'before' => '24 hours ago',
+            ),
+        ),
+        'meta_query' => array(
+            array(
+                'key' => '_oi_banglaqr_pending_upload',
+                'value' => '1',
+            ),
+        ),
+    );
+
+    $query = new WP_Query($args);
+    if ($query->have_posts()) {
+        foreach ($query->posts as $attachment) {
+            wp_delete_attachment($attachment->ID, true);
+        }
+    }
+}
+add_action('oi_banglaqr_daily_cleanup', 'oi_banglaqr_cleanup_pending_receipts');

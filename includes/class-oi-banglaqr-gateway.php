@@ -548,7 +548,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         $charge_percent = ($active_qr && isset($active_qr['payment_charge'])) ? floatval($active_qr['payment_charge']) : 0;
 
         // Formatted total respecting store decimal settings
-        $total_amount = WC()->cart->get_total('edit');
+        $total_amount = WC()->cart->total;
         $formatted_total = html_entity_decode(wp_strip_all_tags(wc_price($total_amount)));
 
         // Dynamically set max file size based on server limit and our 5MB default
@@ -686,6 +686,16 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                 $decoded = base64_decode($matches[2]);
 
                 if ($decoded !== false) {
+                    $tmp_name = wp_tempnam();
+                    file_put_contents($tmp_name, $decoded);
+                    $wp_filetype = wp_check_filetype_and_ext($tmp_name, 'test.' . $ext);
+                    
+                    if (empty($wp_filetype['ext']) || empty($wp_filetype['type']) || !in_array($wp_filetype['type'], array('image/jpeg', 'image/png', 'image/webp', 'image/gif'))) {
+                        @unlink($tmp_name);
+                        wp_send_json_error(array('message' => __('Invalid file format. Security check failed.', 'banglaqr-payment-gateway-by-oi')));
+                    }
+                    $ext = $wp_filetype['ext'];
+
                     $raw_name = !empty($_POST['image_name']) ? sanitize_file_name(wp_unslash($_POST['image_name'])) : 'receipt.jpg';
                     $clean_name = preg_replace('/\.[^.]+$/', '', $raw_name);
                     if (empty($clean_name)) {
@@ -693,7 +703,9 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                     }
                     $filename_to_save = 'receipt_' . wp_generate_password(8, false) . '.' . $ext;
 
-                    $upload = wp_upload_bits($filename_to_save, null, $decoded);
+                    $upload = wp_upload_bits($filename_to_save, null, file_get_contents($tmp_name));
+                    @unlink($tmp_name);
+
                     if (!empty($upload['error'])) {
                         wp_send_json_error(array('message' => $upload['error']));
                     }
@@ -718,7 +730,9 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                     wp_update_attachment_metadata($attachment_id, $attachment_data);
 
                     // Security mark to prevent IDOR during checkout
+                    $session_token = WC()->session ? WC()->session->get_customer_id() : '';
                     update_post_meta($attachment_id, '_oi_banglaqr_pending_upload', '1');
+                    update_post_meta($attachment_id, '_oi_banglaqr_uploader_token', $session_token);
 
                     wp_send_json_success(array(
                         'id'            => $attachment_id,
@@ -777,7 +791,9 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         wp_update_attachment_metadata($attachment_id, $attachment_data);
 
         // Security mark to prevent IDOR during checkout
+        $session_token = WC()->session ? WC()->session->get_customer_id() : '';
         update_post_meta($attachment_id, '_oi_banglaqr_pending_upload', '1');
+        update_post_meta($attachment_id, '_oi_banglaqr_uploader_token', $session_token);
 
         wp_send_json_success(array(
             'id'            => $attachment_id,
@@ -813,13 +829,19 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                 if ($receipt_post && $receipt_post->post_type === 'attachment' && $receipt_post->post_parent == 0) {
                     // Verify the attachment was uploaded via our gateway
                     if (get_post_meta($receipt_id, '_oi_banglaqr_pending_upload', true) === '1') {
-                        // Set the attachment as media parent of this order
-                        wp_update_post(array(
-                            'ID' => $receipt_id,
-                            'post_parent' => $order_id,
-                        ));
-                        // Remove pending mark
-                        delete_post_meta($receipt_id, '_oi_banglaqr_pending_upload');
+                        $session_token = WC()->session ? WC()->session->get_customer_id() : '';
+                        $uploader_token = get_post_meta($receipt_id, '_oi_banglaqr_uploader_token', true);
+                        
+                        if ((string)$uploader_token === (string)$session_token) {
+                            // Set the attachment as media parent of this order
+                            wp_update_post(array(
+                                'ID' => $receipt_id,
+                                'post_parent' => $order_id,
+                            ));
+                            // Remove pending mark
+                            delete_post_meta($receipt_id, '_oi_banglaqr_pending_upload');
+                            delete_post_meta($receipt_id, '_oi_banglaqr_uploader_token');
+                        }
                     }
                 }
             }

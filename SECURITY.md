@@ -2,11 +2,11 @@
 
 ## Supported Versions
 
-Security updates are provided for the latest major version of the BanglaQR Payment Gateway plugin. 
+Security updates are provided for the latest version of the BanglaQR Payment Gateway plugin. 
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
+| 0.2.0   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
