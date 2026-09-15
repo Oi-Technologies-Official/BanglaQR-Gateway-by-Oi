@@ -111,6 +111,11 @@ function oi_banglaqr_add_payment_charge_fee()
         return;
     }
 
+    // Do not show the fee on the cart page
+    if (is_cart()) {
+        return;
+    }
+
     // 1. Get chosen payment method from POST or Session
     $chosen_gateway = '';
     // phpcs:ignore WordPress.Security.NonceVerification.Missing
