@@ -1,9 +1,10 @@
 ---
-name: "🐛 Bug Report"
+name: "\U0001F41B Bug Report"
 about: Create a report to help us improve the BanglaQR Payment Gateway
-title: '[BUG] '
-labels: 'bug, triage'
+title: "[BUG] "
+labels: bug
 assignees: ''
+
 ---
 
 ## 🐛 Bug Description
