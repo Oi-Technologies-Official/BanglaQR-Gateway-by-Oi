@@ -132,23 +132,34 @@ jQuery(document).ready(function ($) {
                 ];
                 
                 var hasManual = false;
-                var manualHtml = '      <div class="banglaqr-manual-accounts">';
+                var accountsHtml = '';
                 manualAccounts.forEach(function(acc) {
                     if (acc.number && acc.number.trim() !== '') {
                         hasManual = true;
                         var brandClass = 'banglaqr-brand-' + acc.name.toLowerCase();
-                        manualHtml += '        <div class="banglaqr-manual-account-item ' + brandClass + '">';
-                        manualHtml += '          <span class="banglaqr-manual-account-name">' + escHtml(acc.name) + '</span>';
-                        manualHtml += '          <div class="banglaqr-manual-account-number-wrap">';
-                        manualHtml += '            <span class="banglaqr-manual-account-number">' + escHtml(acc.number) + '</span>';
-                        manualHtml += '            <button type="button" class="banglaqr-manual-copy-btn" data-number="' + escAttr(acc.number) + '" title="Copy Number">';
-                        manualHtml += '              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
-                        manualHtml += '              <span>Copy</span>';
-                        manualHtml += '            </button>';
-                        manualHtml += '          </div>';
-                        manualHtml += '        </div>';
+                        accountsHtml += '        <div class="banglaqr-manual-account-item ' + brandClass + '">';
+                        accountsHtml += '          <span class="banglaqr-manual-account-name">' + escHtml(acc.name) + '</span>';
+                        accountsHtml += '          <div class="banglaqr-manual-account-number-wrap">';
+                        accountsHtml += '            <span class="banglaqr-manual-account-number">' + escHtml(acc.number) + '</span>';
+                        accountsHtml += '            <button type="button" class="banglaqr-manual-copy-btn" data-number="' + escAttr(acc.number) + '" title="Copy Number">';
+                        accountsHtml += '              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+                        accountsHtml += '              <span>Copy</span>';
+                        accountsHtml += '            </button>';
+                        accountsHtml += '          </div>';
+                        accountsHtml += '        </div>';
                     }
                 });
+                
+                var manualHtml = '      <div class="banglaqr-trx-toggle-wrap" style="margin-top:15px; margin-bottom: 5px;">';
+                manualHtml += '        <button type="button" class="banglaqr-trx-toggle-btn" id="banglaqr-mfs-toggle-btn" aria-expanded="false" aria-controls="banglaqr-mfs-accounts-container">';
+                manualHtml += '          <span class="banglaqr-trx-toggle-icon">';
+                manualHtml += '            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
+                manualHtml += '          </span>';
+                manualHtml += '          <span class="banglaqr-trx-toggle-text">Apni ki MFS ba onno way te payment korte chan?</span>';
+                manualHtml += '        </button>';
+                manualHtml += '      </div>';
+                manualHtml += '      <div class="banglaqr-manual-accounts" id="banglaqr-mfs-accounts-container" style="display:none; margin-top: 10px;">';
+                manualHtml += accountsHtml;
                 manualHtml += '      </div>';
                 
                 if (hasManual) {
@@ -361,6 +372,21 @@ jQuery(document).ready(function ($) {
                 $container.slideDown(200, function () {
                     $('#banglaqr-trx-input').focus();
                 });
+                $btn.addClass('is-open').attr('aria-expanded', 'true');
+            }
+        });
+
+        // Toggle MFS accounts container
+        $('#banglaqr-mfs-toggle-btn').on('click', function (e) {
+            e.preventDefault();
+            var $container = $('#banglaqr-mfs-accounts-container');
+            var $btn = $(this);
+
+            if ($container.is(':visible')) {
+                $container.slideUp(180);
+                $btn.removeClass('is-open').attr('aria-expanded', 'false');
+            } else {
+                $container.slideDown(200);
                 $btn.addClass('is-open').attr('aria-expanded', 'true');
             }
         });

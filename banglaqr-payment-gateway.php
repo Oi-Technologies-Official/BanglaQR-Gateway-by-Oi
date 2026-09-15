@@ -116,23 +116,9 @@ function oi_banglaqr_add_payment_charge_fee()
         return;
     }
 
-    // 1. Get chosen payment method from POST or Session
-    $chosen_gateway = '';
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing
-    if (isset($_POST['payment_method'])) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing
-        $chosen_gateway = sanitize_text_field(wp_unslash($_POST['payment_method']));
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing
-    } elseif (isset($_POST['post_data'])) {
-        $post_data = array();
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-        wp_parse_str(wp_unslash($_POST['post_data']), $post_data);
-        if (isset($post_data['payment_method'])) {
-            $chosen_gateway = sanitize_text_field($post_data['payment_method']);
-        }
-    } elseif (WC()->session) {
-        $chosen_gateway = WC()->session->get('chosen_payment_method');
-    }
+    // 1. Get chosen payment method from WooCommerce Session
+    // WooCommerce automatically updates this during the 'update_order_review' AJAX call
+    $chosen_gateway = WC()->session ? WC()->session->get('chosen_payment_method') : '';
 
     if ('oi_banglaqr' !== $chosen_gateway) {
         return;
