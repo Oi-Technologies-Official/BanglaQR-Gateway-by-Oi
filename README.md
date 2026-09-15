@@ -140,8 +140,8 @@ Yes, guest customers can checkout and upload their payment screenshots securely.
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome!  
-Feel free to check the [issues page](https://github.com/) or submit a pull request.
+Contributions, issues, and feature requests are welcome!
+Feel free to check the [issues page](https://github.com/Oi-Technologies-Official/BanglaQR-Payment-Gateway-by-Oi/issues/new/choose) or submit a pull request.
 
 1. Fork the repository
 2. Create your feature branch: `git checkout -b feature/amazing-feature`
