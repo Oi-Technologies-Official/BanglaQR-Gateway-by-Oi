@@ -107,7 +107,8 @@ function oi_banglaqr_register_gateway($gateways)
  */
 function oi_banglaqr_add_payment_charge_fee()
 {
-    if ((is_admin() && !defined('DOING_AJAX')) || !WC()->cart) {
+    $is_ajax = function_exists('wp_doing_ajax') ? wp_doing_ajax() : (defined('DOING_AJAX') && DOING_AJAX);
+    if ((is_admin() && !$is_ajax) || !WC()->cart) {
         return;
     }
 
@@ -122,14 +123,46 @@ function oi_banglaqr_add_payment_charge_fee()
         return;
     }
 
-    // 2. Get chosen payment method from request or WooCommerce Session
+    // 2. Get chosen payment method dynamically from request or WooCommerce Session
     $chosen_gateway = '';
-    if (isset($_POST['payment_method'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+    // Direct POST param (present on checkout submission or direct AJAX)
+    if (!empty($_POST['payment_method'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
         $chosen_gateway = sanitize_text_field(wp_unslash($_POST['payment_method']));
-    } elseif (WC()->session) {
+    }
+
+    // AJAX checkout serialized form data (standard WooCommerce update_order_review AJAX)
+    if (empty($chosen_gateway) && !empty($_POST['post_data'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        $post_data = array();
+        parse_str(wp_unslash($_POST['post_data']), $post_data); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        if (!empty($post_data['payment_method'])) {
+            $chosen_gateway = sanitize_text_field($post_data['payment_method']);
+            // Synchronize with WooCommerce session immediately
+            if (WC()->session) {
+                WC()->session->set('chosen_payment_method', $chosen_gateway);
+            }
+        }
+    }
+
+    // WooCommerce Session
+    if (empty($chosen_gateway) && WC()->session) {
         $chosen_gateway = WC()->session->get('chosen_payment_method');
     }
 
+    // Fallback: If session is still empty on initial checkout load, check default gateway
+    if (empty($chosen_gateway) && function_exists('WC') && WC()->payment_gateways()) {
+        $available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
+        if (!empty($available_gateways)) {
+            $default_gateway = get_option('woocommerce_default_gateway');
+            if (!empty($default_gateway) && isset($available_gateways[$default_gateway])) {
+                $chosen_gateway = $default_gateway;
+            } else {
+                $chosen_gateway = current(array_keys($available_gateways));
+            }
+        }
+    }
+
+    // Strictly enforce: ONLY add fee when Bangla QR ('oi_banglaqr') is chosen!
     if ('oi_banglaqr' !== $chosen_gateway) {
         return;
     }

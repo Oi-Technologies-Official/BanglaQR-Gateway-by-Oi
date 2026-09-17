@@ -293,19 +293,33 @@ jQuery(document).ready(function ($) {
 
     // Bind events
     function setupModalEvents() {
-        // Copy to clipboard with fallback
-        $('.banglaqr-manual-copy-btn').on('click', function(e) {
+        // Copy to clipboard with fallback and debounce/timer management
+        var defaultCopyHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copy</span>';
+        var copiedHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Copied</span>';
+
+        $(document).off('click', '.banglaqr-manual-copy-btn').on('click', '.banglaqr-manual-copy-btn', function(e) {
             e.preventDefault();
             var btn = $(this);
             var num = String(btn.data('number') || '');
+
+            // Clear any active timer so rapid clicks don't get stuck on 'Copied'
+            var activeTimer = btn.data('copy-timer');
+            if (activeTimer) {
+                clearTimeout(activeTimer);
+                btn.removeData('copy-timer');
+            }
+
             copyTextToClipboard(num, function() {
-                var originalHtml = btn.html();
-                btn.html('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Copied</span>');
+                btn.html(copiedHtml);
                 btn.addClass('copied');
-                setTimeout(function() {
-                    btn.html(originalHtml);
+
+                var timerId = setTimeout(function() {
+                    btn.html(defaultCopyHtml);
                     btn.removeClass('copied');
+                    btn.removeData('copy-timer');
                 }, 2000);
+
+                btn.data('copy-timer', timerId);
             });
         });
 
@@ -1021,11 +1035,19 @@ jQuery(document).ready(function ($) {
         return true;
     }
 
-    // Reset confirmation if customer switches payment method
+    // Reset confirmation and dynamically update WooCommerce checkout totals when payment method changes
     $(document).on('change', 'input[name="payment_method"]', function () {
-        if ($(this).val() !== oi_banglaqr_params.gateway_id) {
+        var selectedMethod = $(this).val();
+        if (selectedMethod !== oi_banglaqr_params.gateway_id) {
             $('#oi_banglaqr_confirmed').val('0');
         }
+        // Force WooCommerce checkout to recalculate so processing fees appear/disappear dynamically
+        $(document.body).trigger('update_checkout');
+    });
+
+    // When WooCommerce finishes updating the checkout fragments, keep modal amount in sync
+    $(document.body).on('updated_checkout', function () {
+        updateModalAmounts();
     });
 
     // Intercept checkout submit button
