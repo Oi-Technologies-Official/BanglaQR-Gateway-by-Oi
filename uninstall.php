@@ -6,9 +6,9 @@
  */
 
 // If uninstall not called from WordPress, then exit.
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+if (!defined('WP_UNINSTALL_PLUGIN')) {
     exit;
 }
 
 // Delete the plugin options
-delete_option( 'woocommerce_oi_banglaqr_settings' );
+delete_option('woocommerce_oi_banglaqr_settings');
