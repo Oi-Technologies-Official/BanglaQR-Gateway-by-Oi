@@ -67,6 +67,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+}
+
+.banglaqr-logo-icon svg {
+    width: 26px !important;
+    height: 26px !important;
+    display: block !important;
 }
 
 .banglaqr-dashboard-header h1 {
@@ -204,33 +211,65 @@
     font-size: 13px !important;
 }
 
+.banglaqr-admin-dashboard-wrap .banglaqr-field-label-with-icon,
+.banglaqr-grid-field label.banglaqr-field-label-with-icon,
 .banglaqr-field-label-with-icon {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 600;
-    font-size: 13px;
-    color: #1e293b;
-    margin-bottom: 6px;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    color: #1e293b !important;
+    margin-bottom: 6px !important;
+    line-height: 1.4 !important;
 }
 
+.banglaqr-admin-dashboard-wrap .banglaqr-field-label-with-icon svg,
+.banglaqr-grid-field label.banglaqr-field-label-with-icon svg,
 .banglaqr-field-label-with-icon svg {
-    width: 15px;
-    height: 15px;
-    color: #64748b;
-    flex-shrink: 0;
+    width: 15px !important;
+    height: 15px !important;
+    min-width: 15px !important;
+    min-height: 15px !important;
+    color: #64748b !important;
+    flex-shrink: 0 !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
+.banglaqr-field-label-with-icon span {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.banglaqr-admin-dashboard-wrap button.banglaqr-btn-with-icon,
 .banglaqr-btn-with-icon {
     display: inline-flex !important;
     align-items: center !important;
+    justify-content: center !important;
     gap: 6px !important;
+    vertical-align: middle !important;
+    line-height: 1 !important;
 }
 
+.banglaqr-admin-dashboard-wrap button.banglaqr-btn-with-icon svg,
 .banglaqr-btn-with-icon svg {
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
+    width: 14px !important;
+    height: 14px !important;
+    flex-shrink: 0 !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin: 0 !important;
+}
+
+.banglaqr-admin-dashboard-wrap button.banglaqr-btn-with-icon span,
+.banglaqr-btn-with-icon span {
+    display: inline-block !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
 }
 
 .banglaqr-section-body {
@@ -359,6 +398,14 @@ input:checked+.banglaqr-slider:before {
     margin-right: 12px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.banglaqr-sort-handle svg {
+    display: block;
+    width: 16px;
+    height: 16px;
 }
 
 .banglaqr-sort-handle:active {
@@ -376,6 +423,13 @@ input:checked+.banglaqr-slider:before {
     justify-content: center;
     margin-right: 16px;
     overflow: hidden;
+    flex-shrink: 0;
+}
+
+.banglaqr-accordion-logo svg {
+    display: block;
+    width: 18px;
+    height: 18px;
 }
 
 .banglaqr-accordion-logo img {
@@ -440,6 +494,15 @@ input:checked+.banglaqr-slider:before {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.banglaqr-accordion-toggle-svg svg {
+    display: block;
+    width: 18px;
+    height: 18px;
 }
 
 .banglaqr-qr-accordion-item.is-expanded .banglaqr-accordion-toggle-icon,
@@ -496,7 +559,7 @@ input:checked+.banglaqr-slider:before {
     gap: 16px;
 }
 
-.banglaqr-grid-field label {
+.banglaqr-grid-field label:not(.banglaqr-field-label-with-icon) {
     display: block;
     font-weight: 600;
     font-size: 13px;
@@ -550,14 +613,24 @@ input:checked+.banglaqr-slider:before {
     border: none;
     color: var(--banglaqr-accent);
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     font-weight: 600;
     font-size: 13px;
     padding: 6px 12px;
     border-radius: 6px;
     transition: background 0.2s;
+    line-height: 1;
+}
+
+.banglaqr-delete-row-btn svg {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+    margin: 0;
 }
 
 .banglaqr-delete-row-btn:hover {
@@ -580,6 +653,13 @@ input:checked+.banglaqr-slider:before {
     gap: 8px;
     transition: all 0.2s ease;
     margin-top: 8px;
+}
+
+.banglaqr-btn-add-inline svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    flex-shrink: 0;
 }
 
 .banglaqr-btn-add-inline:hover {
@@ -651,6 +731,18 @@ input:checked+.banglaqr-slider:before {
     font-weight: 700;
     color: var(--banglaqr-text);
     font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.banglaqr-receipt-bank-name svg {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    color: var(--banglaqr-primary);
+    flex-shrink: 0;
 }
 
 .banglaqr-view-full-link {
@@ -660,7 +752,7 @@ input:checked+.banglaqr-slider:before {
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
 }
 
 .banglaqr-view-full-link:hover {
@@ -668,11 +760,12 @@ input:checked+.banglaqr-slider:before {
     color: var(--banglaqr-primary-hover);
 }
 
-.banglaqr-view-full-link .dashicons {
-    font-size: 14px;
-    width: 14px;
-    height: 14px;
-    line-height: 14px;
+.banglaqr-view-full-link svg {
+    width: 13px;
+    height: 13px;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
 }
 
 .banglaqr-admin-trx-box {
@@ -692,6 +785,17 @@ input:checked+.banglaqr-slider:before {
     font-weight: 700;
     color: var(--banglaqr-text-muted);
     letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.banglaqr-admin-trx-label svg {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
 }
 
 .banglaqr-admin-trx-val {

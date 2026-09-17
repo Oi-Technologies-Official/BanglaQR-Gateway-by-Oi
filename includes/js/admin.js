@@ -77,7 +77,7 @@ jQuery(document).ready(function ($) {
         // Left Column: Scan Preview
         var largePreviewStyle = qrCodeUrl ? 'display: block;' : 'display: none;';
         html += '      <div class="banglaqr-large-qr-preview-wrapper" style="' + largePreviewStyle + '">';
-        html += '        <div class="banglaqr-grid-field"><label class="banglaqr-field-label-with-icon" style="margin-bottom:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Scan Preview</span></label></div>';
+        html += '        <div class="banglaqr-grid-field"><label class="banglaqr-field-label-with-icon" style="margin-bottom:4px;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Scan Preview</span></label></div>';
         html += '        <div class="banglaqr-large-qr-preview-box">';
         html += '          <img class="banglaqr-large-qr-preview-img" src="' + escapeAttr(qrCodeUrl) + '" alt="QR Preview" />';
         html += '        </div>';
@@ -89,25 +89,25 @@ jQuery(document).ready(function ($) {
         
         // Name
         html += '        <div class="banglaqr-grid-field">';
-        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span>Account Name <span class="req">*</span></span></label>';
+        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span>Account Name <span class="req">*</span></span></label>';
         html += '          <input type="text" class="banglaqr-qr-name-input banglaqr-general-input" value="' + escapeAttr(qrName) + '" placeholder="e.g. bKash Merchant, City Bank BanglaQR" />';
         html += '        </div>';
 
         // Charge
         var qrCharge = qr.payment_charge || '0';
         html += '        <div class="banglaqr-grid-field">';
-        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg><span>Processing Fee (%)</span></label>';
+        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg><span>Processing Fee (%)</span></label>';
         html += '          <input type="number" step="0.01" min="0" max="100" class="banglaqr-payment-charge-input banglaqr-general-input" value="' + escapeAttr(qrCharge) + '" placeholder="e.g. 1.85 (leave 0 for no fee)" />';
         html += '        </div>';
 
         // Image URL
         html += '        <div class="banglaqr-grid-field">';
-        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h2v2h-2z"/><path d="M18 14h3v3h-3z"/><path d="M14 18h3v3h-3z"/></svg><span>QR Code Image <span class="req">*</span></span></label>';
+        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h2v2h-2z"/><path d="M18 14h3v3h-3z"/><path d="M14 18h3v3h-3z"/></svg><span>QR Code Image <span class="req">*</span></span></label>';
         html += '          <div class="banglaqr-uploader-inline">';
         html += '            <div class="banglaqr-logo-preview-box banglaqr-qr-preview-box">' + qrPreview + '</div>';
         html += '            <input type="text" class="banglaqr-qr-code-url-input banglaqr-general-input" value="' + escapeAttr(qrCodeUrl) + '" placeholder="Upload or paste image URL" />';
         html += '            <button type="button" class="button button-secondary banglaqr-upload-logo-btn banglaqr-btn-with-icon">';
-        html += '              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>';
+        html += '              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>';
         html += '              <span>Upload</span>';
         html += '            </button>';
         html += '          </div>';

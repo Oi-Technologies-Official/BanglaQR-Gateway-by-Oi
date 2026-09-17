@@ -834,9 +834,19 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 4px;
+    justify-content: center;
+    gap: 5px;
+    line-height: 1;
+}
+
+.banglaqr-manual-copy-btn svg {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
 }
 
 .banglaqr-manual-copy-btn:hover {
@@ -848,6 +858,16 @@
     color: #ffffff;
 }
 
+/* Gateway Logo beside Title on Checkout */
+.banglaqr-checkout-gateway-logo {
+    max-height: 26px !important;
+    max-width: 90px !important;
+    margin-left: 8px !important;
+    vertical-align: middle !important;
+    display: inline-block !important;
+    object-fit: contain;
+}
+
 /* --- Countdown Timer --- */
 .banglaqr-countdown-timer {
     font-size: 13px;
@@ -855,9 +875,18 @@
     background: rgba(255,255,255,0.2);
     padding: 4px 10px;
     border-radius: 20px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
+    line-height: 1;
+}
+
+.banglaqr-countdown-timer svg {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
 }
 
 .banglaqr-countdown-timer.danger {
