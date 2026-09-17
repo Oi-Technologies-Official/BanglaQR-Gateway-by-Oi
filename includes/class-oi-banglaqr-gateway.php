@@ -64,33 +64,33 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                 'default' => 'no',
             ),
             'title' => array(
-                'title' => __('Title', 'banglaqr-payment-gateway-by-oi'),
+                'title' => __('Payment Title', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
-                'description' => __('This controls the payment method title which the user sees during checkout.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('The payment method title shown to your customers at checkout.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => __('Bangla QR Payment', 'banglaqr-payment-gateway-by-oi'),
                 'desc_tip' => true,
             ),
             'gateway_logo' => array(
                 'title' => __('Gateway Logo', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
-                'description' => __('Upload a logo to show next to the payment title at checkout.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('A brand icon or logo displayed beside the payment title on checkout.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => OI_BANGLAQR_URL . 'includes/img/banglaqrlogo.png',
                 'desc_tip' => true,
             ),
             'description' => array(
-                'title' => __('Description', 'banglaqr-payment-gateway-by-oi'),
+                'title' => __('Payment Description', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'textarea',
-                'description' => __('Payment method description shown to customers at checkout.', 'banglaqr-payment-gateway-by-oi'),
-                'default' => __('Scan the QR code using your bank or mobile banking app (bKash, Nagad, Rocket, etc.) to complete payment.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Helpful payment instructions displayed when customers select this gateway.', 'banglaqr-payment-gateway-by-oi'),
+                'default' => __('Scan the QR code with any banking or MFS app (bKash, Nagad, Rocket, CellFin, etc.) to complete your payment.', 'banglaqr-payment-gateway-by-oi'),
                 'desc_tip' => true,
             ),
             'qrs_table' => array(
-                'title' => __('QR Configuration', 'banglaqr-payment-gateway-by-oi'),
+                'title' => __('QR Accounts', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'qrs_table',
-                'description' => __('Add, configure, and set active QR codes.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Add your payment QR codes and choose which account is active on checkout.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => array(
                     array(
-                        'qr_name' => 'Test QR',
+                        'qr_name' => 'BanglaQR (Primary)',
                         'qr_code_url' => OI_BANGLAQR_URL . 'includes/img/testqr.png',
                         'payment_charge' => '1',
                         'is_active' => 'yes',
@@ -98,84 +98,84 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                 ),
             ),
             'theme_color' => array(
-                'title' => __('Theme Color', 'banglaqr-payment-gateway-by-oi'),
+                'title' => __('Theme Accent Color', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'color',
-                'description' => __('Primary color for checkout popup buttons.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Choose the accent color for popup buttons and highlights to match your store theme.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => '#137833',
                 'desc_tip' => true,
             ),
             'order_status' => array(
-                'title' => __('Order Status After Payment', 'banglaqr-payment-gateway-by-oi'),
+                'title' => __('Default Order Status', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'select',
-                'description' => __('Choose the default order status after a user submits their payment details via Bangla QR.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('The status assigned to new orders once a customer submits their payment confirmation.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => 'on-hold',
                 'options' => array(
-                    'on-hold'    => __('On-Hold', 'banglaqr-payment-gateway-by-oi'),
+                    'on-hold'    => __('On-Hold (Recommended)', 'banglaqr-payment-gateway-by-oi'),
                     'processing' => __('Processing', 'banglaqr-payment-gateway-by-oi'),
                     'completed'  => __('Completed', 'banglaqr-payment-gateway-by-oi'),
                     'pending'    => __('Pending Payment', 'banglaqr-payment-gateway-by-oi'),
                 ),
             ),
             'receipt_rule' => array(
-                'title' => __('Receipt Upload Rule', 'banglaqr-payment-gateway-by-oi'),
+                'title' => __('Receipt Screenshot Rule', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'select',
-                'description' => __('Set the requirement rule for the payment receipt screenshot.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Choose whether customers must attach a payment screenshot before placing their order.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => 'optional',
                 'options' => array(
-                    'mandatory' => __('Mandatory', 'banglaqr-payment-gateway-by-oi'),
-                    'optional'  => __('Optional', 'banglaqr-payment-gateway-by-oi'),
-                    'hidden'    => __('Hidden', 'banglaqr-payment-gateway-by-oi'),
+                    'mandatory' => __('Mandatory (Must upload)', 'banglaqr-payment-gateway-by-oi'),
+                    'optional'  => __('Optional (Recommended)', 'banglaqr-payment-gateway-by-oi'),
+                    'hidden'    => __('Hidden (Do not show)', 'banglaqr-payment-gateway-by-oi'),
                 ),
             ),
             'trxid_rule' => array(
                 'title' => __('Transaction ID Rule', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'select',
-                'description' => __('Set the requirement rule for the Transaction ID field.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Choose whether customers must enter their payment Transaction ID before placing their order.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => 'optional',
                 'options' => array(
-                    'mandatory' => __('Mandatory', 'banglaqr-payment-gateway-by-oi'),
-                    'optional'  => __('Optional', 'banglaqr-payment-gateway-by-oi'),
-                    'hidden'    => __('Hidden', 'banglaqr-payment-gateway-by-oi'),
+                    'mandatory' => __('Mandatory (Must enter)', 'banglaqr-payment-gateway-by-oi'),
+                    'optional'  => __('Optional (Recommended)', 'banglaqr-payment-gateway-by-oi'),
+                    'hidden'    => __('Hidden (Do not show)', 'banglaqr-payment-gateway-by-oi'),
                 ),
             ),
             'enable_manual_payment' => array(
-                'title' => __('Enable Manual Payment Numbers', 'banglaqr-payment-gateway-by-oi'),
+                'title' => __('Manual Mobile Banking', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'checkbox',
-                'label' => __('Show mobile banking account numbers (bKash, Nagad, etc.) as an alternative to QR scanning', 'banglaqr-payment-gateway-by-oi'),
+                'label' => __('Show direct mobile banking numbers for customers who prefer sending money manually', 'banglaqr-payment-gateway-by-oi'),
                 'default' => 'no',
             ),
             'manual_bkash' => array(
                 'title' => __('bKash Number', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
-                'description' => __('Enter your bKash account number.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Your bKash personal or merchant account number.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => '',
                 'desc_tip' => true,
             ),
             'manual_nagad' => array(
                 'title' => __('Nagad Number', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
-                'description' => __('Enter your Nagad account number.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Your Nagad personal or merchant account number.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => '',
                 'desc_tip' => true,
             ),
             'manual_rocket' => array(
                 'title' => __('Rocket Number', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
-                'description' => __('Enter your Rocket account number.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Your Rocket personal or merchant account number.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => '',
                 'desc_tip' => true,
             ),
             'manual_upay' => array(
                 'title' => __('Upay Number', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
-                'description' => __('Enter your Upay account number.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Your Upay personal or merchant account number.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => '',
                 'desc_tip' => true,
             ),
             'manual_cellfin' => array(
                 'title' => __('CellFin Number', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
-                'description' => __('Enter your CellFin account number.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Your CellFin account or card number.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => '',
                 'desc_tip' => true,
             ),
@@ -240,7 +240,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                     style="margin:0 !important; font-size: 20px !important; font-weight: 700 !important; color:#0f172a !important; line-height: 1.3 !important; padding:0 !important;">
                                     <?php esc_html_e('BanglaQR Settings', 'banglaqr-payment-gateway-by-oi'); ?></h1>
                                 <p style="margin:4px 0 0 0 !important; color:#64748b; font-size: 13px !important;">
-                                    <?php esc_html_e('Configure gateway options and manage customer upload receipts.', 'banglaqr-payment-gateway-by-oi'); ?>
+                                    <?php esc_html_e('Manage your QR codes, transaction fees, and checkout payment rules.', 'banglaqr-payment-gateway-by-oi'); ?>
                                 </p>
                             </div>
                         </div>
@@ -259,7 +259,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                         <div class="banglaqr-settings-section">
                             <div class="banglaqr-section-header">
                                 <h2><?php esc_html_e('General Gateway Settings', 'banglaqr-payment-gateway-by-oi'); ?></h2>
-                                <p><?php esc_html_e('Configure core gateway titles, logo, and active status.', 'banglaqr-payment-gateway-by-oi'); ?></p>
+                                <p><?php esc_html_e('Basic details and instructions your customers will see on checkout.', 'banglaqr-payment-gateway-by-oi'); ?></p>
                             </div>
                             <div class="banglaqr-section-body" style="display: flex; gap: 24px;">
                                 
@@ -278,7 +278,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                         <div class="banglaqr-toggle-desc" style="display: flex; flex-direction: column;">
                                             <label for="woocommerce_oi_banglaqr_enabled" class="banglaqr-field-title-label" style="font-weight: 600; font-size: 13px; color: var(--banglaqr-text);"><?php esc_html_e('Enable Gateway', 'banglaqr-payment-gateway-by-oi'); ?></label>
                                             <p style="margin:2px 0 0 0; color:#64748b; font-size:12px;">
-                                                <?php esc_html_e('Show gateway on checkout.', 'banglaqr-payment-gateway-by-oi'); ?>
+                                                <?php esc_html_e('Make this payment method available to customers at checkout.', 'banglaqr-payment-gateway-by-oi'); ?>
                                             </p>
                                         </div>
                                     </div>
@@ -294,20 +294,20 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                                         <span class="dashicons dashicons-image-filter" style="color:#64748b;"></span>
                                                 <?php endif; ?>
                                             </div>
-                                            <input type="text" name="woocommerce_oi_banglaqr_gateway_logo" id="woocommerce_oi_banglaqr_gateway_logo" value="<?php echo esc_attr($gateway_logo); ?>" placeholder="<?php esc_attr_e('Logo URL or upload', 'banglaqr-payment-gateway-by-oi'); ?>" style="flex: 1; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box; margin: 0 !important;" />
+                                            <input type="text" name="woocommerce_oi_banglaqr_gateway_logo" id="woocommerce_oi_banglaqr_gateway_logo" value="<?php echo esc_attr($gateway_logo); ?>" placeholder="<?php esc_attr_e('Paste logo URL or upload', 'banglaqr-payment-gateway-by-oi'); ?>" style="flex: 1; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box; margin: 0 !important;" />
                                             <button type="button" class="button button-secondary" id="banglaqr-upload-gateway-logo-btn" style="height: 38px; border-radius: 8px; margin: 0 !important; font-weight: 600; font-size: 12px; padding: 0 16px; flex-shrink: 0;"><?php esc_html_e('Upload', 'banglaqr-payment-gateway-by-oi'); ?></button>
                                         </div>
                                         <p class="banglaqr-field-tip" style="margin:4px 0 0 0; color:#64748b; font-size:12px;">
-                                            <?php esc_html_e('Logo shown next to title at checkout.', 'banglaqr-payment-gateway-by-oi'); ?>
+                                            <?php esc_html_e('Shown beside the payment method title so shoppers recognize it easily.', 'banglaqr-payment-gateway-by-oi'); ?>
                                         </p>
                                     </div>
                                     
                                     <!-- Theme Color -->
                                     <div class="banglaqr-grid-field" style="margin-top: 4px;">
-                                        <label for="woocommerce_oi_banglaqr_theme_color" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Theme Color', 'banglaqr-payment-gateway-by-oi'); ?></label>
+                                        <label for="woocommerce_oi_banglaqr_theme_color" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Theme Accent Color', 'banglaqr-payment-gateway-by-oi'); ?></label>
                                         <input type="color" name="woocommerce_oi_banglaqr_theme_color" id="woocommerce_oi_banglaqr_theme_color" value="<?php echo esc_attr($theme_color); ?>" style="width: 100%; max-width: 80px; height: 38px; padding: 0; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer;" />
                                         <p style="margin:4px 0 0 0; color:#64748b; font-size:12px;">
-                                            <?php esc_html_e('Primary color for checkout popup buttons.', 'banglaqr-payment-gateway-by-oi'); ?>
+                                            <?php esc_html_e('Accent color used for the checkout popup and confirmation buttons.', 'banglaqr-payment-gateway-by-oi'); ?>
                                         </p>
                                     </div>
                                 </div>
@@ -317,19 +317,19 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                     
                                     <!-- Gateway Title -->
                                     <div class="banglaqr-grid-field">
-                                        <label for="woocommerce_oi_banglaqr_title" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Gateway Title (Checkout Display)', 'banglaqr-payment-gateway-by-oi'); ?> <span class="req">*</span></label>
+                                        <label for="woocommerce_oi_banglaqr_title" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Checkout Title', 'banglaqr-payment-gateway-by-oi'); ?> <span class="req">*</span></label>
                                         <input type="text" name="woocommerce_oi_banglaqr_title" id="woocommerce_oi_banglaqr_title" value="<?php echo esc_attr($title); ?>" placeholder="e.g. Bangla QR Payment" required class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
                                         <p class="banglaqr-field-tip" style="margin:4px 0 0 0; color:#64748b; font-size:12px;">
-                                            <?php esc_html_e('This is the checkout payment method title seen by customers.', 'banglaqr-payment-gateway-by-oi'); ?>
+                                            <?php esc_html_e('The main payment title displayed to shoppers during checkout.', 'banglaqr-payment-gateway-by-oi'); ?>
                                         </p>
                                     </div>
 
                                     <!-- Gateway Description -->
                                     <div class="banglaqr-grid-field" style="margin-top: 12px;">
-                                        <label for="woocommerce_oi_banglaqr_description" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Gateway Description', 'banglaqr-payment-gateway-by-oi'); ?></label>
-                                        <textarea name="woocommerce_oi_banglaqr_description" id="woocommerce_oi_banglaqr_description" rows="3" placeholder="e.g. Scan the QR code to make payment..." class="banglaqr-general-textarea" style="width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:10px 14px; font-size:13px; font-family:inherit; box-sizing:border-box;"><?php echo esc_textarea($description); ?></textarea>
+                                        <label for="woocommerce_oi_banglaqr_description" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Checkout Description', 'banglaqr-payment-gateway-by-oi'); ?></label>
+                                        <textarea name="woocommerce_oi_banglaqr_description" id="woocommerce_oi_banglaqr_description" rows="3" placeholder="e.g. Scan and pay easily using your bKash, Nagad, Rocket, or bank app." class="banglaqr-general-textarea" style="width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:10px 14px; font-size:13px; font-family:inherit; box-sizing:border-box;"><?php echo esc_textarea($description); ?></textarea>
                                         <p class="banglaqr-field-tip" style="margin:4px 0 0 0; color:#64748b; font-size:12px;">
-                                            <?php esc_html_e('The description shown to customers at checkout (HTML is supported).', 'banglaqr-payment-gateway-by-oi'); ?>
+                                            <?php esc_html_e('Helpful guidance shown below the payment title at checkout.', 'banglaqr-payment-gateway-by-oi'); ?>
                                         </p>
                                     </div>
                                 </div>
@@ -340,7 +340,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                         <div class="banglaqr-settings-section">
                             <div class="banglaqr-section-header">
                                 <h2><?php esc_html_e('Checkout Rules & Status', 'banglaqr-payment-gateway-by-oi'); ?></h2>
-                                <p><?php esc_html_e('Set which checkout fields are required and choose the default order status.', 'banglaqr-payment-gateway-by-oi'); ?></p>
+                                <p><?php esc_html_e('Control what information customers need to provide before placing an order.', 'banglaqr-payment-gateway-by-oi'); ?></p>
                             </div>
                             <div class="banglaqr-section-body" style="display: flex; gap: 24px;">
                                 
@@ -348,9 +348,9 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                     
                                     <!-- Order Status -->
                                     <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
-                                        <label for="woocommerce_oi_banglaqr_order_status" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Order Status After Payment', 'banglaqr-payment-gateway-by-oi'); ?></label>
+                                        <label for="woocommerce_oi_banglaqr_order_status" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Default Order Status', 'banglaqr-payment-gateway-by-oi'); ?></label>
                                         <select name="woocommerce_oi_banglaqr_order_status" id="woocommerce_oi_banglaqr_order_status" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 12px; font-size: 13px; height: 38px; line-height: 36px; box-sizing: border-box; vertical-align: middle;">
-                                            <option value="on-hold" <?php selected($order_status, 'on-hold'); ?>><?php esc_html_e('On-Hold', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="on-hold" <?php selected($order_status, 'on-hold'); ?>><?php esc_html_e('On-Hold (Recommended)', 'banglaqr-payment-gateway-by-oi'); ?></option>
                                             <option value="processing" <?php selected($order_status, 'processing'); ?>><?php esc_html_e('Processing', 'banglaqr-payment-gateway-by-oi'); ?></option>
                                             <option value="completed" <?php selected($order_status, 'completed'); ?>><?php esc_html_e('Completed', 'banglaqr-payment-gateway-by-oi'); ?></option>
                                             <option value="pending" <?php selected($order_status, 'pending'); ?>><?php esc_html_e('Pending Payment', 'banglaqr-payment-gateway-by-oi'); ?></option>
@@ -359,11 +359,11 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
 
                                     <!-- Receipt Rule -->
                                     <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
-                                        <label for="woocommerce_oi_banglaqr_receipt_rule" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Receipt Upload Rule', 'banglaqr-payment-gateway-by-oi'); ?></label>
+                                        <label for="woocommerce_oi_banglaqr_receipt_rule" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Receipt Screenshot Rule', 'banglaqr-payment-gateway-by-oi'); ?></label>
                                         <select name="woocommerce_oi_banglaqr_receipt_rule" id="woocommerce_oi_banglaqr_receipt_rule" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 12px; font-size: 13px; height: 38px; line-height: 36px; box-sizing: border-box; vertical-align: middle;">
-                                            <option value="mandatory" <?php selected($receipt_rule, 'mandatory'); ?>><?php esc_html_e('Mandatory', 'banglaqr-payment-gateway-by-oi'); ?></option>
-                                            <option value="optional" <?php selected($receipt_rule, 'optional'); ?>><?php esc_html_e('Optional', 'banglaqr-payment-gateway-by-oi'); ?></option>
-                                            <option value="hidden" <?php selected($receipt_rule, 'hidden'); ?>><?php esc_html_e('Hidden', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="mandatory" <?php selected($receipt_rule, 'mandatory'); ?>><?php esc_html_e('Mandatory (Must upload)', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="optional" <?php selected($receipt_rule, 'optional'); ?>><?php esc_html_e('Optional (Recommended)', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="hidden" <?php selected($receipt_rule, 'hidden'); ?>><?php esc_html_e('Hidden (Do not show)', 'banglaqr-payment-gateway-by-oi'); ?></option>
                                         </select>
                                     </div>
 
@@ -371,9 +371,9 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                     <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
                                         <label for="woocommerce_oi_banglaqr_trxid_rule" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Transaction ID Rule', 'banglaqr-payment-gateway-by-oi'); ?></label>
                                         <select name="woocommerce_oi_banglaqr_trxid_rule" id="woocommerce_oi_banglaqr_trxid_rule" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 12px; font-size: 13px; height: 38px; line-height: 36px; box-sizing: border-box; vertical-align: middle;">
-                                            <option value="mandatory" <?php selected($trxid_rule, 'mandatory'); ?>><?php esc_html_e('Mandatory', 'banglaqr-payment-gateway-by-oi'); ?></option>
-                                            <option value="optional" <?php selected($trxid_rule, 'optional'); ?>><?php esc_html_e('Optional', 'banglaqr-payment-gateway-by-oi'); ?></option>
-                                            <option value="hidden" <?php selected($trxid_rule, 'hidden'); ?>><?php esc_html_e('Hidden', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="mandatory" <?php selected($trxid_rule, 'mandatory'); ?>><?php esc_html_e('Mandatory (Must enter)', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="optional" <?php selected($trxid_rule, 'optional'); ?>><?php esc_html_e('Optional (Recommended)', 'banglaqr-payment-gateway-by-oi'); ?></option>
+                                            <option value="hidden" <?php selected($trxid_rule, 'hidden'); ?>><?php esc_html_e('Hidden (Do not show)', 'banglaqr-payment-gateway-by-oi'); ?></option>
                                         </select>
                                     </div>
                                     
@@ -385,7 +385,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                         <div class="banglaqr-settings-section">
                             <div class="banglaqr-section-header">
                                 <h2><?php esc_html_e('Manual Payment Accounts', 'banglaqr-payment-gateway-by-oi'); ?></h2>
-                                <p><?php esc_html_e('Add manual payment numbers for customers who cannot scan the QR code.', 'banglaqr-payment-gateway-by-oi'); ?></p>
+                                <p><?php esc_html_e('Display fallback mobile banking numbers for customers who prefer sending money manually.', 'banglaqr-payment-gateway-by-oi'); ?></p>
                             </div>
                             <div class="banglaqr-section-body">
                                 <div class="banglaqr-grid-field" style="margin-bottom: 16px;">
@@ -398,27 +398,27 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                     <!-- bKash -->
                                     <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
                                         <label for="woocommerce_oi_banglaqr_manual_bkash" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('bKash Number', 'banglaqr-payment-gateway-by-oi'); ?></label>
-                                        <input type="text" name="woocommerce_oi_banglaqr_manual_bkash" id="woocommerce_oi_banglaqr_manual_bkash" value="<?php echo esc_attr($manual_bkash); ?>" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
+                                        <input type="text" name="woocommerce_oi_banglaqr_manual_bkash" id="woocommerce_oi_banglaqr_manual_bkash" value="<?php echo esc_attr($manual_bkash); ?>" placeholder="017xxxxxxxx" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
                                     </div>
                                     <!-- Nagad -->
                                     <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
                                         <label for="woocommerce_oi_banglaqr_manual_nagad" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Nagad Number', 'banglaqr-payment-gateway-by-oi'); ?></label>
-                                        <input type="text" name="woocommerce_oi_banglaqr_manual_nagad" id="woocommerce_oi_banglaqr_manual_nagad" value="<?php echo esc_attr($manual_nagad); ?>" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
+                                        <input type="text" name="woocommerce_oi_banglaqr_manual_nagad" id="woocommerce_oi_banglaqr_manual_nagad" value="<?php echo esc_attr($manual_nagad); ?>" placeholder="018xxxxxxxx" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
                                     </div>
                                     <!-- Rocket -->
                                     <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
                                         <label for="woocommerce_oi_banglaqr_manual_rocket" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Rocket Number', 'banglaqr-payment-gateway-by-oi'); ?></label>
-                                        <input type="text" name="woocommerce_oi_banglaqr_manual_rocket" id="woocommerce_oi_banglaqr_manual_rocket" value="<?php echo esc_attr($manual_rocket); ?>" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
+                                        <input type="text" name="woocommerce_oi_banglaqr_manual_rocket" id="woocommerce_oi_banglaqr_manual_rocket" value="<?php echo esc_attr($manual_rocket); ?>" placeholder="019xxxxxxxx" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
                                     </div>
                                     <!-- Upay -->
                                     <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
                                         <label for="woocommerce_oi_banglaqr_manual_upay" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Upay Number', 'banglaqr-payment-gateway-by-oi'); ?></label>
-                                        <input type="text" name="woocommerce_oi_banglaqr_manual_upay" id="woocommerce_oi_banglaqr_manual_upay" value="<?php echo esc_attr($manual_upay); ?>" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
+                                        <input type="text" name="woocommerce_oi_banglaqr_manual_upay" id="woocommerce_oi_banglaqr_manual_upay" value="<?php echo esc_attr($manual_upay); ?>" placeholder="016xxxxxxxx" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
                                     </div>
                                     <!-- CellFin -->
                                     <div class="banglaqr-grid-field" style="flex: 1; min-width: 200px;">
                                         <label for="woocommerce_oi_banglaqr_manual_cellfin" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('CellFin Number', 'banglaqr-payment-gateway-by-oi'); ?></label>
-                                        <input type="text" name="woocommerce_oi_banglaqr_manual_cellfin" id="woocommerce_oi_banglaqr_manual_cellfin" value="<?php echo esc_attr($manual_cellfin); ?>" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
+                                        <input type="text" name="woocommerce_oi_banglaqr_manual_cellfin" id="woocommerce_oi_banglaqr_manual_cellfin" value="<?php echo esc_attr($manual_cellfin); ?>" placeholder="Account/Card number" class="banglaqr-general-input" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box;" />
                                     </div>
                                 </div>
                             </div>
@@ -428,7 +428,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                         <div class="banglaqr-settings-section">
                             <div class="banglaqr-section-header">
                                 <h2><?php esc_html_e('Manage QR Accounts', 'banglaqr-payment-gateway-by-oi'); ?></h2>
-                                <p><?php esc_html_e('Add QR codes for customers to scan. Only one QR code can be active at a time.', 'banglaqr-payment-gateway-by-oi'); ?></p>
+                                <p><?php esc_html_e('Add and prioritize your QR accounts. The active QR code will be shown in the checkout popup.', 'banglaqr-payment-gateway-by-oi'); ?></p>
                             </div>
                             <div class="banglaqr-section-body">
                                 <!-- Accordion Container -->
@@ -568,12 +568,12 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             'paymentpage_img_url' => OI_BANGLAQR_URL . 'includes/img/banglaqr-paymentpage.png',
             'order_total' => $formatted_total,
             'payment_charge' => $charge_percent,
-            'error_no_file' => __('Please upload a payment receipt or enter your Transaction ID to confirm your order.', 'banglaqr-payment-gateway-by-oi'),
-            'error_invalid_file' => __('Invalid file format. Only JPEG, PNG, WEBP, and GIF are allowed.', 'banglaqr-payment-gateway-by-oi'),
-            'error_file_too_large' => sprintf(__('The file is too large. Maximum size is %s.', 'banglaqr-payment-gateway-by-oi'), $allowed_max_size_mb . 'MB'),
-            'i18n_required_field' => __('%s is a required field.', 'banglaqr-payment-gateway-by-oi'),
+            'error_no_file' => __('Please upload your payment screenshot or enter your Transaction ID to confirm your order.', 'banglaqr-payment-gateway-by-oi'),
+            'error_invalid_file' => __('Please upload a valid image file (JPEG, PNG, or WebP).', 'banglaqr-payment-gateway-by-oi'),
+            'error_file_too_large' => sprintf(__('This image is too large. Maximum allowed size is %s.', 'banglaqr-payment-gateway-by-oi'), $allowed_max_size_mb . 'MB'),
+            'i18n_required_field' => __('%s is required.', 'banglaqr-payment-gateway-by-oi'),
             'i18n_valid_email' => __('Please enter a valid email address for %s.', 'banglaqr-payment-gateway-by-oi'),
-            'i18n_terms' => __('You must accept the terms and conditions.', 'banglaqr-payment-gateway-by-oi'),
+            'i18n_terms' => __('Please check the box to agree to the website terms and conditions.', 'banglaqr-payment-gateway-by-oi'),
             'receipt_rule' => isset($settings['receipt_rule']) ? $settings['receipt_rule'] : 'optional',
             'trxid_rule' => isset($settings['trxid_rule']) ? $settings['trxid_rule'] : 'optional',
             'enable_manual_payment' => isset($settings['enable_manual_payment']) ? $settings['enable_manual_payment'] : 'no',
@@ -640,18 +640,18 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             $has_trx_id = !empty($_POST['oi_banglaqr_transaction_id']) && trim(sanitize_text_field(wp_unslash($_POST['oi_banglaqr_transaction_id']))) !== '';
 
             if ($receipt_rule === 'mandatory' && !$has_receipt) {
-                wc_add_notice(__('Please upload a payment receipt to complete your order.', 'banglaqr-payment-gateway-by-oi'), 'error');
+                wc_add_notice(__('Please upload your payment receipt screenshot to complete this order.', 'banglaqr-payment-gateway-by-oi'), 'error');
             }
 
             if ($trxid_rule === 'mandatory' && !$has_trx_id) {
-                wc_add_notice(__('Please enter your Transaction ID to complete your order.', 'banglaqr-payment-gateway-by-oi'), 'error');
+                wc_add_notice(__('Please enter your payment Transaction ID (TrxID) to complete this order.', 'banglaqr-payment-gateway-by-oi'), 'error');
             }
 
             // Fallback: If both are optional, require at least one (unless both are hidden)
             if ($receipt_rule !== 'hidden' || $trxid_rule !== 'hidden') {
                 if ($receipt_rule !== 'mandatory' && $trxid_rule !== 'mandatory') {
                     if (!$has_receipt && !$has_trx_id) {
-                        wc_add_notice(__('Please provide a payment receipt or a Transaction ID to complete your order.', 'banglaqr-payment-gateway-by-oi'), 'error');
+                        wc_add_notice(__('Please provide either a payment receipt screenshot or your Transaction ID to complete this order.', 'banglaqr-payment-gateway-by-oi'), 'error');
                     }
                 }
             }
@@ -666,7 +666,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         // Security check
         // phpcs:ignore WordPress.Security.NonceVerification.Missing
         if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_key($_POST['nonce']), 'oi_banglaqr_upload_slip_action')) {
-            wp_send_json_error(array('message' => __('Invalid security token. Please refresh the page and try again.', 'banglaqr-payment-gateway-by-oi')));
+            wp_send_json_error(array('message' => __('Your checkout session expired. Please refresh the page and try again.', 'banglaqr-payment-gateway-by-oi')));
         }
 
         require_once ABSPATH . 'wp-admin/includes/image.php';
@@ -704,7 +704,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                     
                     if (empty($wp_filetype['ext']) || empty($wp_filetype['type']) || !in_array($wp_filetype['type'], array('image/jpeg', 'image/png', 'image/webp', 'image/gif'))) {
                         @unlink($tmp_name);
-                        wp_send_json_error(array('message' => __('Invalid file format. Security check failed.', 'banglaqr-payment-gateway-by-oi')));
+                        wp_send_json_error(array('message' => __('Please upload a valid image file (JPEG, PNG, or WebP).', 'banglaqr-payment-gateway-by-oi')));
                     }
                     $ext = $wp_filetype['ext'];
                     @unlink($tmp_name);
@@ -735,7 +735,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                     $attachment_id = wp_insert_attachment($attachment, $filename);
 
                     if (is_wp_error($attachment_id)) {
-                        wp_send_json_error(array('message' => __('Failed to create attachment.', 'banglaqr-payment-gateway-by-oi')));
+                        wp_send_json_error(array('message' => __('We could not save your receipt image. Please try uploading again.', 'banglaqr-payment-gateway-by-oi')));
                     }
 
                     $attachment_data = wp_generate_attachment_metadata($attachment_id, $filename);
@@ -758,11 +758,11 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
 
         // 2. Fallback: Standard $_FILES handling
         if (empty($_FILES['oi_banglaqr_file']) || !empty($_FILES['oi_banglaqr_file']['error'])) {
-            $error_message = __('No file uploaded or file error occurred.', 'banglaqr-payment-gateway-by-oi');
+            $error_message = __('Please select a receipt image file to upload.', 'banglaqr-payment-gateway-by-oi');
             if (!empty($_FILES['oi_banglaqr_file']['error'])) {
                 $error_code = intval($_FILES['oi_banglaqr_file']['error']);
                 if ($error_code === UPLOAD_ERR_INI_SIZE || $error_code === UPLOAD_ERR_FORM_SIZE) {
-                    $error_message = __('The uploaded file exceeds the maximum size limit. Please choose a smaller image.', 'banglaqr-payment-gateway-by-oi');
+                    $error_message = __('This image file is too large. Please choose a smaller photo or screenshot.', 'banglaqr-payment-gateway-by-oi');
                 }
             }
             wp_send_json_error(array('message' => $error_message));
@@ -797,7 +797,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         $attachment_id = wp_insert_attachment($attachment, $filename);
 
         if (is_wp_error($attachment_id)) {
-            wp_send_json_error(array('message' => __('Failed to create attachment.', 'banglaqr-payment-gateway-by-oi')));
+            wp_send_json_error(array('message' => __('We could not save your receipt image. Please try uploading again.', 'banglaqr-payment-gateway-by-oi')));
         }
 
         $attachment_data = wp_generate_attachment_metadata($attachment_id, $filename);
@@ -894,10 +894,10 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             $note_details[] = sprintf(__('TrxID: %s', 'banglaqr-payment-gateway-by-oi'), $trx_id);
         }
         if ($receipt_id) {
-            $note_details[] = __('Receipt Image: Attached', 'banglaqr-payment-gateway-by-oi');
+            $note_details[] = __('Receipt: Attached', 'banglaqr-payment-gateway-by-oi');
         }
 
-        $order_note = __('Awaiting Bangla QR payment verification.', 'banglaqr-payment-gateway-by-oi');
+        $order_note = __('Awaiting payment verification for Bangla QR.', 'banglaqr-payment-gateway-by-oi');
         if (!empty($note_details)) {
             $order_note .= ' (' . implode(' | ', $note_details) . ')';
         }

@@ -139,7 +139,7 @@ function oi_banglaqr_add_payment_charge_fee()
     if (!is_array($qrs_table) || empty($qrs_table)) {
         $qrs_table = array(
             array(
-                'qr_name' => 'Test QR',
+                'qr_name' => 'BanglaQR (Primary)',
                 'qr_code_url' => OI_BANGLAQR_URL . 'includes/img/testqr.png',
                 'payment_charge' => '1',
                 'is_active' => 'yes',
@@ -174,7 +174,7 @@ function oi_banglaqr_add_payment_charge_fee()
 
     if ($fee > 0) {
         // translators: %s is the payment charge percentage.
-        $fee_name = sprintf(__('Payment Charge (%s%%)', 'banglaqr-payment-gateway-by-oi'), $charge_percent);
+        $fee_name = sprintf(__('Payment Processing Fee (%s%%)', 'banglaqr-payment-gateway-by-oi'), $charge_percent);
         $is_taxable = apply_filters('oi_banglaqr_fee_is_taxable', false);
         WC()->cart->add_fee($fee_name, $fee, $is_taxable);
     }

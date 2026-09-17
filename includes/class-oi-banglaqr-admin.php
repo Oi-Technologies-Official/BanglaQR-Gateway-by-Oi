@@ -58,8 +58,8 @@ class Oi_BanglaQR_Admin
 
             wp_localize_script($handle, 'oi_banglaqr_admin_params', array(
                 'media_title' => __('Select QR Image', 'banglaqr-payment-gateway-by-oi'),
-                'media_button_text' => __('Use QR Code', 'banglaqr-payment-gateway-by-oi'),
-                'confirm_delete' => __('Are you sure you want to delete this QR account?', 'banglaqr-payment-gateway-by-oi'),
+                'media_button_text' => __('Use This QR Image', 'banglaqr-payment-gateway-by-oi'),
+                'confirm_delete' => __('Are you sure you want to remove this QR account?', 'banglaqr-payment-gateway-by-oi'),
                 'default_qr_url' => OI_BANGLAQR_URL . 'includes/img/testqr.png',
             ));
         }
@@ -122,7 +122,7 @@ class Oi_BanglaQR_Admin
                 <div class="banglaqr-admin-trx-box">
                     <div>
                         <div class="banglaqr-admin-trx-label">
-                            <?php esc_html_e('Transaction ID', 'banglaqr-payment-gateway-by-oi'); ?>
+                            <?php esc_html_e('Transaction ID (TrxID)', 'banglaqr-payment-gateway-by-oi'); ?>
                         </div>
                         <div class="banglaqr-admin-trx-val">
                             <?php echo esc_html($trx_id); ?>
@@ -144,7 +144,7 @@ class Oi_BanglaQR_Admin
             <?php elseif (!empty($receipt_id)): ?>
                 <div class="banglaqr-receipt-missing-box">
                     <p class="banglaqr-receipt-missing-notice">
-                        <?php esc_html_e('Receipt attachment could not be loaded or was removed from media library.', 'banglaqr-payment-gateway-by-oi'); ?>
+                        <?php esc_html_e('The uploaded receipt screenshot could not be loaded or was removed from the media library.', 'banglaqr-payment-gateway-by-oi'); ?>
                     </p>
                 </div>
             <?php endif; ?>

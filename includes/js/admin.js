@@ -63,7 +63,7 @@ jQuery(document).ready(function ($) {
         html += '  <div class="banglaqr-accordion-header">';
         html += '    <div class="banglaqr-sort-handle" title="Drag to reorder"><span class="dashicons dashicons-menu"></span></div>';
         html += '    <div class="banglaqr-accordion-logo">' + logoHtml + '</div>';
-        html += '    <div class="banglaqr-accordion-title">' + (qrName ? escapeAttr(qrName) : 'New QR Code') + '</div>';
+        html += '    <div class="banglaqr-accordion-title">' + (qrName ? escapeAttr(qrName) : 'New QR Account') + '</div>';
         html += '    <div class="banglaqr-accordion-actions">';
         html += '      <div class="banglaqr-badge-wrapper">' + statusBadge + '</div>';
         html += '      <span class="dashicons dashicons-arrow-down-alt2 banglaqr-accordion-toggle-icon"></span>';
@@ -81,7 +81,7 @@ jQuery(document).ready(function ($) {
         html += '        <div class="banglaqr-large-qr-preview-box">';
         html += '          <img class="banglaqr-large-qr-preview-img" src="' + escapeAttr(qrCodeUrl) + '" alt="QR Preview" />';
         html += '        </div>';
-        html += '        <span style="font-size: 11px; color: #64748b; margin-top: 6px; display: block; line-height: 1.4;">Verify QR works.</span>';
+        html += '        <span style="font-size: 11px; color: #64748b; margin-top: 6px; display: block; line-height: 1.4;">Scan with your phone to confirm this QR code reads properly.</span>';
         html += '      </div>';
 
         // Right Column: Inputs
@@ -89,15 +89,15 @@ jQuery(document).ready(function ($) {
         
         // Name
         html += '        <div class="banglaqr-grid-field">';
-        html += '          <label>QR Code Name <span class="req">*</span></label>';
-        html += '          <input type="text" class="banglaqr-qr-name-input banglaqr-general-input" value="' + escapeAttr(qrName) + '" placeholder="e.g. bKash QR, Nagad QR" />';
+        html += '          <label>Account Name <span class="req">*</span></label>';
+        html += '          <input type="text" class="banglaqr-qr-name-input banglaqr-general-input" value="' + escapeAttr(qrName) + '" placeholder="e.g. bKash Merchant, City Bank BanglaQR" />';
         html += '        </div>';
 
         // Charge
         var qrCharge = qr.payment_charge || '0';
         html += '        <div class="banglaqr-grid-field">';
-        html += '          <label>Payment Charge (%)</label>';
-        html += '          <input type="number" step="0.01" min="0" max="100" class="banglaqr-payment-charge-input banglaqr-general-input" value="' + escapeAttr(qrCharge) + '" placeholder="e.g. 1.85 (leave 0 to disable)" />';
+        html += '          <label>Processing Fee (%)</label>';
+        html += '          <input type="number" step="0.01" min="0" max="100" class="banglaqr-payment-charge-input banglaqr-general-input" value="' + escapeAttr(qrCharge) + '" placeholder="e.g. 1.85 (leave 0 for no fee)" />';
         html += '        </div>';
 
         // Image URL
@@ -105,7 +105,7 @@ jQuery(document).ready(function ($) {
         html += '          <label>QR Code Image <span class="req">*</span></label>';
         html += '          <div class="banglaqr-uploader-inline">';
         html += '            <div class="banglaqr-logo-preview-box banglaqr-qr-preview-box">' + qrPreview + '</div>';
-        html += '            <input type="text" class="banglaqr-qr-code-url-input banglaqr-general-input" value="' + escapeAttr(qrCodeUrl) + '" placeholder="Paste image URL or upload" />';
+        html += '            <input type="text" class="banglaqr-qr-code-url-input banglaqr-general-input" value="' + escapeAttr(qrCodeUrl) + '" placeholder="Upload or paste image URL" />';
         html += '            <button type="button" class="button button-secondary banglaqr-upload-logo-btn">Upload</button>';
         html += '          </div>';
         html += '        </div>';
@@ -117,10 +117,10 @@ jQuery(document).ready(function ($) {
         html += '              <input type="checkbox" class="banglaqr-is-active-input" ' + checkedStr + ' />';
         html += '              <span class="banglaqr-slider"></span>';
         html += '            </label>';
-        html += '            <span class="banglaqr-toggle-status">' + (active ? 'Active QR' : 'Set as Active') + '</span>';
+        html += '            <span class="banglaqr-toggle-status">' + (active ? 'Active on Checkout' : 'Set as Active') + '</span>';
         html += '          </div>';
-        html += '          <button type="button" class="banglaqr-delete-row-btn" title="Delete QR Account">';
-        html += '            <span class="dashicons dashicons-trash"></span> Delete';
+        html += '          <button type="button" class="banglaqr-delete-row-btn" title="Remove QR Account">';
+        html += '            <span class="dashicons dashicons-trash"></span> Remove Account';
         html += '          </button>';
         html += '        </div>';
 
@@ -147,8 +147,8 @@ jQuery(document).ready(function ($) {
         if (qrs.length === 0) {
             var emptyHtml = '<div class="banglaqr-empty-qrs-box">';
             emptyHtml += '  <span class="dashicons dashicons-qr-code"></span>';
-            emptyHtml += '  <p>No QR accounts configured yet.</p>';
-            emptyHtml += '  <button type="button" class="button button-primary" id="banglaqr-add-first-qr-btn"><span class="dashicons dashicons-plus"></span> Add QR Account</button>';
+            emptyHtml += '  <p>You have not added any QR accounts yet. Add your first account to start accepting QR payments.</p>';
+            emptyHtml += '  <button type="button" class="button button-primary" id="banglaqr-add-first-qr-btn"><span class="dashicons dashicons-plus"></span> Add First QR Account</button>';
             emptyHtml += '</div>';
             $accordionWrapper.append(emptyHtml);
             serializeData();
@@ -169,7 +169,7 @@ jQuery(document).ready(function ($) {
             $accordionWrapper.append($item);
         });
 
-        var addBtnHtml = '<button type="button" class="banglaqr-btn-add-inline" id="banglaqr-add-qr-row-inline"><span class="dashicons dashicons-plus"></span> Add New QR Account</button>';
+        var addBtnHtml = '<button type="button" class="banglaqr-btn-add-inline" id="banglaqr-add-qr-row-inline"><span class="dashicons dashicons-plus"></span> Add Another QR Account</button>';
         $accordionWrapper.append(addBtnHtml);
 
         serializeData();
@@ -182,7 +182,7 @@ jQuery(document).ready(function ($) {
 
         if (isDefaultTest) {
             newQr = {
-                qr_name: 'Test QR',
+                qr_name: 'BanglaQR (Primary)',
                 qr_code_url: oi_banglaqr_admin_params.default_qr_url || '',
                 payment_charge: '1',
                 is_active: 'yes'
@@ -306,7 +306,7 @@ jQuery(document).ready(function ($) {
     $(document).on('input', '.banglaqr-qr-name-input', function () {
         var $panel = $(this).closest('.banglaqr-qr-accordion-item');
         var name = $(this).val().trim();
-        $panel.find('.banglaqr-accordion-title').text(name ? name : 'New QR Code');
+        $panel.find('.banglaqr-accordion-title').text(name ? name : 'New QR Account');
     });
 
     // Inline URL preview sync
@@ -354,7 +354,7 @@ jQuery(document).ready(function ($) {
             });
 
             $panel.find('.banglaqr-badge-wrapper').html('<span class="banglaqr-status-badge status-active"><span class="status-dot"></span> Active</span>');
-            $panel.find('.banglaqr-toggle-status').text('Active QR');
+            $panel.find('.banglaqr-toggle-status').text('Active on Checkout');
         } else {
             $panel.find('.banglaqr-badge-wrapper').html('<span class="banglaqr-status-badge status-inactive"><span class="status-dot"></span> Inactive</span>');
             $panel.find('.banglaqr-toggle-status').text('Set as Active');

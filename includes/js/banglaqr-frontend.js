@@ -70,7 +70,7 @@ jQuery(document).ready(function ($) {
         html += '    <div class="banglaqr-modal-header">';
         html += '      <div>';
         html += '        <h3 id="banglaqr-modal-title">' + escHtml('Bangla QR Payment') + '</h3>';
-        html += '        <p class="banglaqr-modal-subtitle">' + escHtml('Scan QR & submit payment proof') + '</p>';
+        html += '        <p class="banglaqr-modal-subtitle">' + escHtml('Scan the QR code with your mobile banking app to pay') + '</p>';
         html += '      </div>';
         html += '      <div style="display:flex; align-items:center; gap: 12px;">';
         html += '        <div class="banglaqr-countdown-timer" id="banglaqr-countdown-timer">';
@@ -92,22 +92,22 @@ jQuery(document).ready(function ($) {
             html += '        <div class="banglaqr-payable-label">Payable Amount</div>';
             html += '        <div class="banglaqr-payable-value" id="banglaqr-modal-payable-val">' + escHtml(total) + '</div>';
             if (charge > 0) {
-                html += '        <div class="banglaqr-payable-note">(Includes ' + charge + '% bank transaction charge)</div>';
+                html += '        <div class="banglaqr-payable-note">(Includes ' + charge + '% payment processing fee)</div>';
             } else {
-                html += '        <div class="banglaqr-payable-note">(No extra charge)</div>';
+                html += '        <div class="banglaqr-payable-note">(No extra fees applied)</div>';
             }
             html += '      </div>';
 
             // QR Code Box (Click to zoom/enlarge)
             html += '      <div class="banglaqr-qr-wrapper">';
-            html += '        <div class="banglaqr-qr-box is-zoomable" id="banglaqr-qr-box" title="Click to view enlarged QR code" role="button" tabindex="0" aria-label="Enlarge QR Code">';
+            html += '        <div class="banglaqr-qr-box is-zoomable" id="banglaqr-qr-box" title="Tap or click to view larger QR code" role="button" tabindex="0" aria-label="Enlarge QR Code">';
             html += '          <div class="banglaqr-qr-zoom-badge">';
             html += '            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
             html += '          </div>';
             html += '          <img src="' + escAttr(activeQr.qr_code_url) + '" alt="' + escAttr(activeQr.qr_name || 'Bangla QR Code') + '" />';
-            html += '          <div class="banglaqr-qr-box-text">Scan Here to Pay</div>';
+            html += '          <div class="banglaqr-qr-box-text">Scan with Your App</div>';
             html += '        </div>';
-            html += '        <div class="banglaqr-qr-zoom-hint-text">Click QR code to view large size</div>';
+            html += '        <div class="banglaqr-qr-zoom-hint-text">Tap to enlarge QR code</div>';
             html += '      </div>';
 
             // Payment Page Banner
@@ -119,7 +119,7 @@ jQuery(document).ready(function ($) {
 
             // Instruction Alert Banner
             html += '      <div class="banglaqr-instruction-banner">';
-            html += '        <p class="banglaqr-instruction-text">Scan this QR code using your bank app to make a payment. Then, upload your receipt or enter the Transaction ID below.</p>';
+            html += '        <p class="banglaqr-instruction-text">Open your bank or mobile wallet app (bKash, Nagad, Rocket, CellFin, etc.) and scan the QR code to pay. Then confirm your payment below.</p>';
             html += '      </div>';
 
             if (oi_banglaqr_params.enable_manual_payment === 'yes') {
@@ -155,7 +155,7 @@ jQuery(document).ready(function ($) {
                 manualHtml += '          <span class="banglaqr-trx-toggle-icon">';
                 manualHtml += '            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
                 manualHtml += '          </span>';
-                manualHtml += '          <span class="banglaqr-trx-toggle-text">Pay using mobile banking accounts (bKash, Nagad, etc.)</span>';
+                manualHtml += '          <span class="banglaqr-trx-toggle-text">Prefer to pay manually? View mobile wallet numbers</span>';
                 manualHtml += '        </button>';
                 manualHtml += '      </div>';
                 manualHtml += '      <div class="banglaqr-manual-accounts" id="banglaqr-mfs-accounts-container" style="display:none; margin-top: 10px;">';
@@ -168,13 +168,13 @@ jQuery(document).ready(function ($) {
             }
         } else {
             html += '      <div class="banglaqr-modal-error" style="display:block;">';
-            html += '        No active QR codes found. Please contact the site administrator.';
+            html += '        No active QR accounts are currently set up. Please contact support or choose another payment method.';
             html += '      </div>';
         }
 
         // Upload Receipt Section
         if (oi_banglaqr_params.receipt_rule !== 'hidden') {
-            var receiptLabel = 'Upload Payment Screenshot / Receipt';
+            var receiptLabel = 'Upload Payment Screenshot or Receipt';
             if (oi_banglaqr_params.receipt_rule === 'mandatory') {
                 receiptLabel += ' <span style="color:#ef4444;">*</span>';
             }
@@ -182,8 +182,8 @@ jQuery(document).ready(function ($) {
             html += '        <label class="banglaqr-upload-label" for="banglaqr-file-input">' + receiptLabel + '</label>';
             html += '        <div id="banglaqr-dropzone" class="banglaqr-dropzone" tabindex="0" role="button" aria-label="Upload payment screenshot">';
             html += '          <svg class="banglaqr-upload-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>';
-            html += '          <span class="banglaqr-upload-text">Drag & drop receipt here or click to browse</span>';
-            html += '          <span class="banglaqr-upload-subtext">Max size: ' + oi_banglaqr_params.text_max_file_size + ' (JPEG, PNG, WEBP, GIF)</span>';
+            html += '          <span class="banglaqr-upload-text">Drop your payment screenshot here, or click to browse</span>';
+            html += '          <span class="banglaqr-upload-subtext">Supports JPEG, PNG, WEBP up to ' + oi_banglaqr_params.text_max_file_size + '</span>';
             html += '          <input type="file" id="banglaqr-file-input" style="display:none;" accept="image/jpeg,image/png,image/webp,image/gif" />';
             html += '        </div>';
             html += '        <div id="banglaqr-file-preview-container"></div>';
@@ -192,7 +192,7 @@ jQuery(document).ready(function ($) {
 
         // Transaction ID Section
         if (oi_banglaqr_params.trxid_rule !== 'hidden') {
-            var trxIdLabel = 'Payment Transaction ID / TrxID';
+            var trxIdLabel = 'Transaction ID (TrxID) / Reference';
             if (oi_banglaqr_params.trxid_rule === 'mandatory') {
                 trxIdLabel += ' <span style="color:#ef4444;">*</span>';
             }
@@ -205,7 +205,7 @@ jQuery(document).ready(function ($) {
                 html += '            <span class="banglaqr-trx-toggle-icon">';
                 html += '              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
                 html += '            </span>';
-                html += '            <span class="banglaqr-trx-toggle-text">Or provide your payment Transaction ID instead</span>';
+                html += '            <span class="banglaqr-trx-toggle-text">Have a Transaction ID? Enter it here</span>';
                 html += '          </button>';
                 html += '        </div>';
             }
@@ -215,9 +215,9 @@ jQuery(document).ready(function ($) {
             html += '          <label class="banglaqr-trx-label" for="banglaqr-trx-input">' + trxIdLabel + '</label>';
             html += '          <div class="banglaqr-trx-input-box">';
             html += '            <svg class="banglaqr-trx-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>';
-            html += '            <input type="text" id="banglaqr-trx-input" class="banglaqr-trx-input" placeholder="e.g. 9K28DF109X or Bank Ref" autocomplete="off" />';
+            html += '            <input type="text" id="banglaqr-trx-input" class="banglaqr-trx-input" placeholder="e.g. 9K28DF109X or Bank Reference" autocomplete="off" />';
             html += '          </div>';
-            html += '          <span class="banglaqr-trx-hint">Enter the Transaction ID or reference number from your receipt.</span>';
+            html += '          <span class="banglaqr-trx-hint">You can find this in your bank or mobile wallet confirmation SMS / receipt.</span>';
             html += '        </div>';
             html += '      </div>';
         }
@@ -227,7 +227,7 @@ jQuery(document).ready(function ($) {
         // Footer
         html += '    <div class="banglaqr-modal-footer">';
         html += '      <button type="button" class="banglaqr-btn banglaqr-btn-cancel" id="banglaqr-btn-cancel">Cancel</button>';
-        html += '      <button type="button" class="banglaqr-btn banglaqr-btn-submit" id="banglaqr-btn-submit">Confirm Payment</button>';
+        html += '      <button type="button" class="banglaqr-btn banglaqr-btn-submit" id="banglaqr-btn-submit">Confirm & Place Order</button>';
         html += '    </div>';
 
         html += '  </div>'; // Close modal-container
@@ -239,7 +239,7 @@ jQuery(document).ready(function ($) {
             html += '      <div class="banglaqr-zoom-header">';
             html += '        <div class="banglaqr-zoom-title-box">';
             html += '          <span class="banglaqr-zoom-badge">' + escHtml(activeQr.qr_name || 'Bangla QR') + '</span>';
-            html += '          <h4 class="banglaqr-zoom-title">Scan QR Code</h4>';
+            html += '          <h4 class="banglaqr-zoom-title">Scan to Pay</h4>';
             html += '        </div>';
             html += '        <button type="button" class="banglaqr-zoom-close" id="banglaqr-zoom-close-btn" aria-label="Close enlarged QR">';
             html += '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>';
@@ -248,8 +248,8 @@ jQuery(document).ready(function ($) {
             html += '      <div class="banglaqr-zoom-img-wrap">';
             html += '        <img src="' + escAttr(activeQr.qr_code_url) + '" alt="' + escAttr(activeQr.qr_name) + '" class="banglaqr-zoom-img" />';
             html += '      </div>';
-            html += '      <div class="banglaqr-zoom-footer-note">Scan this QR code using your bank or financial app to make payment.</div>';
-            html += '      <button type="button" class="banglaqr-zoom-dismiss-btn" id="banglaqr-zoom-dismiss-btn">Close Full View</button>';
+            html += '      <div class="banglaqr-zoom-footer-note">Scan directly from your screen using your bank or mobile wallet app.</div>';
+            html += '      <button type="button" class="banglaqr-zoom-dismiss-btn" id="banglaqr-zoom-dismiss-btn">Done / Back to Checkout</button>';
             html += '    </div>';
             html += '  </div>';
         }
@@ -440,12 +440,12 @@ jQuery(document).ready(function ($) {
 
             // Validate required fields based on rules
             if (oi_banglaqr_params.receipt_rule === 'mandatory' && !selectedFile) {
-                showError('Please upload your payment receipt screenshot to complete the order.');
+                showError('Please upload your payment receipt screenshot before completing your order.');
                 return;
             }
 
             if (oi_banglaqr_params.trxid_rule === 'mandatory' && !trxId) {
-                showError('Please enter your payment Transaction ID to complete the order.');
+                showError('Please enter your payment Transaction ID before completing your order.');
                 return;
             }
 
@@ -734,7 +734,7 @@ jQuery(document).ready(function ($) {
             
             if (timeLeft <= 0) {
                 clearInterval(window.banglaqrTimerInterval);
-                var expiredHtml = '<span>Session expired.</span> <button type="button" id="banglaqr-timer-renew-btn" style="background:#fee2e2; border:1px solid #fecaca; color:#b91c1c; font-weight:700; border-radius:6px; cursor:pointer; padding:2px 8px; margin-left:6px; font-size:12px;">Renew Session (15m)</button>';
+                var expiredHtml = '<span>Your payment session has expired.</span> <button type="button" id="banglaqr-timer-renew-btn" style="background:#fee2e2; border:1px solid #fecaca; color:#b91c1c; font-weight:700; border-radius:6px; cursor:pointer; padding:2px 8px; margin-left:6px; font-size:12px;">Extend Time (15 min)</button>';
                 showError(expiredHtml, true);
                 $('#banglaqr-btn-submit').prop('disabled', true).css({ 'opacity': '0.5', 'cursor': 'not-allowed' });
                 $('#banglaqr-file-input').prop('disabled', true);
@@ -779,8 +779,8 @@ jQuery(document).ready(function ($) {
         successHtml += '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
         successHtml += '    </div>';
         successHtml += '  </div>';
-        successHtml += '  <div class="banglaqr-success-title">Payment Submitted!</div>';
-        successHtml += '  <div class="banglaqr-success-subtitle">Please wait while we process your order.</div>';
+        successHtml += '  <div class="banglaqr-success-title">Payment Details Received!</div>';
+        successHtml += '  <div class="banglaqr-success-subtitle">Thank you! We are confirming your order now...</div>';
         successHtml += '</div>';
 
         $('#banglaqr-modal .banglaqr-modal-container').html(successHtml);
@@ -811,11 +811,11 @@ jQuery(document).ready(function ($) {
         var previewMarkup = '<div class="banglaqr-preview-header">' +
             '<div class="banglaqr-preview-title">' +
                 '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
-                '<span>Payment Info Added</span>' +
+                '<span>Payment Details Attached</span>' +
             '</div>' +
             '<a href="#" id="banglaqr-change-receipt-btn" class="banglaqr-preview-change-btn">' +
                 '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
-                '<span>Change</span>' +
+                '<span>Edit</span>' +
             '</a>' +
         '</div>' +
         '<div class="banglaqr-preview-meta">' +
@@ -826,7 +826,7 @@ jQuery(document).ready(function ($) {
 
         var $submitBtn = $('#banglaqr-btn-submit');
         $('#banglaqr-btn-cancel').prop('disabled', true);
-        $submitBtn.prop('disabled', true).addClass('loading').html('<span class="banglaqr-spinner"></span> <span>Placing Order...</span>');
+        $submitBtn.prop('disabled', true).addClass('loading').html('<span class="banglaqr-spinner"></span> <span>Confirming Order...</span>');
 
         // Play animation and submit
         playSuccessAnimationAndSubmit();
@@ -846,7 +846,7 @@ jQuery(document).ready(function ($) {
         $('#banglaqr-btn-cancel, #banglaqr-remove-file').prop('disabled', true);
         var $submitBtn = $('#banglaqr-btn-submit');
         $submitBtn.prop('disabled', true).addClass('loading');
-        $submitBtn.html('<span class="banglaqr-spinner"></span> <span>Uploading Receipt...</span>');
+        $submitBtn.html('<span class="banglaqr-spinner"></span> <span>Submitting Receipt...</span>');
 
         // Build FormData
         var formData = new FormData();
@@ -899,11 +899,11 @@ jQuery(document).ready(function ($) {
                     var previewMarkup = '<div class="banglaqr-preview-header">' +
                         '<div class="banglaqr-preview-title">' +
                             '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
-                            '<span>Payment Info Added</span>' +
+                            '<span>Payment Details Attached</span>' +
                         '</div>' +
                         '<a href="#" id="banglaqr-change-receipt-btn" class="banglaqr-preview-change-btn">' +
                             '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
-                            '<span>Change</span>' +
+                            '<span>Edit</span>' +
                         '</a>' +
                     '</div>' +
                     '<div class="banglaqr-preview-meta">' +
@@ -916,15 +916,15 @@ jQuery(document).ready(function ($) {
 
                     $('#banglaqr-selected-qr-preview').html(previewMarkup).show();
 
-                    $submitBtn.html('<span class="banglaqr-spinner"></span> <span>Placing Order...</span>');
+                    $submitBtn.html('<span class="banglaqr-spinner"></span> <span>Confirming Order...</span>');
 
                     playSuccessAnimationAndSubmit();
                 } else {
-                    handleUploadError(response && response.data && response.data.message ? response.data.message : 'An error occurred while uploading the file.');
+                    handleUploadError(response && response.data && response.data.message ? response.data.message : 'We could not upload your receipt image. Please try again or use another format.');
                 }
             },
             error: function () {
-                handleUploadError('Network error. Please check your connection and try again.');
+                handleUploadError('We could not upload your receipt due to a network connection issue. Please check your internet and try again.');
             }
         });
     }
@@ -938,7 +938,7 @@ jQuery(document).ready(function ($) {
         $('#banglaqr-btn-cancel, #banglaqr-remove-file').prop('disabled', false);
         var $submitBtn = $('#banglaqr-btn-submit');
         $submitBtn.prop('disabled', false).removeClass('loading');
-        $submitBtn.html('Confirm Payment');
+        $submitBtn.html('Confirm & Place Order');
 
         showError(errMsg);
     }
@@ -1088,7 +1088,7 @@ jQuery(document).ready(function ($) {
 
     // Listen to WooCommerce checkout errors to reset buttons
     $(document.body).on('checkout_error', function () {
-        $('#banglaqr-btn-submit').prop('disabled', false).removeClass('loading').html('Confirm Payment');
+        $('#banglaqr-btn-submit').prop('disabled', false).removeClass('loading').html('Confirm & Place Order');
         $('#banglaqr-btn-cancel, #banglaqr-remove-file').prop('disabled', false);
         $('.banglaqr-progress-container').hide();
     });
