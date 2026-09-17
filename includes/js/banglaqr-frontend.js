@@ -155,7 +155,7 @@ jQuery(document).ready(function ($) {
                 manualHtml += '          <span class="banglaqr-trx-toggle-icon">';
                 manualHtml += '            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
                 manualHtml += '          </span>';
-                manualHtml += '          <span class="banglaqr-trx-toggle-text">Apni ki MFS ba onno way te payment korte chan?</span>';
+                manualHtml += '          <span class="banglaqr-trx-toggle-text">Pay using mobile banking accounts (bKash, Nagad, etc.)</span>';
                 manualHtml += '        </button>';
                 manualHtml += '      </div>';
                 manualHtml += '      <div class="banglaqr-manual-accounts" id="banglaqr-mfs-accounts-container" style="display:none; margin-top: 10px;">';
@@ -260,14 +260,45 @@ jQuery(document).ready(function ($) {
         setupModalEvents();
     }
 
+    // Helper for safe copy to clipboard with fallback
+    function copyTextToClipboard(text, callback) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () {
+                if (callback) callback();
+            }).catch(function () {
+                fallbackCopyText(text, callback);
+            });
+        } else {
+            fallbackCopyText(text, callback);
+        }
+    }
+
+    function fallbackCopyText(text, callback) {
+        var tempInput = document.createElement('textarea');
+        tempInput.value = text;
+        tempInput.style.position = 'fixed';
+        tempInput.style.left = '-9999px';
+        tempInput.style.top = '0';
+        document.body.appendChild(tempInput);
+        tempInput.focus();
+        tempInput.select();
+        try {
+            document.execCommand('copy');
+            if (callback) callback();
+        } catch (err) {
+            console.error('Fallback copy failed', err);
+        }
+        document.body.removeChild(tempInput);
+    }
+
     // Bind events
     function setupModalEvents() {
-        // Copy to clipboard
+        // Copy to clipboard with fallback
         $('.banglaqr-manual-copy-btn').on('click', function(e) {
             e.preventDefault();
             var btn = $(this);
-            var num = btn.data('number');
-            navigator.clipboard.writeText(num).then(function() {
+            var num = String(btn.data('number') || '');
+            copyTextToClipboard(num, function() {
                 var originalHtml = btn.html();
                 btn.html('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Copied</span>');
                 btn.addClass('copied');
@@ -517,6 +548,9 @@ jQuery(document).ready(function ($) {
 
                 canvas.width = width;
                 canvas.height = height;
+                // Fill with white background to prevent transparent PNG screenshots from having black background
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, width, height);
                 ctx.drawImage(img, 0, 0, width, height);
 
                 function exportBlob(quality) {
@@ -758,6 +792,7 @@ jQuery(document).ready(function ($) {
         $('#oi_banglaqr_receipt_id').val('');
         $('#oi_banglaqr_transaction_id').val(trxId);
         $('#oi_banglaqr_selected_qr').val(activeQrName);
+        $('#oi_banglaqr_confirmed').val('1');
 
         // Render preview snippet on checkout page
         var previewMarkup = '<strong>QR Account:</strong> ' + escHtml(activeQrName) + '<br/><strong>Transaction ID:</strong> <span style="font-family:monospace; font-weight:700; color:#0f172a;">' + escHtml(trxId) + '</span> <a href="#" id="banglaqr-change-receipt-btn" style="margin-left: 10px; color: #ef4444; text-decoration: underline; font-weight: 600;">Change</a>';
@@ -832,6 +867,7 @@ jQuery(document).ready(function ($) {
                     $('#oi_banglaqr_receipt_id').val(attachmentId);
                     $('#oi_banglaqr_transaction_id').val(trxId || '');
                     $('#oi_banglaqr_selected_qr').val(activeQrName);
+                    $('#oi_banglaqr_confirmed').val('1');
 
                     // Render small success snippet on checkout page
                     var previewMarkup = '<strong>QR Account:</strong> ' + escHtml(activeQrName) + '<br/><strong>Receipt Uploaded:</strong> <a href="' + escAttr(response.data.url) + '" target="_blank" rel="noopener noreferrer" style="color: #137833; font-weight:600;">View Screenshot</a>';
@@ -947,16 +983,24 @@ jQuery(document).ready(function ($) {
         return true;
     }
 
+    // Reset confirmation if customer switches payment method
+    $(document).on('change', 'input[name="payment_method"]', function () {
+        if ($(this).val() !== oi_banglaqr_params.gateway_id) {
+            $('#oi_banglaqr_confirmed').val('0');
+        }
+    });
+
     // Intercept checkout submit button
     $(document).on('click', 'form.checkout #place_order', function (e) {
         var activePaymentMethod = $('input[name="payment_method"]:checked').val();
 
         if (activePaymentMethod === oi_banglaqr_params.gateway_id) {
+            var isConfirmed = $('#oi_banglaqr_confirmed').val() === '1';
             var receiptId = $('#oi_banglaqr_receipt_id').val();
             var trxId = $('#oi_banglaqr_transaction_id').val();
 
-            // If either receipt image or transaction ID is present, allow standard form submission
-            if ((receiptId && receiptId !== '') || (trxId && trxId !== '')) {
+            // If confirmed via modal or values are already set, allow standard form submission
+            if (isConfirmed || (receiptId && receiptId !== '') || (trxId && trxId !== '')) {
                 return true;
             }
 
@@ -976,10 +1020,11 @@ jQuery(document).ready(function ($) {
 
     // In case WooCommerce triggers submission via event
     $('form.checkout').on('checkout_place_order_' + oi_banglaqr_params.gateway_id, function () {
+        var isConfirmed = $('#oi_banglaqr_confirmed').val() === '1';
         var receiptId = $('#oi_banglaqr_receipt_id').val();
         var trxId = $('#oi_banglaqr_transaction_id').val();
 
-        if ((receiptId && receiptId !== '') || (trxId && trxId !== '')) {
+        if (isConfirmed || (receiptId && receiptId !== '') || (trxId && trxId !== '')) {
             return true;
         }
 
@@ -997,6 +1042,7 @@ jQuery(document).ready(function ($) {
         $('#oi_banglaqr_receipt_id').val('');
         $('#oi_banglaqr_transaction_id').val('');
         $('#oi_banglaqr_selected_qr').val('');
+        $('#oi_banglaqr_confirmed').val('0');
         $('#banglaqr-selected-qr-preview').hide().empty();
 
         openModal();

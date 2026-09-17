@@ -71,17 +71,17 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                 'desc_tip' => true,
             ),
             'gateway_logo' => array(
-                'title' => __('Gateway QR', 'banglaqr-payment-gateway-by-oi'),
+                'title' => __('Gateway Logo', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
-                'description' => __('Upload a custom QR to show next to the title on checkout.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Upload a logo to show next to the payment title at checkout.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => OI_BANGLAQR_URL . 'includes/img/banglaqrlogo.png',
                 'desc_tip' => true,
             ),
             'description' => array(
                 'title' => __('Description', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'textarea',
-                'description' => __('This controls the description which the user sees during checkout.', 'banglaqr-payment-gateway-by-oi'),
-                'default' => __('Scan the Bangla QR code through your bank or mobile financial services app (Bkash, Nagad, Rocket, etc.) to complete payment.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Payment method description shown to customers at checkout.', 'banglaqr-payment-gateway-by-oi'),
+                'default' => __('Scan the QR code using your bank or mobile banking app (bKash, Nagad, Rocket, etc.) to complete payment.', 'banglaqr-payment-gateway-by-oi'),
                 'desc_tip' => true,
             ),
             'qrs_table' => array(
@@ -141,41 +141,41 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             'enable_manual_payment' => array(
                 'title' => __('Enable Manual Payment Numbers', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'checkbox',
-                'label' => __('Show manual payment account numbers as an alternative to QR scanning', 'banglaqr-payment-gateway-by-oi'),
+                'label' => __('Show mobile banking account numbers (bKash, Nagad, etc.) as an alternative to QR scanning', 'banglaqr-payment-gateway-by-oi'),
                 'default' => 'no',
             ),
             'manual_bkash' => array(
                 'title' => __('bKash Number', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
-                'description' => __('Enter your bKash personal/agent number.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Enter your bKash account number.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => '',
                 'desc_tip' => true,
             ),
             'manual_nagad' => array(
                 'title' => __('Nagad Number', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
-                'description' => __('Enter your Nagad personal/agent number.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Enter your Nagad account number.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => '',
                 'desc_tip' => true,
             ),
             'manual_rocket' => array(
                 'title' => __('Rocket Number', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
-                'description' => __('Enter your Rocket personal/agent number.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Enter your Rocket account number.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => '',
                 'desc_tip' => true,
             ),
             'manual_upay' => array(
                 'title' => __('Upay Number', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
-                'description' => __('Enter your Upay personal/agent number.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Enter your Upay account number.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => '',
                 'desc_tip' => true,
             ),
             'manual_cellfin' => array(
                 'title' => __('CellFin Number', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
-                'description' => __('Enter your CellFin personal/agent number.', 'banglaqr-payment-gateway-by-oi'),
+                'description' => __('Enter your CellFin account number.', 'banglaqr-payment-gateway-by-oi'),
                 'default' => '',
                 'desc_tip' => true,
             ),
@@ -283,9 +283,9 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                         </div>
                                     </div>
 
-                                    <!-- Gateway QR URL -->
+                                    <!-- Gateway Logo URL -->
                                     <div class="banglaqr-grid-field" style="margin-top: 4px;">
-                                        <label for="woocommerce_oi_banglaqr_gateway_logo" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Gateway QR Image', 'banglaqr-payment-gateway-by-oi'); ?></label>
+                                        <label for="woocommerce_oi_banglaqr_gateway_logo" style="font-weight: 600; font-size: 13px; color: #1e293b; display: block; margin-bottom: 6px;"><?php esc_html_e('Gateway Logo', 'banglaqr-payment-gateway-by-oi'); ?></label>
                                         <div class="banglaqr-uploader-inline" style="display: flex; gap: 8px; align-items: center; width: 100%;">
                                             <div class="banglaqr-logo-preview-box" id="banglaqr-gateway-logo-preview" style="width: 38px; height: 38px; border: 1px solid #cbd5e1; border-radius: 8px; background-color: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px; box-sizing: border-box; flex-shrink: 0;">
                                                 <?php if ($gateway_logo): ?>
@@ -294,11 +294,11 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                                         <span class="dashicons dashicons-image-filter" style="color:#64748b;"></span>
                                                 <?php endif; ?>
                                             </div>
-                                            <input type="text" name="woocommerce_oi_banglaqr_gateway_logo" id="woocommerce_oi_banglaqr_gateway_logo" value="<?php echo esc_attr($gateway_logo); ?>" placeholder="<?php esc_attr_e('QR URL or upload', 'banglaqr-payment-gateway-by-oi'); ?>" style="flex: 1; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box; margin: 0 !important;" />
+                                            <input type="text" name="woocommerce_oi_banglaqr_gateway_logo" id="woocommerce_oi_banglaqr_gateway_logo" value="<?php echo esc_attr($gateway_logo); ?>" placeholder="<?php esc_attr_e('Logo URL or upload', 'banglaqr-payment-gateway-by-oi'); ?>" style="flex: 1; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; font-size: 13px; height: 38px; box-sizing: border-box; margin: 0 !important;" />
                                             <button type="button" class="button button-secondary" id="banglaqr-upload-gateway-logo-btn" style="height: 38px; border-radius: 8px; margin: 0 !important; font-weight: 600; font-size: 12px; padding: 0 16px; flex-shrink: 0;"><?php esc_html_e('Upload', 'banglaqr-payment-gateway-by-oi'); ?></button>
                                         </div>
                                         <p class="banglaqr-field-tip" style="margin:4px 0 0 0; color:#64748b; font-size:12px;">
-                                            <?php esc_html_e('QR next to title on checkout.', 'banglaqr-payment-gateway-by-oi'); ?>
+                                            <?php esc_html_e('Logo shown next to title at checkout.', 'banglaqr-payment-gateway-by-oi'); ?>
                                         </p>
                                     </div>
                                     
@@ -390,7 +390,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                             <div class="banglaqr-section-body">
                                 <div class="banglaqr-grid-field" style="margin-bottom: 16px;">
                                     <label for="woocommerce_oi_banglaqr_enable_manual_payment" style="font-weight: 600; font-size: 13px; color: #1e293b; display: flex; align-items: center; gap: 8px;">
-                                        <input type="checkbox" name="woocommerce_oi_banglaqr_enable_manual_payment" id="woocommerce_oi_banglaqr_enable_manual_payment" value="1" <?php checked($enable_manual_payment, 'yes'); ?> />
+                                        <input type="checkbox" name="woocommerce_oi_banglaqr_enable_manual_payment" id="woocommerce_oi_banglaqr_enable_manual_payment" value="yes" <?php checked($enable_manual_payment, 'yes'); ?> />
                                         <?php esc_html_e('Enable Manual Payment Numbers', 'banglaqr-payment-gateway-by-oi'); ?>
                                     </label>
                                 </div>
@@ -618,6 +618,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                     <input type="hidden" name="oi_banglaqr_receipt_id" id="oi_banglaqr_receipt_id" value="" />
                     <input type="hidden" name="oi_banglaqr_transaction_id" id="oi_banglaqr_transaction_id" value="" />
                     <input type="hidden" name="oi_banglaqr_selected_qr" id="oi_banglaqr_selected_qr" value="" />
+                    <input type="hidden" name="oi_banglaqr_confirmed" id="oi_banglaqr_confirmed" value="0" />
                     <div id="banglaqr-selected-qr-preview" class="banglaqr-selected-qr-preview"
                         style="display:none; padding: 12px; border: 1px dashed #137833; border-radius: 8px; background-color: #f0fdf4; margin-top: 10px; font-size: 13px;">
                     </div>
@@ -674,11 +675,24 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         require_once ABSPATH . 'wp-admin/includes/file.php';
         require_once ABSPATH . 'wp-admin/includes/media.php';
 
+        // Ensure session cookie and token exist for guest uploads
+        $session_token = '';
+        if (WC()->session) {
+            if (!WC()->session->has_session()) {
+                WC()->session->set_customer_session_cookie(true);
+            }
+            $session_token = WC()->session->get('oi_banglaqr_session_token');
+            if (empty($session_token)) {
+                $session_token = wp_generate_password(32, false);
+                WC()->session->set('oi_banglaqr_session_token', $session_token);
+            }
+        }
+
         // 1. Process Base64 payload (bypasses PHP upload_max_filesize completely)
         // phpcs:ignore WordPress.Security.NonceVerification.Missing
         if (!empty($_POST['image_base64'])) {
-            $base64_data = sanitize_text_field(wp_unslash($_POST['image_base64']));
-            if (preg_match('/^data:image\/(jpeg|jpg|png|webp|gif);base64,(.*)$/s', $base64_data, $matches)) {
+            $base64_data = wp_unslash($_POST['image_base64']);
+            if (preg_match('/^data:image\/(jpeg|jpg|png|webp|gif);base64,([A-Za-z0-9+\/=\s]+)$/', $base64_data, $matches)) {
                 $ext = strtolower($matches[1]);
                 if ($ext === 'jpeg') {
                     $ext = 'jpg';
@@ -686,15 +700,16 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                 $decoded = base64_decode($matches[2]);
 
                 if ($decoded !== false) {
-                    $tmp_name = wp_tempnam();
+                    $tmp_name = wp_tempnam('receipt');
                     file_put_contents($tmp_name, $decoded);
-                    $wp_filetype = wp_check_filetype_and_ext($tmp_name, 'test.' . $ext);
+                    $wp_filetype = wp_check_filetype_and_ext($tmp_name, 'receipt.' . $ext);
                     
                     if (empty($wp_filetype['ext']) || empty($wp_filetype['type']) || !in_array($wp_filetype['type'], array('image/jpeg', 'image/png', 'image/webp', 'image/gif'))) {
                         @unlink($tmp_name);
                         wp_send_json_error(array('message' => __('Invalid file format. Security check failed.', 'banglaqr-payment-gateway-by-oi')));
                     }
                     $ext = $wp_filetype['ext'];
+                    @unlink($tmp_name);
 
                     $raw_name = !empty($_POST['image_name']) ? sanitize_file_name(wp_unslash($_POST['image_name'])) : 'receipt.jpg';
                     $clean_name = preg_replace('/\.[^.]+$/', '', $raw_name);
@@ -703,8 +718,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                     }
                     $filename_to_save = 'receipt_' . wp_generate_password(8, false) . '.' . $ext;
 
-                    $upload = wp_upload_bits($filename_to_save, null, file_get_contents($tmp_name));
-                    @unlink($tmp_name);
+                    $upload = wp_upload_bits($filename_to_save, null, $decoded);
 
                     if (!empty($upload['error'])) {
                         wp_send_json_error(array('message' => $upload['error']));
@@ -729,10 +743,11 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                     $attachment_data = wp_generate_attachment_metadata($attachment_id, $filename);
                     wp_update_attachment_metadata($attachment_id, $attachment_data);
 
-                    // Security mark to prevent IDOR during checkout
-                    $session_token = WC()->session ? WC()->session->get_customer_id() : '';
+                    // Security mark to link receipt to customer session
                     update_post_meta($attachment_id, '_oi_banglaqr_pending_upload', '1');
-                    update_post_meta($attachment_id, '_oi_banglaqr_uploader_token', $session_token);
+                    if (!empty($session_token)) {
+                        update_post_meta($attachment_id, '_oi_banglaqr_uploader_token', $session_token);
+                    }
 
                     wp_send_json_success(array(
                         'id'            => $attachment_id,
@@ -790,10 +805,11 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         $attachment_data = wp_generate_attachment_metadata($attachment_id, $filename);
         wp_update_attachment_metadata($attachment_id, $attachment_data);
 
-        // Security mark to prevent IDOR during checkout
-        $session_token = WC()->session ? WC()->session->get_customer_id() : '';
+        // Security mark to link receipt to customer session
         update_post_meta($attachment_id, '_oi_banglaqr_pending_upload', '1');
-        update_post_meta($attachment_id, '_oi_banglaqr_uploader_token', $session_token);
+        if (!empty($session_token)) {
+            update_post_meta($attachment_id, '_oi_banglaqr_uploader_token', $session_token);
+        }
 
         wp_send_json_success(array(
             'id'            => $attachment_id,
@@ -823,22 +839,29 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             $receipt_id = absint(wp_unslash($_POST['oi_banglaqr_receipt_id']));
             $order->update_meta_data('_oi_banglaqr_receipt_id', $receipt_id);
 
-            // Security check: Only update post parent if the ID belongs to an attachment to prevent IDOR
+            // Security check: Only update post parent if the ID belongs to an attachment
             if ($receipt_id > 0) {
                 $receipt_post = get_post($receipt_id);
-                if ($receipt_post && $receipt_post->post_type === 'attachment' && $receipt_post->post_parent == 0) {
+                if ($receipt_post && $receipt_post->post_type === 'attachment' && (int)$receipt_post->post_parent === 0) {
                     // Verify the attachment was uploaded via our gateway
                     if (get_post_meta($receipt_id, '_oi_banglaqr_pending_upload', true) === '1') {
-                        $session_token = WC()->session ? WC()->session->get_customer_id() : '';
                         $uploader_token = get_post_meta($receipt_id, '_oi_banglaqr_uploader_token', true);
+                        $session_token  = WC()->session ? WC()->session->get('oi_banglaqr_session_token') : '';
                         
-                        if ((string)$uploader_token === (string)$session_token) {
+                        $is_valid = false;
+                        if (!empty($uploader_token) && !empty($session_token) && hash_equals((string)$uploader_token, (string)$session_token)) {
+                            $is_valid = true;
+                        } elseif (empty($uploader_token)) {
+                            $is_valid = true;
+                        }
+
+                        if ($is_valid) {
                             // Set the attachment as media parent of this order
                             wp_update_post(array(
                                 'ID' => $receipt_id,
                                 'post_parent' => $order_id,
                             ));
-                            // Remove pending mark
+                            // Remove pending mark so cleanup cron will not delete it
                             delete_post_meta($receipt_id, '_oi_banglaqr_pending_upload');
                             delete_post_meta($receipt_id, '_oi_banglaqr_uploader_token');
                         }

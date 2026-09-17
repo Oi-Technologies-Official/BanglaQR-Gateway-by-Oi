@@ -116,16 +116,24 @@ function oi_banglaqr_add_payment_charge_fee()
         return;
     }
 
-    // 1. Get chosen payment method from WooCommerce Session
-    // WooCommerce automatically updates this during the 'update_order_review' AJAX call
-    $chosen_gateway = WC()->session ? WC()->session->get('chosen_payment_method') : '';
+    // 1. Fetch the active QR code settings directly from database
+    $settings = get_option('woocommerce_oi_banglaqr_settings', array());
+    if (!is_array($settings) || empty($settings['enabled']) || $settings['enabled'] !== 'yes') {
+        return;
+    }
+
+    // 2. Get chosen payment method from request or WooCommerce Session
+    $chosen_gateway = '';
+    if (isset($_POST['payment_method'])) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        $chosen_gateway = sanitize_text_field(wp_unslash($_POST['payment_method']));
+    } elseif (WC()->session) {
+        $chosen_gateway = WC()->session->get('chosen_payment_method');
+    }
 
     if ('oi_banglaqr' !== $chosen_gateway) {
         return;
     }
 
-    // 2. Fetch the active QR code settings directly from database
-    $settings = get_option('woocommerce_oi_banglaqr_settings', array());
     $qrs_table = isset($settings['qrs_table']) ? $settings['qrs_table'] : array();
 
     if (!is_array($qrs_table) || empty($qrs_table)) {
@@ -157,8 +165,8 @@ function oi_banglaqr_add_payment_charge_fee()
         return;
     }
 
-    // 3. Base amount: net cart total after discounts + shipping
-    $base_amount = WC()->cart->get_cart_contents_total() + WC()->cart->get_shipping_total();
+    // 3. Base amount: net cart total after discounts + shipping + taxes
+    $base_amount = WC()->cart->get_cart_contents_total() + WC()->cart->get_shipping_total() + WC()->cart->get_taxes_total();
 
     // Calculate fee respecting store decimal precision
     $decimals = function_exists('wc_get_price_decimals') ? wc_get_price_decimals() : 2;
@@ -218,6 +226,11 @@ function oi_banglaqr_cleanup_pending_receipts()
     $query = new WP_Query($args);
     if ($query->have_posts()) {
         foreach ($query->posts as $attachment) {
+            // Safety check: Never delete an attachment that is linked to an order
+            if (!empty($attachment->post_parent) && intval($attachment->post_parent) > 0) {
+                delete_post_meta($attachment->ID, '_oi_banglaqr_pending_upload');
+                continue;
+            }
             wp_delete_attachment($attachment->ID, true);
         }
     }

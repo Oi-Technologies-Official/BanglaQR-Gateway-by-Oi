@@ -214,9 +214,9 @@ jQuery(document).ready(function ($) {
         $accordionWrapper.find('.banglaqr-qr-accordion-item').each(function () {
             var $panel = $(this);
             var qr = {
-                qr_name: $panel.find('.banglaqr-qr-name-input').val().trim(),
-                qr_code_url: $panel.find('.banglaqr-qr-code-url-input').val().trim(),
-                payment_charge: $panel.find('.banglaqr-payment-charge-input').val().trim() || '0',
+                qr_name: ($panel.find('.banglaqr-qr-name-input').val() || '').trim(),
+                qr_code_url: ($panel.find('.banglaqr-qr-code-url-input').val() || '').trim(),
+                payment_charge: ($panel.find('.banglaqr-payment-charge-input').val() || '0').trim() || '0',
                 is_active: $panel.find('.banglaqr-is-active-input').is(':checked') ? 'yes' : 'no'
             };
             serialized.push(qr);
@@ -381,9 +381,9 @@ jQuery(document).ready(function ($) {
                     var $panel = $(this);
                     $panel.attr('data-index', newIndex);
                     var qr = {
-                        qr_name: $panel.find('.banglaqr-qr-name-input').val().trim(),
-                        qr_code_url: $panel.find('.banglaqr-qr-code-url-input').val().trim(),
-                        payment_charge: $panel.find('.banglaqr-payment-charge-input').val().trim() || '0',
+                        qr_name: ($panel.find('.banglaqr-qr-name-input').val() || '').trim(),
+                        qr_code_url: ($panel.find('.banglaqr-qr-code-url-input').val() || '').trim(),
+                        payment_charge: ($panel.find('.banglaqr-payment-charge-input').val() || '0').trim() || '0',
                         is_active: $panel.find('.banglaqr-is-active-input').is(':checked') ? 'yes' : 'no'
                     };
                     reordered.push(qr);
