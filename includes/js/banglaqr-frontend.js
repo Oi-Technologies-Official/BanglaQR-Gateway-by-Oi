@@ -320,6 +320,13 @@ jQuery(document).ready(function ($) {
             }
         });
 
+        // Renew expired session
+        $(document).on('click', '#banglaqr-timer-renew-btn', function (e) {
+            e.preventDefault();
+            hideError();
+            startTimer();
+        });
+
         // Cancel/Close modal
         $('#banglaqr-modal-close-btn, #banglaqr-btn-cancel').on('click', function (e) {
             e.preventDefault();
@@ -679,9 +686,14 @@ jQuery(document).ready(function ($) {
         hideError();
     }
 
-    function showError(msg) {
+    function showError(msg, isHtml) {
         var $banner = $('#banglaqr-error-banner');
-        $banner.text(msg).fadeIn(200).addClass('banglaqr-shake');
+        if (isHtml) {
+            $banner.html(msg);
+        } else {
+            $banner.text(msg);
+        }
+        $banner.fadeIn(200).addClass('banglaqr-shake');
         setTimeout(function () {
             $banner.removeClass('banglaqr-shake');
         }, 400);
@@ -722,7 +734,8 @@ jQuery(document).ready(function ($) {
             
             if (timeLeft <= 0) {
                 clearInterval(window.banglaqrTimerInterval);
-                showError('Session expired. Please refresh the page and try again.');
+                var expiredHtml = '<span>Session expired.</span> <button type="button" id="banglaqr-timer-renew-btn" style="background:#fee2e2; border:1px solid #fecaca; color:#b91c1c; font-weight:700; border-radius:6px; cursor:pointer; padding:2px 8px; margin-left:6px; font-size:12px;">Renew Session (15m)</button>';
+                showError(expiredHtml, true);
                 $('#banglaqr-btn-submit').prop('disabled', true).css({ 'opacity': '0.5', 'cursor': 'not-allowed' });
                 $('#banglaqr-file-input').prop('disabled', true);
                 $('#banglaqr-trx-input').prop('disabled', true);
@@ -795,7 +808,20 @@ jQuery(document).ready(function ($) {
         $('#oi_banglaqr_confirmed').val('1');
 
         // Render preview snippet on checkout page
-        var previewMarkup = '<strong>QR Account:</strong> ' + escHtml(activeQrName) + '<br/><strong>Transaction ID:</strong> <span style="font-family:monospace; font-weight:700; color:#0f172a;">' + escHtml(trxId) + '</span> <a href="#" id="banglaqr-change-receipt-btn" style="margin-left: 10px; color: #ef4444; text-decoration: underline; font-weight: 600;">Change</a>';
+        var previewMarkup = '<div class="banglaqr-preview-header">' +
+            '<div class="banglaqr-preview-title">' +
+                '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+                '<span>Payment Info Added</span>' +
+            '</div>' +
+            '<a href="#" id="banglaqr-change-receipt-btn" class="banglaqr-preview-change-btn">' +
+                '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
+                '<span>Change</span>' +
+            '</a>' +
+        '</div>' +
+        '<div class="banglaqr-preview-meta">' +
+            '<div class="banglaqr-preview-meta-item"><span><strong>Account:</strong> ' + escHtml(activeQrName) + '</span></div>' +
+            '<div class="banglaqr-preview-meta-item"><span><strong>Transaction ID:</strong> <span class="banglaqr-preview-tag">' + escHtml(trxId) + '</span></span></div>' +
+        '</div>';
         $('#banglaqr-selected-qr-preview').html(previewMarkup).show();
 
         var $submitBtn = $('#banglaqr-btn-submit');
@@ -870,11 +896,23 @@ jQuery(document).ready(function ($) {
                     $('#oi_banglaqr_confirmed').val('1');
 
                     // Render small success snippet on checkout page
-                    var previewMarkup = '<strong>QR Account:</strong> ' + escHtml(activeQrName) + '<br/><strong>Receipt Uploaded:</strong> <a href="' + escAttr(response.data.url) + '" target="_blank" rel="noopener noreferrer" style="color: #137833; font-weight:600;">View Screenshot</a>';
+                    var previewMarkup = '<div class="banglaqr-preview-header">' +
+                        '<div class="banglaqr-preview-title">' +
+                            '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+                            '<span>Payment Info Added</span>' +
+                        '</div>' +
+                        '<a href="#" id="banglaqr-change-receipt-btn" class="banglaqr-preview-change-btn">' +
+                            '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
+                            '<span>Change</span>' +
+                        '</a>' +
+                    '</div>' +
+                    '<div class="banglaqr-preview-meta">' +
+                        '<div class="banglaqr-preview-meta-item"><span><strong>Account:</strong> ' + escHtml(activeQrName) + '</span></div>' +
+                        '<div class="banglaqr-preview-meta-item"><span><strong>Receipt:</strong> <a href="' + escAttr(response.data.url) + '" target="_blank" rel="noopener noreferrer" style="color: var(--banglaqr-modal-primary, #137833); font-weight:600; text-decoration:underline;">View Receipt</a></span></div>';
                     if (trxId) {
-                        previewMarkup += '<br/><strong>Transaction ID:</strong> <span style="font-family:monospace; font-weight:700; color:#0f172a;">' + escHtml(trxId) + '</span>';
+                        previewMarkup += '<div class="banglaqr-preview-meta-item"><span><strong>Transaction ID:</strong> <span class="banglaqr-preview-tag">' + escHtml(trxId) + '</span></span></div>';
                     }
-                    previewMarkup += ' <a href="#" id="banglaqr-change-receipt-btn" style="margin-left: 10px; color: #ef4444; text-decoration: underline; font-weight: 600;">Change</a>';
+                    previewMarkup += '</div>';
 
                     $('#banglaqr-selected-qr-preview').html(previewMarkup).show();
 

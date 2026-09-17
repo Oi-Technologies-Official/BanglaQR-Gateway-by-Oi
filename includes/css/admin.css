@@ -647,3 +647,51 @@ input:checked+.banglaqr-slider:before {
     font-size: 12px;
     font-weight: 600;
 }
+
+/* Align WooCommerce Save Changes Button with Dashboard Container */
+.woocommerce p.submit {
+    max-width: 900px;
+    margin: 16px auto 32px auto !important;
+    padding: 0 24px;
+}
+
+/* Responsive Admin Styles */
+@media screen and (max-width: 782px) {
+    .banglaqr-admin-dashboard-wrap {
+        padding: 14px;
+        margin: 12px auto;
+    }
+
+    .banglaqr-dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .banglaqr-section-body {
+        padding: 16px;
+    }
+
+    .banglaqr-accordion-body {
+        padding: 16px;
+    }
+
+    .banglaqr-accordion-body-inner {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .banglaqr-large-qr-preview-wrapper {
+        width: 120px;
+    }
+
+    .banglaqr-card-inputs-wrapper {
+        width: 100%;
+    }
+
+    .woocommerce p.submit {
+        padding: 0 14px;
+    }
+}

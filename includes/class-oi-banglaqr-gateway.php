@@ -619,9 +619,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                     <input type="hidden" name="oi_banglaqr_transaction_id" id="oi_banglaqr_transaction_id" value="" />
                     <input type="hidden" name="oi_banglaqr_selected_qr" id="oi_banglaqr_selected_qr" value="" />
                     <input type="hidden" name="oi_banglaqr_confirmed" id="oi_banglaqr_confirmed" value="0" />
-                    <div id="banglaqr-selected-qr-preview" class="banglaqr-selected-qr-preview"
-                        style="display:none; padding: 12px; border: 1px dashed #137833; border-radius: 8px; background-color: #f0fdf4; margin-top: 10px; font-size: 13px;">
-                    </div>
+                    <div id="banglaqr-selected-qr-preview" class="banglaqr-selected-qr-preview"></div>
                 </div>
                 <?php
     }

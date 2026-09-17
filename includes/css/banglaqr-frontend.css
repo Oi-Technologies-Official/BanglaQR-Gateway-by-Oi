@@ -114,8 +114,10 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
 }
 
 .banglaqr-modal-close:hover,
@@ -948,5 +950,197 @@
 @keyframes banglaqr-fade-up {
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Selected Payment Preview Card on Checkout --- */
+.banglaqr-selected-qr-preview {
+    display: none;
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: #ffffff;
+    border: 1px solid var(--banglaqr-primary-border, #bbf7d0);
+    border-left: 4px solid var(--banglaqr-modal-primary, var(--banglaqr-primary, #137833));
+    border-radius: 12px;
+    box-shadow: var(--banglaqr-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
+    font-size: 13px;
+    color: var(--banglaqr-text, #0f172a);
+    transition: all 0.2s ease;
+}
+
+.banglaqr-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 8px;
+}
+
+.banglaqr-preview-title {
+    font-weight: 700;
+    color: var(--banglaqr-modal-primary, var(--banglaqr-primary, #137833));
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.banglaqr-preview-badge {
+    background-color: var(--banglaqr-modal-primary-light, #f0fdf4);
+    color: var(--banglaqr-modal-primary, var(--banglaqr-primary, #137833));
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--banglaqr-primary-border, #bbf7d0);
+}
+
+.banglaqr-preview-change-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--banglaqr-accent, #E20613);
+    text-decoration: none !important;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: var(--banglaqr-accent-light, #fef2f2);
+    border: 1px solid var(--banglaqr-accent-border, #fecaca);
+    transition: all 0.15s ease;
+}
+
+.banglaqr-preview-change-btn:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+    border-color: #fca5a5;
+}
+
+.banglaqr-preview-meta {
+    font-size: 12px;
+    color: var(--banglaqr-text-muted, #334155);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.banglaqr-preview-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.4;
+}
+
+.banglaqr-preview-tag {
+    font-family: monospace;
+    font-weight: 700;
+    color: #0f172a;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+/* --- Mobile Responsive Media Queries --- */
+@media (max-width: 480px) {
+    .banglaqr-modal-overlay {
+        padding: 8px;
+        align-items: flex-end;
+    }
+
+    .banglaqr-modal-container {
+        width: 100%;
+        max-width: 100%;
+        max-height: 94dvh;
+        max-height: 94vh;
+        border-radius: 18px 18px 10px 10px;
+    }
+
+    .banglaqr-modal-header {
+        padding: 14px 16px;
+    }
+
+    .banglaqr-modal-close {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        min-height: 38px;
+    }
+
+    .banglaqr-modal-body {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .banglaqr-payable-amount-box {
+        padding: 10px 12px;
+    }
+
+    .banglaqr-payable-value {
+        font-size: 20px;
+    }
+
+    .banglaqr-qr-box {
+        width: 155px;
+        height: 165px;
+        padding: 8px;
+    }
+
+    .banglaqr-qr-box img {
+        width: 125px !important;
+        height: 125px !important;
+    }
+
+    .banglaqr-dropzone {
+        padding: 16px 12px;
+    }
+
+    .banglaqr-manual-account-item {
+        padding: 8px 10px;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .banglaqr-manual-account-name {
+        flex: 0 0 100%;
+        font-size: 11px;
+    }
+
+    .banglaqr-manual-account-number-wrap {
+        width: 100%;
+    }
+
+    .banglaqr-manual-account-number {
+        font-size: 14px;
+        text-align: left;
+    }
+
+    .banglaqr-manual-copy-btn {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .banglaqr-modal-footer {
+        padding: 12px 14px;
+        gap: 8px;
+    }
+
+    .banglaqr-btn {
+        height: 42px;
+        font-size: 13px !important;
+    }
+
+    .banglaqr-zoom-card {
+        padding: 16px;
+        max-width: 95vw;
+    }
+}
+
+@media (max-width: 360px) {
+    .banglaqr-modal-footer {
+        grid-template-columns: 1fr;
+    }
 }
 
