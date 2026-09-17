@@ -46,11 +46,11 @@ jQuery(document).ready(function ($) {
 
         var logoHtml = qrCodeUrl
             ? '<img src="' + escapeAttr(qrCodeUrl) + '" alt="' + escapeAttr(qrName) + '" />'
-            : '<span class="dashicons dashicons-qr-code" style="font-size: 18px; width:18px; height:18px; color:#94a3b8;"></span>';
+            : '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#94a3b8" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>';
 
         var qrPreview = qrCodeUrl
             ? '<img src="' + escapeAttr(qrCodeUrl) + '" alt="' + escapeAttr(qrName) + '" />'
-            : '<span class="dashicons dashicons-qr-code" style="font-size: 24px; width:24px; height:24px; color:#94a3b8;"></span>';
+            : '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#94a3b8" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>';
 
         var statusBadge = active 
             ? '<span class="banglaqr-status-badge status-active"><span class="status-dot"></span> Active</span>'
@@ -61,12 +61,12 @@ jQuery(document).ready(function ($) {
         
         // Accordion Header
         html += '  <div class="banglaqr-accordion-header">';
-        html += '    <div class="banglaqr-sort-handle" title="Drag to reorder"><span class="dashicons dashicons-menu"></span></div>';
+        html += '    <div class="banglaqr-sort-handle" title="Drag to reorder"><svg viewBox="0 0 24 24" width="16" height="16" fill="#94a3b8"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></div>';
         html += '    <div class="banglaqr-accordion-logo">' + logoHtml + '</div>';
         html += '    <div class="banglaqr-accordion-title">' + (qrName ? escapeAttr(qrName) : 'New QR Account') + '</div>';
         html += '    <div class="banglaqr-accordion-actions">';
         html += '      <div class="banglaqr-badge-wrapper">' + statusBadge + '</div>';
-        html += '      <span class="dashicons dashicons-arrow-down-alt2 banglaqr-accordion-toggle-icon"></span>';
+        html += '      <span class="banglaqr-accordion-toggle-svg"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>';
         html += '    </div>';
         html += '  </div>';
 
@@ -77,7 +77,7 @@ jQuery(document).ready(function ($) {
         // Left Column: Scan Preview
         var largePreviewStyle = qrCodeUrl ? 'display: block;' : 'display: none;';
         html += '      <div class="banglaqr-large-qr-preview-wrapper" style="' + largePreviewStyle + '">';
-        html += '        <div class="banglaqr-grid-field"><label>Scan Preview</label></div>';
+        html += '        <div class="banglaqr-grid-field"><label class="banglaqr-field-label-with-icon" style="margin-bottom:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Scan Preview</span></label></div>';
         html += '        <div class="banglaqr-large-qr-preview-box">';
         html += '          <img class="banglaqr-large-qr-preview-img" src="' + escapeAttr(qrCodeUrl) + '" alt="QR Preview" />';
         html += '        </div>';
@@ -89,24 +89,27 @@ jQuery(document).ready(function ($) {
         
         // Name
         html += '        <div class="banglaqr-grid-field">';
-        html += '          <label>Account Name <span class="req">*</span></label>';
+        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span>Account Name <span class="req">*</span></span></label>';
         html += '          <input type="text" class="banglaqr-qr-name-input banglaqr-general-input" value="' + escapeAttr(qrName) + '" placeholder="e.g. bKash Merchant, City Bank BanglaQR" />';
         html += '        </div>';
 
         // Charge
         var qrCharge = qr.payment_charge || '0';
         html += '        <div class="banglaqr-grid-field">';
-        html += '          <label>Processing Fee (%)</label>';
+        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg><span>Processing Fee (%)</span></label>';
         html += '          <input type="number" step="0.01" min="0" max="100" class="banglaqr-payment-charge-input banglaqr-general-input" value="' + escapeAttr(qrCharge) + '" placeholder="e.g. 1.85 (leave 0 for no fee)" />';
         html += '        </div>';
 
         // Image URL
         html += '        <div class="banglaqr-grid-field">';
-        html += '          <label>QR Code Image <span class="req">*</span></label>';
+        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h2v2h-2z"/><path d="M18 14h3v3h-3z"/><path d="M14 18h3v3h-3z"/></svg><span>QR Code Image <span class="req">*</span></span></label>';
         html += '          <div class="banglaqr-uploader-inline">';
         html += '            <div class="banglaqr-logo-preview-box banglaqr-qr-preview-box">' + qrPreview + '</div>';
         html += '            <input type="text" class="banglaqr-qr-code-url-input banglaqr-general-input" value="' + escapeAttr(qrCodeUrl) + '" placeholder="Upload or paste image URL" />';
-        html += '            <button type="button" class="button button-secondary banglaqr-upload-logo-btn">Upload</button>';
+        html += '            <button type="button" class="button button-secondary banglaqr-upload-logo-btn banglaqr-btn-with-icon">';
+        html += '              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>';
+        html += '              <span>Upload</span>';
+        html += '            </button>';
         html += '          </div>';
         html += '        </div>';
 
@@ -120,7 +123,8 @@ jQuery(document).ready(function ($) {
         html += '            <span class="banglaqr-toggle-status">' + (active ? 'Active on Checkout' : 'Set as Active') + '</span>';
         html += '          </div>';
         html += '          <button type="button" class="banglaqr-delete-row-btn" title="Remove QR Account">';
-        html += '            <span class="dashicons dashicons-trash"></span> Remove Account';
+        html += '            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>';
+        html += '            <span>Remove Account</span>';
         html += '          </button>';
         html += '        </div>';
 
@@ -146,9 +150,14 @@ jQuery(document).ready(function ($) {
 
         if (qrs.length === 0) {
             var emptyHtml = '<div class="banglaqr-empty-qrs-box">';
-            emptyHtml += '  <span class="dashicons dashicons-qr-code"></span>';
+            emptyHtml += '  <div class="banglaqr-empty-icon-wrap">';
+            emptyHtml += '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h2v2h-2z"/><path d="M18 14h3v3h-3z"/><path d="M14 18h3v3h-3z"/><path d="M20 20h1v1h-1z"/></svg>';
+            emptyHtml += '  </div>';
             emptyHtml += '  <p>You have not added any QR accounts yet. Add your first account to start accepting QR payments.</p>';
-            emptyHtml += '  <button type="button" class="button button-primary" id="banglaqr-add-first-qr-btn"><span class="dashicons dashicons-plus"></span> Add First QR Account</button>';
+            emptyHtml += '  <button type="button" class="button button-primary banglaqr-btn-with-icon" id="banglaqr-add-first-qr-btn">';
+            emptyHtml += '    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+            emptyHtml += '    <span>Add First QR Account</span>';
+            emptyHtml += '  </button>';
             emptyHtml += '</div>';
             $accordionWrapper.append(emptyHtml);
             serializeData();
@@ -169,7 +178,10 @@ jQuery(document).ready(function ($) {
             $accordionWrapper.append($item);
         });
 
-        var addBtnHtml = '<button type="button" class="banglaqr-btn-add-inline" id="banglaqr-add-qr-row-inline"><span class="dashicons dashicons-plus"></span> Add Another QR Account</button>';
+        var addBtnHtml = '<button type="button" class="banglaqr-btn-add-inline banglaqr-btn-with-icon" id="banglaqr-add-qr-row-inline">';
+        addBtnHtml += '  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+        addBtnHtml += '  <span>Add Another QR Account</span>';
+        addBtnHtml += '</button>';
         $accordionWrapper.append(addBtnHtml);
 
         serializeData();
@@ -325,8 +337,8 @@ jQuery(document).ready(function ($) {
             $largeWrapper.find('.banglaqr-large-qr-preview-img').attr('src', url);
             $largeWrapper.show();
         } else {
-            $previewBox.html('<span class="dashicons dashicons-qr-code" style="font-size: 24px; width:24px; height:24px; color:#94a3b8;"></span>');
-            $tabPreview.html('<span class="dashicons dashicons-qr-code" style="font-size: 18px; width:18px; height:18px; color:#94a3b8;"></span>');
+            $previewBox.html('<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#94a3b8" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>');
+            $tabPreview.html('<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#94a3b8" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>');
 
             var $largeWrapper = $panel.find('.banglaqr-large-qr-preview-wrapper');
             $largeWrapper.find('.banglaqr-large-qr-preview-img').attr('src', '');
@@ -443,7 +455,7 @@ jQuery(document).ready(function ($) {
         if (url) {
             $previewBox.html('<img src="' + escapeAttr(url) + '" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px;" />');
         } else {
-            $previewBox.html('<span class="dashicons dashicons-image-filter" style="color:#64748b;"></span>');
+            $previewBox.html('<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#94a3b8" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>');
         }
     });
 

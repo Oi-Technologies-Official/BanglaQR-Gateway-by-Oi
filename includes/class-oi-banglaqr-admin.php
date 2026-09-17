@@ -107,13 +107,14 @@ class Oi_BanglaQR_Admin
         <div class="clear"></div>
         <div class="banglaqr-admin-order-receipt-card">
             <div class="banglaqr-receipt-card-header">
-                <span class="banglaqr-receipt-bank-name">
-                    <?php echo esc_html(!empty($selected_qr) ? $selected_qr : __('Bangla QR Payment Details', 'banglaqr-payment-gateway-by-oi')); ?>
+                <span class="banglaqr-receipt-bank-name" style="display:inline-flex; align-items:center; gap:6px;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h2v2h-2z"/><path d="M18 14h3v3h-3z"/><path d="M14 18h3v3h-3z"/></svg>
+                    <span><?php echo esc_html(!empty($selected_qr) ? $selected_qr : __('Bangla QR Payment Details', 'banglaqr-payment-gateway-by-oi')); ?></span>
                 </span>
                 <?php if ($image_url): ?>
                     <a href="<?php echo esc_url($image_url); ?>" target="_blank" rel="noopener noreferrer" class="banglaqr-view-full-link">
-                        <?php esc_html_e('View Full Image', 'banglaqr-payment-gateway-by-oi'); ?>
-                        <span class="dashicons dashicons-external"></span>
+                        <span><?php esc_html_e('View Full Image', 'banglaqr-payment-gateway-by-oi'); ?></span>
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                     </a>
                 <?php endif; ?>
             </div>
@@ -121,16 +122,18 @@ class Oi_BanglaQR_Admin
             <?php if (!empty($trx_id)): ?>
                 <div class="banglaqr-admin-trx-box">
                     <div>
-                        <div class="banglaqr-admin-trx-label">
-                            <?php esc_html_e('Transaction ID (TrxID)', 'banglaqr-payment-gateway-by-oi'); ?>
+                        <div class="banglaqr-admin-trx-label" style="display:flex; align-items:center; gap:4px;">
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>
+                            <span><?php esc_html_e('Transaction ID (TrxID)', 'banglaqr-payment-gateway-by-oi'); ?></span>
                         </div>
                         <div class="banglaqr-admin-trx-val">
                             <?php echo esc_html($trx_id); ?>
                         </div>
                     </div>
-                    <button type="button" class="button button-small banglaqr-copy-btn"
-                        onclick="if(navigator.clipboard){navigator.clipboard.writeText('<?php echo esc_js($trx_id); ?>');} this.innerText='<?php echo esc_js(__('Copied!', 'banglaqr-payment-gateway-by-oi')); ?>'; setTimeout(()=>{this.innerText='<?php echo esc_js(__('Copy', 'banglaqr-payment-gateway-by-oi')); ?>'}, 2000);">
-                        <?php esc_html_e('Copy', 'banglaqr-payment-gateway-by-oi'); ?>
+                    <button type="button" class="button button-small banglaqr-copy-btn banglaqr-btn-with-icon"
+                        onclick="if(navigator.clipboard){navigator.clipboard.writeText('<?php echo esc_js($trx_id); ?>');} this.querySelector('span').innerText='<?php echo esc_js(__('Copied!', 'banglaqr-payment-gateway-by-oi')); ?>'; setTimeout(()=>{this.querySelector('span').innerText='<?php echo esc_js(__('Copy', 'banglaqr-payment-gateway-by-oi')); ?>'}, 2000);">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        <span><?php esc_html_e('Copy', 'banglaqr-payment-gateway-by-oi'); ?></span>
                     </button>
                 </div>
             <?php endif; ?>
@@ -143,8 +146,9 @@ class Oi_BanglaQR_Admin
                 </div>
             <?php elseif (!empty($receipt_id)): ?>
                 <div class="banglaqr-receipt-missing-box">
-                    <p class="banglaqr-receipt-missing-notice">
-                        <?php esc_html_e('The uploaded receipt screenshot could not be loaded or was removed from the media library.', 'banglaqr-payment-gateway-by-oi'); ?>
+                    <p class="banglaqr-receipt-missing-notice" style="display:flex; align-items:center; gap:6px;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <span><?php esc_html_e('The uploaded receipt screenshot could not be loaded or was removed from the media library.', 'banglaqr-payment-gateway-by-oi'); ?></span>
                     </p>
                 </div>
             <?php endif; ?>

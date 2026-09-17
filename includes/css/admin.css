@@ -138,9 +138,56 @@
 }
 
 .banglaqr-section-header {
-    padding: 20px 24px;
+    padding: 18px 24px;
     border-bottom: 1px solid var(--banglaqr-border);
     background: #fafbfc;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.banglaqr-section-icon-badge {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+}
+
+.banglaqr-section-icon-badge svg {
+    width: 22px;
+    height: 22px;
+}
+
+.banglaqr-section-icon-badge.badge-green {
+    background: #f0fdf4;
+    color: #137833;
+    border: 1px solid #bbf7d0;
+}
+
+.banglaqr-section-icon-badge.badge-blue {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+}
+
+.banglaqr-section-icon-badge.badge-amber {
+    background: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fde68a;
+}
+
+.banglaqr-section-icon-badge.badge-purple {
+    background: #faf5ff;
+    color: #7c3aed;
+    border: 1px solid #e9d5ff;
+}
+
+.banglaqr-section-header-text {
+    flex: 1;
 }
 
 .banglaqr-section-header h2 {
@@ -155,6 +202,35 @@
     margin: 0 !important;
     color: var(--banglaqr-text-muted);
     font-size: 13px !important;
+}
+
+.banglaqr-field-label-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #1e293b;
+    margin-bottom: 6px;
+}
+
+.banglaqr-field-label-with-icon svg {
+    width: 15px;
+    height: 15px;
+    color: #64748b;
+    flex-shrink: 0;
+}
+
+.banglaqr-btn-with-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+.banglaqr-btn-with-icon svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
 }
 
 .banglaqr-section-body {
@@ -357,13 +433,19 @@ input:checked+.banglaqr-slider:before {
     background: #94a3b8;
 }
 
-.banglaqr-accordion-toggle-icon {
+.banglaqr-accordion-toggle-icon,
+.banglaqr-accordion-toggle-svg {
     color: #94a3b8;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.banglaqr-qr-accordion-item.is-expanded .banglaqr-accordion-toggle-icon {
+.banglaqr-qr-accordion-item.is-expanded .banglaqr-accordion-toggle-icon,
+.banglaqr-qr-accordion-item.is-expanded .banglaqr-accordion-toggle-svg {
     transform: rotate(180deg);
+    color: var(--banglaqr-text);
 }
 
 .banglaqr-accordion-body {
@@ -509,26 +591,40 @@ input:checked+.banglaqr-slider:before {
 /* Empty QR Accounts State */
 .banglaqr-empty-qrs-box {
     text-align: center;
-    padding: 36px 20px;
+    padding: 40px 24px;
     background: #ffffff;
     border: 2px dashed #cbd5e1;
-    border-radius: 12px;
+    border-radius: 14px;
     margin-bottom: 12px;
 }
 
-.banglaqr-empty-qrs-box .dashicons {
-    font-size: 38px;
-    width: 38px;
-    height: 38px;
-    color: #94a3b8;
-    margin-bottom: 8px;
+.banglaqr-empty-icon-wrap {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px auto;
+    background: #f1f5f9;
+    color: #64748b;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
+}
+
+.banglaqr-empty-icon-wrap svg {
+    width: 32px;
+    height: 32px;
 }
 
 .banglaqr-empty-qrs-box p {
     margin: 0 0 16px 0;
     color: var(--banglaqr-text-muted);
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
 }
 
 /* Admin Order Details Screen Card */
