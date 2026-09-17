@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Bangla QR Payment Gateway by Oi
+ * Plugin Name: BanglaQR Gateway by Oi
  * Plugin URI: https://oitech.com.bd/open-source/
  * Description: A payment gateway supporting bank and mobile QR payments with a scan-to-pay popup and payment receipt upload verification.
  * Version: 0.2.0
@@ -84,7 +84,7 @@ function oi_banglaqr_woocommerce_missing_notice()
 {
     ?>
     <div class="error notice">
-        <p><?php esc_html_e('Bangla QR Payment Gateway by Oi requires WooCommerce to be installed and active. The plugin is currently disabled.', 'banglaqr-payment-gateway-by-oi'); ?>
+        <p><?php esc_html_e('BanglaQR Gateway by Oi requires WooCommerce to be installed and active. The plugin is currently disabled.', 'banglaqr-payment-gateway-by-oi'); ?>
         </p>
     </div>
     <?php

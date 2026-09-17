@@ -1,11 +1,11 @@
-# 💳 BanglaQR Payment Gateway by Oi
+# 💳 BanglaQR Gateway by Oi
 
 <p align="center">
-  <img src="assets/banner-1544x500.png" alt="BanglaQR Payment Gateway for WooCommerce - Bangladesh QR Payment Plugin" width="100%">
+  <img src="assets/banner-1544x500.png" alt="BanglaQR Gateway by Oi for WooCommerce - Bangladesh QR Payment Plugin" width="100%">
 </p>
 
 <p align="center">
-  <strong>The Ultimate BanglaQR, MFS & Bank QR Payment Gateway for WooCommerce</strong><br>
+  <strong>The Ultimate BanglaQR, MFS & Bank QR Gateway for WooCommerce</strong><br>
   <em>Accept bKash, Nagad, Rocket, Upay, CellFin & Bank QR payments seamlessly with interactive popup, live timer, and receipt verification.</em>
 </p>
 
@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <a href="#-why-banglaqr-payment-gateway">Why BanglaQR?</a> •
+  <a href="#-why-banglaqr-gateway">Why BanglaQR?</a> •
   <a href="#-key-features">Features</a> •
   <a href="#-how-it-works">How It Works</a> •
   <a href="#-supported-apps--banks">Supported Apps</a> •
@@ -28,17 +28,16 @@
   <a href="#-screenshots">Screenshots</a> •
   <a href="#-developer-hooks--meta">Developers</a> •
   <a href="#-frequently-asked-questions">FAQ</a> •
-  <a href="#-বাংলায়-সারসংক্ষেপ-quick-guide-in-bangla">বাংলায়</a> •
   <a href="#-security">Security</a>
 </p>
 
 ---
 
-## 📖 Why BanglaQR Payment Gateway?
+## 📖 Why BanglaQR Gateway?
 
 Taking digital payments in Bangladesh often involves expensive setup charges, complicated contracts, merchant account approval delays, and high gateway commissions.
 
-**BanglaQR Payment Gateway by Oi** brings the national interoperable **BanglaQR** framework (introduced by Bangladesh Bank) directly to your WooCommerce store. It bridges the gap between merchant simplicity and customer convenience:
+**BanglaQR Gateway by Oi** brings the national interoperable **BanglaQR** framework (introduced by Bangladesh Bank) directly to your WooCommerce store. It bridges the gap between merchant simplicity and customer convenience:
 
 - 💸 **Zero Gateway Fees:** No expensive monthly gateway subscriptions or third-party merchant contracts required.
 - 📱 **Universal Compatibility:** Works with any bank app or Mobile Financial Service (MFS) in Bangladesh.
@@ -131,7 +130,7 @@ Customers can pay using any app compatible with BanglaQR or direct MFS transfer:
 Navigate to **WooCommerce → Settings → Payments → Bangla QR Payment** to configure the following options:
 
 ### 1. General Gateway Settings
-- **Enable/Disable:** Turn the BanglaQR payment gateway on or off.
+- **Enable/Disable:** Turn the BanglaQR gateway on or off.
 - **Payment Title:** The title displayed to customers on the checkout page (Default: `Bangla QR Payment`).
 - **Gateway Logo:** Provide a custom logo image URL or use the built-in default logo.
 - **Payment Description:** Instructions shown when the customer selects this payment option.
@@ -205,25 +204,6 @@ $trx_id     = $order->get_meta('_oi_banglaqr_transaction_id');
 $receipt_id = $order->get_meta('_oi_banglaqr_receipt_id');
 $qr_name    = $order->get_meta('_oi_banglaqr_selected_qr');
 ```
-
----
-
-## 🇧🇩 বাংলায় সারসংক্ষেপ (Quick Guide in Bangla)
-
-**BanglaQR Payment Gateway by Oi** হলো ওয়ার্ডপ্রেস ও উকমার্স (WooCommerce) ভিত্তিক অনলাইন স্টোরের জন্য একটি আধুনিক পেমেন্ট গেটওয়ে প্লাগইন। এর মাধ্যমে আপনি বাংলাদেশ ব্যাংকের প্রমিত **বাংলা কিউআর (BanglaQR)** এবং যেকোনো এমএফএস (বিকাশ, নগদ, রকেট, উপায়, সেলফিন) অথবা ব্যাংক অ্যাপের মাধ্যমে সরাসরি কাস্টমারদের কাছ থেকে পেমেন্ট গ্রহণ করতে পারবেন।
-
-### প্রধান সুবিধাসমূহ:
-- 💳 **কোনো গেটওয়ে চার্জ ছাড়াই পেমেন্ট:** থার্ড-পার্টি পেমেন্ট গেটওয়ের জটিল চুক্তি বা ফি ছাড়াই সরাসরি নিজের একাউন্টে টাকা গ্রহণ করুন।
-- 📱 **সকল অ্যাপ সাপোর্ট:** বিকাশ, নগদ, রকেট, উপায়, সেলফিন, সিটি টাচ, ব্র্যাক ব্যাংক আস্থাসহ যেকোনো বাংলা কিউআর সাপোর্টেড অ্যাপ দিয়ে স্ক্যান করে পেমেন্ট করা যায়।
-- 🪟 **আকর্ষণীয় পপআপ ও টাইমার:** চেকআউটে ১৫ মিনিটের লাইভ টাইমার এবং কিউআর কোডসহ রেসপন্সিভ পপআপ প্রদর্শিত হয়।
-- 📸 **রিসিপ্ট আপলোড ও ট্রানজেকশন আইডি:** কাস্টমার পেমেন্টের স্ক্রিনশট বা TrxID প্রদান করতে পারবেন, যা আপনি সরাসরি WooCommerce অর্ডার ড্যাশবোর্ডে দেখতে পাবেন।
-- 📋 **ম্যানুয়াল নাম্বার কপি সুবিধা:** কিউআর কোডের পাশাপাশি বিকাশ/নগদ/রকেট ইত্যাদি পার্সোনাল বা মার্চেন্ট নাম্বার এক ক্লিকে কপি করার সুবিধা।
-- 🔒 **সম্পূর্ণ সুরক্ষিত:** সেশন-লকড আপলোড, সার্ভার-সাইড ভ্যালিডেশন এবং HPOS কমপ্যাটিবল।
-
-### ইনস্টলেশন পদ্ধতি:
-1. প্লাগিনের `.zip` ফাইলটি ডাউনলোড করে **Plugins → Add New → Upload Plugin** থেকে আপলোড করে এক্টিভ করুন।
-2. **WooCommerce → Settings → Payments**-এ গিয়ে **Bangla QR Payment**-এর পাশে **Manage** বাটনে ক্লিক করুন।
-3. আপনার কিউআর কোড আপলোড করুন, বিকাশ/নগদ নাম্বার ও চার্জ (যদি থাকে) সেট করে **Save Changes** এ ক্লিক করুন।
 
 ---
 
@@ -326,7 +306,7 @@ This project is licensed under the **MIT License** — free to use, modify, and 
 
 - 🌐 **Website:** [oitech.com.bd](https://oitech.com.bd)
 - 📧 **Support:** [support@oitech.com.bd](mailto:support@oitech.com.bd)
-- 🔓 **More Open Source Projects:** [oitech.com.bd/open-source](https://oitech.com.bd/open-source/)
+- 🔓 **More Open Source Projects:** [Oi Open Source Projects](https://oitech.com.bd/open-source/)
 - 💬 **Contact Us:** [oitech.com.bd/helpline/contact-us](https://oitech.com.bd/helpline/contact-us/)
 
 ---

@@ -60,7 +60,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             'enabled' => array(
                 'title' => __('Enable/Disable', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'checkbox',
-                'label' => __('Enable Bangla QR Payment Gateway', 'banglaqr-payment-gateway-by-oi'),
+                'label' => __('Enable BanglaQR Gateway by Oi', 'banglaqr-payment-gateway-by-oi'),
                 'default' => 'no',
             ),
             'title' => array(

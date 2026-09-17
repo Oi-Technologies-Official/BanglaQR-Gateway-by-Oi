@@ -2,7 +2,7 @@
 /**
  * Fired when the plugin is uninstalled.
  *
- * @package BanglaQR_Payment_Gateway_By_Oi
+ * @package BanglaQR_Gateway_By_Oi
  */
 
 // If uninstall not called from WordPress, then exit.
