@@ -6,12 +6,12 @@
  * Version: 0.2.0
  * Author: Oi Technologies
  * Author URI: https://oitech.com.bd/
- * License: MIT
+ * License: GPLv3 or later
  * Domain Path: /languages
  * Tested up to: 6.7
  * Requires at least: 5.6
  * Requires PHP: 7.4
- * License URI: https://opensource.org/licenses/MIT
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: banglaqr-payment-gateway-by-oi
  */
 
@@ -150,15 +150,10 @@ function oi_banglaqr_add_payment_charge_fee()
     }
 
     // Fallback: If session is still empty on initial checkout load, check default gateway
-    if (empty($chosen_gateway) && function_exists('WC') && WC()->payment_gateways()) {
-        $available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
-        if (!empty($available_gateways)) {
-            $default_gateway = get_option('woocommerce_default_gateway');
-            if (!empty($default_gateway) && isset($available_gateways[$default_gateway])) {
-                $chosen_gateway = $default_gateway;
-            } else {
-                $chosen_gateway = current(array_keys($available_gateways));
-            }
+    if (empty($chosen_gateway)) {
+        $default_gateway = get_option('woocommerce_default_gateway');
+        if (!empty($default_gateway)) {
+            $chosen_gateway = $default_gateway;
         }
     }
 

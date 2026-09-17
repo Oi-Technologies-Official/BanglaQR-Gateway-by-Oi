@@ -1,6 +1,6 @@
 ---
 name: "Bug Report"
-about: Create a report to help us improve the BanglaQR Payment Gateway
+about: Create a report to help us improve the BanglaQR Gateway by Oi
 title: "[BUG] "
 labels: bug
 assignees: ''

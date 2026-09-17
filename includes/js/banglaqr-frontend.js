@@ -463,12 +463,11 @@ jQuery(document).ready(function ($) {
                 return;
             }
 
-            if (oi_banglaqr_params.receipt_rule !== 'hidden' || oi_banglaqr_params.trxid_rule !== 'hidden') {
-                if (oi_banglaqr_params.receipt_rule !== 'mandatory' && oi_banglaqr_params.trxid_rule !== 'mandatory') {
-                    if (!selectedFile && !trxId) {
-                        showError(oi_banglaqr_params.error_no_file);
-                        return;
-                    }
+            // Require at least one only if both receipt and TrxID are optional
+            if (oi_banglaqr_params.receipt_rule === 'optional' && oi_banglaqr_params.trxid_rule === 'optional') {
+                if (!selectedFile && !trxId) {
+                    showError(oi_banglaqr_params.error_no_file);
+                    return;
                 }
             }
 
@@ -595,6 +594,12 @@ jQuery(document).ready(function ($) {
                         });
 
                         var base64Data = canvas.toDataURL('image/jpeg', quality);
+                        // Release memory
+                        img.onload = null;
+                        img.onerror = null;
+                        img.src = '';
+                        canvas.width = 0;
+                        canvas.height = 0;
                         callback(newFile, base64Data);
                     }, 'image/jpeg', quality);
                 }

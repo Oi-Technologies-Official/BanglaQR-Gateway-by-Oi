@@ -824,12 +824,10 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                 wc_add_notice(__('Please enter your payment Transaction ID (TrxID) to complete this order.', 'banglaqr-payment-gateway-by-oi'), 'error');
             }
 
-            // Fallback: If both are optional, require at least one (unless both are hidden)
-            if ($receipt_rule !== 'hidden' || $trxid_rule !== 'hidden') {
-                if ($receipt_rule !== 'mandatory' && $trxid_rule !== 'mandatory') {
-                    if (!$has_receipt && !$has_trx_id) {
-                        wc_add_notice(__('Please provide either a payment receipt screenshot or your Transaction ID to complete this order.', 'banglaqr-payment-gateway-by-oi'), 'error');
-                    }
+            // Require at least one only if both receipt and TrxID are set to optional
+            if ($receipt_rule === 'optional' && $trxid_rule === 'optional') {
+                if (!$has_receipt && !$has_trx_id) {
+                    wc_add_notice(__('Please provide either a payment receipt screenshot or your Transaction ID to complete this order.', 'banglaqr-payment-gateway-by-oi'), 'error');
                 }
             }
         }
@@ -1011,29 +1009,23 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         // phpcs:ignore WordPress.Security.NonceVerification.Missing
         if (!empty($_POST['oi_banglaqr_receipt_id'])) {
             // phpcs:ignore WordPress.Security.NonceVerification.Missing
-            $receipt_id = absint(wp_unslash($_POST['oi_banglaqr_receipt_id']));
-            $order->update_meta_data('_oi_banglaqr_receipt_id', $receipt_id);
+            $candidate_id = absint(wp_unslash($_POST['oi_banglaqr_receipt_id']));
 
-            // Security check: Only update post parent if the ID belongs to an attachment
-            if ($receipt_id > 0) {
-                $receipt_post = get_post($receipt_id);
+            // Security check: Only bind attachment if it was uploaded in this customer's active session
+            if ($candidate_id > 0) {
+                $receipt_post = get_post($candidate_id);
                 if ($receipt_post && $receipt_post->post_type === 'attachment' && (int)$receipt_post->post_parent === 0) {
-                    // Verify the attachment was uploaded via our gateway
-                    if (get_post_meta($receipt_id, '_oi_banglaqr_pending_upload', true) === '1') {
-                        $uploader_token = get_post_meta($receipt_id, '_oi_banglaqr_uploader_token', true);
+                    if (get_post_meta($candidate_id, '_oi_banglaqr_pending_upload', true) === '1') {
+                        $uploader_token = get_post_meta($candidate_id, '_oi_banglaqr_uploader_token', true);
                         $session_token  = WC()->session ? WC()->session->get('oi_banglaqr_session_token') : '';
-                        
-                        $is_valid = false;
-                        if (!empty($uploader_token) && !empty($session_token) && hash_equals((string)$uploader_token, (string)$session_token)) {
-                            $is_valid = true;
-                        } elseif (empty($uploader_token)) {
-                            $is_valid = true;
-                        }
 
-                        if ($is_valid) {
+                        if (!empty($uploader_token) && !empty($session_token) && hash_equals((string)$uploader_token, (string)$session_token)) {
+                            $receipt_id = $candidate_id;
+                            $order->update_meta_data('_oi_banglaqr_receipt_id', $receipt_id);
+
                             // Set the attachment as media parent of this order
                             wp_update_post(array(
-                                'ID' => $receipt_id,
+                                'ID'          => $receipt_id,
                                 'post_parent' => $order_id,
                             ));
                             // Remove pending mark so cleanup cron will not delete it
