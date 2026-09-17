@@ -1,4 +1,4 @@
-﻿# 💳 BanglaQR Payment Gateway for WooCommerce
+﻿# 💳 BanglaQR Payment Gateway by Oi
 
 <p align="center">
   <img src="assets/banner-1544x500.png" alt="BanglaQR Payment Gateway for WooCommerce - Bangladesh QR Payment Plugin" width="100%">
