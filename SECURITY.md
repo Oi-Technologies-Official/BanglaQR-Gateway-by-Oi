@@ -16,7 +16,7 @@ Security updates and patches are actively maintained for the latest stable versi
 The Oi Technologies security team takes all vulnerabilities seriously. If you discover a security issue or vulnerability within this plugin:
 
 1. **Do NOT disclose publicly:** Please do **not** open a public GitHub issue, discussion, or post on public forums.
-2. **Email Us Privately:** Send a detailed report to **[support@oitech.com.bd](mailto:support@oitech.com.bd)**.
+2. **Email Us Privately:** Send a detailed report to **[support@oitech.com.bd](mailto:support@oitech.com.bd)** or submit a report on our VDP page at [Vulnerability Disclosure Program (VDP)](https://oitech.com.bd/vdp).
 3. **What to Include in Your Report:**
    - Plugin version affected
    - Vulnerability classification (e.g., IDOR, XSS, CSRF, File Upload, Privilege Escalation)
