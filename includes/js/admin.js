@@ -52,6 +52,11 @@ jQuery(document).ready(function ($) {
             ? '<img src="' + escapeAttr(qrCodeUrl) + '" alt="' + escapeAttr(qrName) + '" />'
             : '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#94a3b8" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>';
 
+        var fee = qr.payment_charge || '0';
+        var feeBadge = (parseFloat(fee) > 0)
+            ? '<span class="banglaqr-accordion-badge-fee">' + escapeAttr(fee) + '% Fee</span>'
+            : '<span class="banglaqr-accordion-badge-fee">No Fee</span>';
+
         var statusBadge = active 
             ? '<span class="banglaqr-status-badge status-active"><span class="status-dot"></span> Active</span>'
             : '<span class="banglaqr-status-badge status-inactive"><span class="status-dot"></span> Inactive</span>';
@@ -64,7 +69,8 @@ jQuery(document).ready(function ($) {
         html += '    <div class="banglaqr-sort-handle" title="Drag to reorder"><svg viewBox="0 0 24 24" width="16" height="16" fill="#94a3b8"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></div>';
         html += '    <div class="banglaqr-accordion-logo">' + logoHtml + '</div>';
         html += '    <div class="banglaqr-accordion-title">' + (qrName ? escapeAttr(qrName) : 'New QR Account') + '</div>';
-        html += '    <div class="banglaqr-accordion-actions">';
+        html += '    <div class="banglaqr-accordion-actions" style="display:flex; align-items:center;">';
+        html += feeBadge;
         html += '      <div class="banglaqr-badge-wrapper">' + statusBadge + '</div>';
         html += '      <span class="banglaqr-accordion-toggle-svg"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>';
         html += '    </div>';
@@ -457,6 +463,18 @@ jQuery(document).ready(function ($) {
         } else {
             $previewBox.html('<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#94a3b8" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>');
         }
+    });
+
+    // Sync theme accent color picker
+    $(document).on('input change', '#woocommerce_oi_banglaqr_theme_color', function () {
+        var val = $(this).val();
+        $('#banglaqr-theme-color-swatch').css('background-color', val);
+        $('#banglaqr-theme-color-hex').val(val);
+    });
+
+    $(document).on('click', '#banglaqr-theme-color-swatch, .banglaqr-color-trigger-btn', function (e) {
+        e.preventDefault();
+        $('#woocommerce_oi_banglaqr_theme_color').trigger('click');
     });
 
     // Initial render

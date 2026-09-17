@@ -1,6 +1,6 @@
 /**
- * Admin Panel CSS for Bangla QR Payment Method
- * Clean, minimal, unified accordion-based architecture
+ * BanglaQR Payment Gateway - Admin Panel Design System
+ * Modern, clean, fintech dashboard UI/UX architecture
  */
 
 :root {
@@ -9,47 +9,63 @@
     --banglaqr-primary-light: #f0fdf4;
     --banglaqr-primary-border: #bbf7d0;
 
-    --banglaqr-accent: #E20613;
+    --banglaqr-accent: #e20613;
     --banglaqr-accent-hover: #c40510;
     --banglaqr-accent-light: #fef2f2;
 
     --banglaqr-bg: #f8fafc;
     --banglaqr-card-bg: #ffffff;
     --banglaqr-border: #e2e8f0;
+    --banglaqr-border-light: #f1f5f9;
 
     --banglaqr-text: #0f172a;
+    --banglaqr-text-secondary: #334155;
     --banglaqr-text-muted: #64748b;
+    --banglaqr-text-light: #94a3b8;
+
+    --banglaqr-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --banglaqr-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-    --banglaqr-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-    --banglaqr-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --banglaqr-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+    --banglaqr-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
 }
 
+/* Base Wrapper */
 .banglaqr-admin-dashboard-wrap {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
     color: var(--banglaqr-text);
     width: 100%;
-    max-width: 900px;
-    margin: 24px auto;
-    padding: 24px;
-    background: #f8fafc;
-    border-radius: 12px;
+    max-width: 920px;
+    margin: 20px auto 40px auto;
+    padding: 0 12px;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
 }
 
 .banglaqr-admin-dashboard-wrap * {
     box-sizing: border-box;
 }
 
-/* Header */
+/* ==========================================================================
+   Header Section with Live Status & Quick Metrics
+   ========================================================================== */
+
 .banglaqr-dashboard-header {
-    background: var(--banglaqr-card-bg);
+    background: #ffffff;
     border: 1px solid var(--banglaqr-border);
     border-radius: 16px;
     padding: 24px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--banglaqr-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.banglaqr-header-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: var(--banglaqr-shadow);
+    gap: 16px;
 }
 
 .banglaqr-header-info {
@@ -61,13 +77,15 @@
 .banglaqr-logo-icon {
     width: 48px;
     height: 48px;
-    background: var(--banglaqr-primary-light);
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
     color: var(--banglaqr-primary);
-    border-radius: 12px;
+    border: 1px solid #bbf7d0;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(19, 120, 51, 0.1);
 }
 
 .banglaqr-logo-icon svg {
@@ -76,78 +94,163 @@
     display: block !important;
 }
 
-.banglaqr-dashboard-header h1 {
+.banglaqr-header-title-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.banglaqr-header-title {
     font-size: 20px !important;
     font-weight: 700 !important;
     margin: 0 !important;
+    padding: 0 !important;
     color: var(--banglaqr-text) !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.2px;
 }
 
-.banglaqr-dashboard-header p {
+.banglaqr-header-subtitle {
     margin: 4px 0 0 0 !important;
-    color: var(--banglaqr-text-muted);
+    color: var(--banglaqr-text-muted) !important;
     font-size: 13px !important;
+    line-height: 1.4 !important;
 }
 
-/* Primary Button */
-.banglaqr-admin-dashboard-wrap .button-primary {
-    background: linear-gradient(135deg, var(--banglaqr-primary) 0%, var(--banglaqr-primary-hover) 100%) !important;
-    border: none !important;
-    border-radius: 8px !important;
-    color: #ffffff !important;
-    font-weight: 600 !important;
-    padding: 0 20px !important;
-    height: 38px !important;
-    line-height: 38px !important;
-    box-shadow: 0 4px 10px rgba(19, 120, 51, 0.2) !important;
-    text-shadow: none !important;
-    transition: all 0.2s ease !important;
+/* Pulsing Status Badge */
+.banglaqr-status-badge {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
 }
 
-.banglaqr-admin-dashboard-wrap .button-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(19, 120, 51, 0.25) !important;
-    background: linear-gradient(135deg, var(--banglaqr-primary-hover) 0%, #0d5423 100%) !important;
+.banglaqr-status-badge .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    position: relative;
 }
 
-.banglaqr-admin-dashboard-wrap .button-primary:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 4px rgba(19, 120, 51, 0.15) !important;
+.banglaqr-status-badge.status-active {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
 }
 
-/* Secondary Button */
-.banglaqr-admin-dashboard-wrap .button-secondary {
-    background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 8px !important;
-    color: var(--banglaqr-text) !important;
-    font-weight: 600 !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
-    transition: all 0.2s ease !important;
+.banglaqr-status-badge.status-active .status-dot {
+    background: #10b981;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: banglaqr-pulse 2s infinite;
 }
 
-.banglaqr-admin-dashboard-wrap .button-secondary:hover {
-    background: #f1f5f9 !important;
-    border-color: #94a3b8 !important;
+.banglaqr-status-badge.status-inactive {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
 }
 
-/* Unified Sections Layout */
+.banglaqr-status-badge.status-inactive .status-dot {
+    background: #94a3b8;
+}
+
+@keyframes banglaqr-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
+/* Quick Metrics Row */
+.banglaqr-quick-metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 16px;
+}
+
+.banglaqr-metric-pill {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-right: 1px solid #e2e8f0;
+    padding-right: 12px;
+}
+
+.banglaqr-metric-pill:last-child {
+    border-right: none;
+    padding-right: 0;
+}
+
+.banglaqr-metric-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--banglaqr-text-muted);
+}
+
+.banglaqr-metric-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--banglaqr-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.banglaqr-metric-badge {
+    font-size: 10px;
+    font-weight: 700;
+    color: #0369a1;
+    background: #e0f2fe;
+    border-radius: 4px;
+    padding: 1px 6px;
+    display: inline-block;
+    width: fit-content;
+    margin-top: 2px;
+}
+
+/* ==========================================================================
+   Section Cards
+   ========================================================================== */
+
+.banglaqr-settings-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 .banglaqr-settings-section {
     background: var(--banglaqr-card-bg);
     border: 1px solid var(--banglaqr-border);
     border-radius: 16px;
     box-shadow: var(--banglaqr-shadow);
-    margin-bottom: 24px;
     overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.banglaqr-settings-section:hover {
+    box-shadow: var(--banglaqr-shadow-hover);
 }
 
 .banglaqr-section-header {
     padding: 18px 24px;
     border-bottom: 1px solid var(--banglaqr-border);
-    background: #fafbfc;
+    background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
     display: flex;
     align-items: center;
     gap: 16px;
@@ -161,12 +264,13 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .banglaqr-section-icon-badge svg {
-    width: 22px;
-    height: 22px;
+    width: 22px !important;
+    height: 22px !important;
+    display: block !important;
 }
 
 .banglaqr-section-icon-badge.badge-green {
@@ -198,17 +302,101 @@
 }
 
 .banglaqr-section-header h2 {
-    margin: 0 0 4px 0 !important;
     font-size: 16px !important;
     font-weight: 700 !important;
-    color: var(--banglaqr-text) !important;
+    margin: 0 !important;
     padding: 0 !important;
+    color: var(--banglaqr-text) !important;
+    line-height: 1.3 !important;
 }
 
 .banglaqr-section-header p {
-    margin: 0 !important;
+    margin: 3px 0 0 0 !important;
     color: var(--banglaqr-text-muted);
     font-size: 13px !important;
+    line-height: 1.4 !important;
+}
+
+.banglaqr-section-body {
+    padding: 24px;
+}
+
+/* ==========================================================================
+   2-Column Grid (General Settings)
+   ========================================================================== */
+
+.banglaqr-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.banglaqr-card-subpanel {
+    background: #f8fafc;
+    border: 1px solid var(--banglaqr-border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.banglaqr-subpanel-title {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.6px !important;
+    color: var(--banglaqr-text-secondary) !important;
+    margin: 0 0 4px 0 !important;
+    padding-bottom: 10px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.banglaqr-subpanel-title svg {
+    color: #64748b;
+}
+
+/* Toggle Card */
+.banglaqr-toggle-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.banglaqr-toggle-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+.banglaqr-toggle-card-text {
+    flex: 1;
+}
+
+.banglaqr-toggle-card-label {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: var(--banglaqr-text) !important;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 2px;
+}
+
+/* ==========================================================================
+   Form Fields & Controls
+   ========================================================================== */
+
+.banglaqr-grid-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .banglaqr-admin-dashboard-wrap .banglaqr-field-label-with-icon,
@@ -220,7 +408,7 @@
     font-weight: 600 !important;
     font-size: 13px !important;
     color: #1e293b !important;
-    margin-bottom: 6px !important;
+    margin-bottom: 2px !important;
     line-height: 1.4 !important;
 }
 
@@ -243,6 +431,714 @@
     display: inline-flex;
     align-items: center;
     gap: 3px;
+}
+
+.banglaqr-grid-field .req {
+    color: var(--banglaqr-accent);
+    font-weight: 700;
+}
+
+.banglaqr-field-tip {
+    margin: 2px 0 0 0 !important;
+    color: var(--banglaqr-text-muted) !important;
+    font-size: 11.5px !important;
+    line-height: 1.45 !important;
+}
+
+/* Standard Inputs */
+.banglaqr-general-input {
+    width: 100% !important;
+    height: 40px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    padding: 0 12px !important;
+    font-size: 13px !important;
+    color: var(--banglaqr-text) !important;
+    background: #ffffff !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.banglaqr-general-textarea {
+    width: 100% !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+    font-family: inherit !important;
+    color: var(--banglaqr-text) !important;
+    background: #ffffff !important;
+    line-height: 1.5 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+    resize: vertical;
+}
+
+.banglaqr-general-input:focus,
+.banglaqr-general-textarea:focus {
+    border-color: var(--banglaqr-primary) !important;
+    box-shadow: 0 0 0 3px rgba(19, 120, 51, 0.15) !important;
+    outline: none !important;
+}
+
+/* Image Uploader Inline */
+.banglaqr-uploader-inline {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+.banglaqr-uploader-inline .banglaqr-general-input {
+    flex: 1;
+}
+
+.banglaqr-logo-preview-box {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 3px;
+    flex-shrink: 0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.banglaqr-logo-preview-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+/* Theme Accent Color Control */
+.banglaqr-color-control-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 4px 10px 4px 6px;
+    width: fit-content;
+    position: relative;
+}
+
+.banglaqr-color-swatch-indicator {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.banglaqr-color-hex-badge {
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #334155 !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    width: 75px !important;
+    box-shadow: none !important;
+    cursor: default;
+}
+
+.banglaqr-color-native-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.banglaqr-color-trigger-btn {
+    height: 30px !important;
+    padding: 0 10px !important;
+    font-size: 11px !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+}
+
+/* Switch Slider */
+.banglaqr-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.banglaqr-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.banglaqr-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1;
+    transition: 0.25s ease;
+    border-radius: 24px;
+}
+
+.banglaqr-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.25s ease;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+input:checked + .banglaqr-slider {
+    background-color: var(--banglaqr-primary);
+}
+
+input:checked + .banglaqr-slider:before {
+    transform: translateX(20px);
+}
+
+/* ==========================================================================
+   Section 2: Checkout Rules & Status (3-Card Matrix)
+   ========================================================================== */
+
+.banglaqr-rules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.banglaqr-rule-card {
+    background: #f8fafc;
+    border: 1px solid var(--banglaqr-border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.banglaqr-rule-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.banglaqr-rule-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.banglaqr-rule-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: var(--banglaqr-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.banglaqr-rule-title {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: var(--banglaqr-text) !important;
+    margin: 0 !important;
+    line-height: 1.3 !important;
+}
+
+.banglaqr-rule-select {
+    font-weight: 600 !important;
+    color: var(--banglaqr-text) !important;
+    background-color: #ffffff !important;
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   Section 3: Manual Mobile Banking Accounts (Branded Cards)
+   ========================================================================== */
+
+.banglaqr-mfs-master-toggle {
+    margin-bottom: 20px;
+    background: #f8fafc;
+}
+
+.banglaqr-mfs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.banglaqr-mfs-card {
+    background: #ffffff;
+    border: 1px solid var(--banglaqr-border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top-width: 3px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.banglaqr-mfs-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--banglaqr-shadow-hover);
+}
+
+.banglaqr-mfs-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.banglaqr-mfs-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+}
+
+.banglaqr-mfs-type-tag {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--banglaqr-text-muted);
+    background: #f1f5f9;
+    border-radius: 4px;
+    padding: 2px 6px;
+}
+
+.banglaqr-mfs-input {
+    font-weight: 600 !important;
+    font-size: 13.5px !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* Specific Provider Branding Accents */
+.mfs-card-bkash {
+    border-top-color: #e2136e;
+}
+.mfs-card-bkash .banglaqr-mfs-badge {
+    color: #e2136e;
+}
+.mfs-card-bkash .banglaqr-mfs-input:focus {
+    border-color: #e2136e !important;
+    box-shadow: 0 0 0 3px rgba(226, 19, 110, 0.15) !important;
+}
+
+.mfs-card-nagad {
+    border-top-color: #f7941d;
+}
+.mfs-card-nagad .banglaqr-mfs-badge {
+    color: #f7941d;
+}
+.mfs-card-nagad .banglaqr-mfs-input:focus {
+    border-color: #f7941d !important;
+    box-shadow: 0 0 0 3px rgba(247, 148, 29, 0.15) !important;
+}
+
+.mfs-card-rocket {
+    border-top-color: #8c3494;
+}
+.mfs-card-rocket .banglaqr-mfs-badge {
+    color: #8c3494;
+}
+.mfs-card-rocket .banglaqr-mfs-input:focus {
+    border-color: #8c3494 !important;
+    box-shadow: 0 0 0 3px rgba(140, 52, 148, 0.15) !important;
+}
+
+.mfs-card-upay {
+    border-top-color: #005696;
+}
+.mfs-card-upay .banglaqr-mfs-badge {
+    color: #005696;
+}
+.mfs-card-upay .banglaqr-mfs-input:focus {
+    border-color: #005696 !important;
+    box-shadow: 0 0 0 3px rgba(0, 86, 150, 0.15) !important;
+}
+
+.mfs-card-cellfin {
+    border-top-color: #00897b;
+}
+.mfs-card-cellfin .banglaqr-mfs-badge {
+    color: #00897b;
+}
+.mfs-card-cellfin .banglaqr-mfs-input:focus {
+    border-color: #00897b !important;
+    box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.15) !important;
+}
+
+/* ==========================================================================
+   Section 4: Accordion QR Manager
+   ========================================================================== */
+
+.banglaqr-qr-accordion-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.banglaqr-qr-accordion-item {
+    border: 1px solid var(--banglaqr-border);
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: var(--banglaqr-shadow-sm);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+}
+
+.banglaqr-qr-accordion-item:hover {
+    border-color: #cbd5e1;
+    box-shadow: var(--banglaqr-shadow);
+}
+
+.banglaqr-qr-accordion-item.is-expanded {
+    border-color: #cbd5e1;
+    box-shadow: var(--banglaqr-shadow);
+}
+
+/* Accordion Header */
+.banglaqr-accordion-header {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease;
+}
+
+.banglaqr-accordion-header:hover {
+    background: #fafbfc;
+}
+
+.banglaqr-sort-handle {
+    cursor: grab;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #94a3b8;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.banglaqr-sort-handle:hover {
+    color: var(--banglaqr-text);
+    background: #f1f5f9;
+}
+
+.banglaqr-sort-handle:active {
+    cursor: grabbing;
+}
+
+.banglaqr-sort-handle svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+}
+
+.banglaqr-accordion-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--banglaqr-border);
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 14px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.banglaqr-accordion-logo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.banglaqr-accordion-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--banglaqr-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Accordion Header Badges */
+.banglaqr-accordion-badge-fee {
+    font-size: 11px;
+    font-weight: 700;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-right: 10px;
+}
+
+.banglaqr-accordion-badge-status {
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 3px 10px;
+    margin-right: 12px;
+}
+
+.banglaqr-accordion-badge-status.badge-active {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.banglaqr-accordion-badge-status.badge-inactive {
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.banglaqr-accordion-toggle-svg {
+    color: #94a3b8;
+    transition: transform 0.25s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.banglaqr-qr-accordion-item.is-expanded .banglaqr-accordion-toggle-svg {
+    transform: rotate(180deg);
+    color: var(--banglaqr-text);
+}
+
+/* Accordion Body */
+.banglaqr-accordion-body {
+    display: none;
+    padding: 20px;
+    border-top: 1px solid #f1f5f9;
+    background: #fafbfc;
+}
+
+.banglaqr-accordion-body-inner {
+    display: flex;
+    gap: 24px;
+}
+
+/* Left Column: Large QR Scan Preview Box */
+.banglaqr-large-qr-preview-wrapper {
+    width: 170px;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.banglaqr-large-qr-preview-box {
+    width: 170px;
+    height: 170px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.banglaqr-large-qr-preview-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Right Column: Card Inputs */
+.banglaqr-card-inputs-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.banglaqr-panel-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    margin-top: 6px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.banglaqr-delete-row-btn {
+    background: #fff;
+    border: 1px solid #fecaca;
+    color: var(--banglaqr-accent);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.banglaqr-delete-row-btn:hover {
+    background: #fef2f2;
+    border-color: #f87171;
+    color: var(--banglaqr-accent-hover);
+}
+
+.banglaqr-delete-row-btn svg {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* Add New QR Account Button */
+.banglaqr-btn-add-inline {
+    width: 100%;
+    padding: 14px;
+    background: #ffffff;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    color: var(--banglaqr-text-muted);
+    font-weight: 700;
+    font-size: 13.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    margin-top: 8px;
+}
+
+.banglaqr-btn-add-inline:hover {
+    border-color: var(--banglaqr-primary);
+    color: var(--banglaqr-primary);
+    background: var(--banglaqr-primary-light);
+    transform: translateY(-1px);
+}
+
+.banglaqr-btn-add-inline svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    flex-shrink: 0;
+}
+
+/* Empty State Box */
+.banglaqr-empty-qrs-box {
+    border: 2px dashed #cbd5e1;
+    border-radius: 16px;
+    padding: 36px 24px;
+    text-align: center;
+    background: #ffffff;
+}
+
+.banglaqr-empty-icon-wrap {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 14px auto;
+    background: #f1f5f9;
+    color: #64748b;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
+}
+
+.banglaqr-empty-icon-wrap svg {
+    width: 30px;
+    height: 30px;
+}
+
+.banglaqr-empty-qrs-box p {
+    margin: 0 0 16px 0 !important;
+    color: var(--banglaqr-text-muted) !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    max-width: 420px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    line-height: 1.5 !important;
+}
+
+/* ==========================================================================
+   Buttons & Actions
+   ========================================================================== */
+
+.banglaqr-admin-dashboard-wrap .button-primary {
+    background: linear-gradient(135deg, var(--banglaqr-primary) 0%, var(--banglaqr-primary-hover) 100%) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    padding: 0 20px !important;
+    height: 38px !important;
+    line-height: 38px !important;
+    box-shadow: 0 4px 10px rgba(19, 120, 51, 0.2) !important;
+    text-shadow: none !important;
+    transition: all 0.2s ease !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.banglaqr-admin-dashboard-wrap .button-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(19, 120, 51, 0.25) !important;
+    background: linear-gradient(135deg, var(--banglaqr-primary-hover) 0%, #0d5423 100%) !important;
+}
+
+.banglaqr-admin-dashboard-wrap .button-secondary {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    color: var(--banglaqr-text) !important;
+    font-weight: 600 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+    transition: all 0.2s ease !important;
+}
+
+.banglaqr-admin-dashboard-wrap .button-secondary:hover {
+    background: #f1f5f9 !important;
+    border-color: #94a3b8 !important;
 }
 
 .banglaqr-admin-dashboard-wrap button.banglaqr-btn-with-icon,
@@ -272,483 +1168,83 @@
     vertical-align: middle !important;
 }
 
-.banglaqr-section-body {
-    padding: 24px;
-}
-
-/* Inputs */
-.banglaqr-general-input,
-.banglaqr-general-textarea {
-    width: 100%;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 8px !important;
-    background-color: #ffffff !important;
-    color: var(--banglaqr-text) !important;
-    transition: all 0.2s ease !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) inset !important;
-}
-
-.banglaqr-general-input:focus,
-.banglaqr-general-textarea:focus {
-    border-color: var(--banglaqr-primary) !important;
-    box-shadow: 0 0 0 3px var(--banglaqr-primary-light) !important;
-    outline: none !important;
-}
-
-/* Toggle Switch */
-.banglaqr-toggle-wrapper {
+/* WooCommerce Save Button Placement */
+.woocommerce p.submit {
+    max-width: 920px;
+    margin: 16px auto 40px auto !important;
+    padding: 0 12px !important;
     display: flex;
-    align-items: center;
-    gap: 12px;
+    justify-content: flex-end;
 }
 
-.banglaqr-switch {
-    position: relative;
-    display: inline-block;
-    width: 44px;
-    height: 24px;
+.woocommerce p.submit .button-primary {
+    background: linear-gradient(135deg, var(--banglaqr-primary) 0%, var(--banglaqr-primary-hover) 100%) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 0 32px !important;
+    height: 44px !important;
+    line-height: 44px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px !important;
+    box-shadow: 0 4px 14px rgba(19, 120, 51, 0.25) !important;
+    transition: all 0.2s ease !important;
 }
 
-.banglaqr-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+.woocommerce p.submit .button-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(19, 120, 51, 0.3) !important;
 }
 
-.banglaqr-slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #cbd5e1;
-    transition: .3s;
-    border-radius: 24px;
-}
+/* ==========================================================================
+   Order Details Metabox (Merchant View of Customer Payment)
+   ========================================================================== */
 
-.banglaqr-slider:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: .3s;
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-input:checked+.banglaqr-slider {
-    background-color: var(--banglaqr-primary);
-}
-
-input:checked+.banglaqr-slider:before {
-    transform: translateX(20px);
-}
-
-.banglaqr-toggle-status {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--banglaqr-text);
-}
-
-/* Accordion QR Manager */
-.banglaqr-qr-accordion-wrapper {
+.banglaqr-order-receipt-metabox {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-}
-
-.banglaqr-qr-accordion-item {
-    border: 1px solid var(--banglaqr-border);
-    border-radius: 10px;
-    background: #ffffff;
-    overflow: hidden;
-    transition: all 0.2s ease;
-}
-
-.banglaqr-qr-accordion-item.ui-sortable-helper {
-    box-shadow: var(--banglaqr-shadow-lg);
-    transform: scale(1.02);
-}
-
-.banglaqr-qr-accordion-item.is-expanded {
-    border-color: var(--banglaqr-primary);
-    box-shadow: 0 0 0 3px var(--banglaqr-primary-light);
-}
-
-.banglaqr-accordion-header {
-    display: flex;
-    align-items: center;
-    padding: 14px 20px;
-    background: #ffffff;
-    cursor: pointer;
-    user-select: none;
-}
-
-.banglaqr-accordion-header:hover {
-    background: #fafbfc;
-}
-
-.banglaqr-sort-handle {
-    color: #94a3b8;
-    cursor: grab;
-    margin-right: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.banglaqr-sort-handle svg {
-    display: block;
-    width: 16px;
-    height: 16px;
-}
-
-.banglaqr-sort-handle:active {
-    cursor: grabbing;
-}
-
-.banglaqr-accordion-logo {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    border: 1px solid var(--banglaqr-border);
-    background: #f8fafc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 16px;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.banglaqr-accordion-logo svg {
-    display: block;
-    width: 18px;
-    height: 18px;
-}
-
-.banglaqr-accordion-logo img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
-
-.banglaqr-accordion-title {
-    flex: 1;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--banglaqr-text);
-}
-
-.banglaqr-accordion-actions {
-    display: flex;
-    align-items: center;
     gap: 16px;
+    padding: 4px;
 }
 
-.banglaqr-status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.banglaqr-status-badge.status-active {
-    background: var(--banglaqr-primary-light);
-    color: var(--banglaqr-primary);
-    border: 1px solid var(--banglaqr-primary-border);
-}
-
-.banglaqr-status-badge.status-inactive {
-    background: #f1f5f9;
-    color: #64748b;
-    border: 1px solid #e2e8f0;
-}
-
-.banglaqr-status-badge .status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-}
-
-.banglaqr-status-badge.status-active .status-dot {
-    background: var(--banglaqr-primary);
-}
-
-.banglaqr-status-badge.status-inactive .status-dot {
-    background: #94a3b8;
-}
-
-.banglaqr-accordion-toggle-icon,
-.banglaqr-accordion-toggle-svg {
-    color: #94a3b8;
-    transition: transform 0.2s ease, color 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-}
-
-.banglaqr-accordion-toggle-svg svg {
-    display: block;
-    width: 18px;
-    height: 18px;
-}
-
-.banglaqr-qr-accordion-item.is-expanded .banglaqr-accordion-toggle-icon,
-.banglaqr-qr-accordion-item.is-expanded .banglaqr-accordion-toggle-svg {
-    transform: rotate(180deg);
-    color: var(--banglaqr-text);
-}
-
-.banglaqr-accordion-body {
-    display: none;
-    padding: 24px;
-    border-top: 1px solid var(--banglaqr-border);
-    background: #fafbfc;
-}
-
-.banglaqr-qr-accordion-item.is-expanded .banglaqr-accordion-body {
-    display: block;
-}
-
-.banglaqr-accordion-body-inner {
-    display: flex;
-    gap: 24px;
-}
-
-.banglaqr-large-qr-preview-wrapper {
-    width: 100px;
-    flex-shrink: 0;
-}
-
-.banglaqr-large-qr-preview-box {
-    width: 100%;
-    aspect-ratio: 1;
+.banglaqr-receipt-card {
     background: #ffffff;
     border: 1px solid var(--banglaqr-border);
     border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.banglaqr-large-qr-preview-box img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    border-radius: 4px;
-}
-
-.banglaqr-card-inputs-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.banglaqr-grid-field label:not(.banglaqr-field-label-with-icon) {
-    display: block;
-    font-weight: 600;
-    font-size: 13px;
-    color: var(--banglaqr-text);
-    margin-bottom: 6px;
-}
-
-.banglaqr-grid-field .req {
-    color: var(--banglaqr-accent);
-}
-
-.banglaqr-uploader-inline {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    width: 100%;
-}
-
-.banglaqr-logo-preview-box {
-    width: 38px;
-    height: 38px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    background-color: #f8fafc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow: hidden;
-    padding: 4px;
-    box-sizing: border-box;
-    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.banglaqr-logo-preview-box img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    border-radius: 4px;
-}
-
-.banglaqr-panel-actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 24px;
-    padding-top: 16px;
-    border-top: 1px solid var(--banglaqr-border);
-}
-
-.banglaqr-delete-row-btn {
-    background: none;
-    border: none;
-    color: var(--banglaqr-accent);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 600;
-    font-size: 13px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: background 0.2s;
-    line-height: 1;
-}
-
-.banglaqr-delete-row-btn svg {
-    width: 14px;
-    height: 14px;
-    display: inline-block;
-    vertical-align: middle;
-    flex-shrink: 0;
-    margin: 0;
-}
-
-.banglaqr-delete-row-btn:hover {
-    background: var(--banglaqr-accent-light);
-}
-
-.banglaqr-btn-add-inline {
-    width: 100%;
-    padding: 16px;
-    background: #ffffff;
-    border: 2px dashed #cbd5e1;
-    border-radius: 10px;
-    color: var(--banglaqr-text-muted);
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
+.banglaqr-receipt-header {
+    background: #f8fafc;
+    border-bottom: 1px solid var(--banglaqr-border);
+    padding: 10px 14px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-    margin-top: 8px;
-}
-
-.banglaqr-btn-add-inline svg {
-    width: 16px;
-    height: 16px;
-    display: block;
-    flex-shrink: 0;
-}
-
-.banglaqr-btn-add-inline:hover {
-    border-color: var(--banglaqr-primary);
-    color: var(--banglaqr-primary);
-    background: var(--banglaqr-primary-light);
-}
-
-/* Empty QR Accounts State */
-.banglaqr-empty-qrs-box {
-    text-align: center;
-    padding: 40px 24px;
-    background: #ffffff;
-    border: 2px dashed #cbd5e1;
-    border-radius: 14px;
-    margin-bottom: 12px;
-}
-
-.banglaqr-empty-icon-wrap {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 16px auto;
-    background: #f1f5f9;
-    color: #64748b;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #e2e8f0;
-}
-
-.banglaqr-empty-icon-wrap svg {
-    width: 32px;
-    height: 32px;
-}
-
-.banglaqr-empty-qrs-box p {
-    margin: 0 0 16px 0;
-    color: var(--banglaqr-text-muted);
-    font-size: 14px;
-    font-weight: 500;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.5;
-}
-
-/* Admin Order Details Screen Card */
-.banglaqr-admin-order-receipt-card {
-    margin-top: 20px;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    background-color: #f8fafc;
-    padding: 16px;
-    max-width: 440px;
-    box-shadow: var(--banglaqr-shadow);
-}
-
-.banglaqr-receipt-card-header {
-    display: flex;
     justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #e2e8f0;
-    padding-bottom: 10px;
-    margin-bottom: 12px;
 }
 
 .banglaqr-receipt-bank-name {
     font-weight: 700;
+    font-size: 13px;
     color: var(--banglaqr-text);
-    font-size: 14px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
 }
 
 .banglaqr-receipt-bank-name svg {
-    width: 16px;
-    height: 16px;
+    color: var(--banglaqr-primary);
+    width: 15px;
+    height: 15px;
     display: inline-block;
     vertical-align: middle;
-    color: var(--banglaqr-primary);
-    flex-shrink: 0;
 }
 
 .banglaqr-view-full-link {
-    color: var(--banglaqr-primary);
-    font-weight: 600;
     font-size: 12px;
+    font-weight: 600;
+    color: var(--banglaqr-primary);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -756,7 +1252,6 @@ input:checked+.banglaqr-slider:before {
 }
 
 .banglaqr-view-full-link:hover {
-    text-decoration: underline;
     color: var(--banglaqr-primary-hover);
 }
 
@@ -768,19 +1263,37 @@ input:checked+.banglaqr-slider:before {
     flex-shrink: 0;
 }
 
-.banglaqr-admin-trx-box {
-    margin-bottom: 12px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 10px 14px;
+.banglaqr-receipt-preview-box {
+    padding: 12px;
+    background: #0f172a;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    min-height: 200px;
+    max-height: 380px;
+    overflow: hidden;
+}
+
+.banglaqr-receipt-preview-box img {
+    max-width: 100%;
+    max-height: 360px;
+    object-fit: contain;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.banglaqr-admin-trx-box {
+    background: #f8fafc;
+    border: 1px solid var(--banglaqr-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .banglaqr-admin-trx-label {
-    font-size: 10px;
+    font-size: 11px;
     text-transform: uppercase;
     font-weight: 700;
     color: var(--banglaqr-text-muted);
@@ -799,92 +1312,62 @@ input:checked+.banglaqr-slider:before {
 }
 
 .banglaqr-admin-trx-val {
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 15px;
     font-weight: 700;
     color: #0f172a;
-    font-family: monospace;
     letter-spacing: 0.5px;
-    margin-top: 2px;
+    user-select: all;
 }
 
-.banglaqr-copy-btn {
-    font-size: 11px !important;
-    height: 28px !important;
-    line-height: 26px !important;
-    font-weight: 600 !important;
-    padding: 0 10px !important;
-    border-radius: 6px !important;
-}
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
 
-.banglaqr-receipt-image-preview-container {
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #e2e8f0;
-    background: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px;
-}
-
-.banglaqr-receipt-preview-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 6px;
-}
-
-.banglaqr-receipt-missing-box {
-    background-color: var(--banglaqr-accent-light);
-    border: 1px solid #fecaca;
-    border-radius: 6px;
-    padding: 10px 12px;
-}
-
-.banglaqr-receipt-missing-notice {
-    margin: 0;
-    color: var(--banglaqr-accent);
-    font-size: 12px;
-    font-weight: 600;
-}
-
-/* Align WooCommerce Save Changes Button with Dashboard Container */
-.woocommerce p.submit {
-    max-width: 900px;
-    margin: 16px auto 32px auto !important;
-    padding: 0 24px;
-}
-
-/* Responsive Admin Styles */
-@media screen and (max-width: 782px) {
-    .banglaqr-admin-dashboard-wrap {
-        padding: 14px;
-        margin: 12px auto;
-    }
-
-    .banglaqr-dashboard-header {
+@media (max-width: 782px) {
+    .banglaqr-header-top {
         flex-direction: column;
         align-items: flex-start;
-        gap: 16px;
-        padding: 16px;
+        gap: 12px;
     }
 
-    .banglaqr-section-body {
-        padding: 16px;
+    .banglaqr-header-actions {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
     }
 
-    .banglaqr-accordion-body {
-        padding: 16px;
+    .banglaqr-quick-metrics-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .banglaqr-metric-pill:nth-child(2) {
+        border-right: none;
+    }
+
+    .banglaqr-grid-2col {
+        grid-template-columns: 1fr;
+    }
+
+    .banglaqr-rules-grid {
+        grid-template-columns: 1fr;
     }
 
     .banglaqr-accordion-body-inner {
         flex-direction: column;
         align-items: center;
-        gap: 16px;
     }
 
     .banglaqr-large-qr-preview-wrapper {
-        width: 120px;
+        width: 100%;
+        max-width: 220px;
+        margin-bottom: 12px;
+    }
+
+    .banglaqr-large-qr-preview-box {
+        width: 100%;
+        height: 200px;
     }
 
     .banglaqr-card-inputs-wrapper {
@@ -892,6 +1375,39 @@ input:checked+.banglaqr-slider:before {
     }
 
     .woocommerce p.submit {
-        padding: 0 14px;
+        justify-content: stretch;
+    }
+
+    .woocommerce p.submit .button-primary {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .banglaqr-quick-metrics-row {
+        grid-template-columns: 1fr;
+    }
+
+    .banglaqr-metric-pill {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 8px;
+    }
+
+    .banglaqr-metric-pill:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .banglaqr-mfs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .banglaqr-section-body {
+        padding: 16px;
+    }
+
+    .banglaqr-dashboard-header {
+        padding: 16px;
     }
 }
