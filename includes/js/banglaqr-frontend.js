@@ -483,7 +483,7 @@ jQuery(document).ready(function ($) {
                 var zoomHtml = '  <div id="banglaqr-receipt-zoom-overlay" class="banglaqr-zoom-overlay is-active" style="display:flex; z-index: 1000000;" role="dialog" aria-modal="true">';
                 zoomHtml += '    <div class="banglaqr-zoom-card">';
                 zoomHtml += '      <div class="banglaqr-zoom-header">';
-                zoomHtml += '        <div class="banglaqr-zoom-title-box"><h4 class="banglaqr-zoom-title">Payment Receipt</h4></div>';
+                zoomHtml += '        <div class="banglaqr-zoom-title-box"><h4 class="banglaqr-zoom-title">' + escHtml(oi_banglaqr_params.i18n_payment_receipt) + '</h4></div>';
                 zoomHtml += '        <button type="button" class="banglaqr-zoom-close" id="banglaqr-receipt-zoom-close-btn">';
                 zoomHtml += '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12" /></svg>';
                 zoomHtml += '        </button>';
@@ -491,7 +491,7 @@ jQuery(document).ready(function ($) {
                 zoomHtml += '      <div class="banglaqr-zoom-img-wrap">';
                 zoomHtml += '        <img src="' + currentObjectUrl + '" class="banglaqr-zoom-img" />';
                 zoomHtml += '      </div>';
-                zoomHtml += '      <button type="button" class="banglaqr-zoom-dismiss-btn" id="banglaqr-receipt-zoom-dismiss-btn">Close Full View</button>';
+                zoomHtml += '      <button type="button" class="banglaqr-zoom-dismiss-btn" id="banglaqr-receipt-zoom-dismiss-btn">' + escHtml(oi_banglaqr_params.i18n_close_full_view) + '</button>';
                 zoomHtml += '    </div>';
                 zoomHtml += '  </div>';
 
@@ -566,7 +566,7 @@ jQuery(document).ready(function ($) {
             
             if (timeLeft <= 0) {
                 clearInterval(window.banglaqrTimerInterval);
-                var expiredHtml = '<span>Your payment session has expired.</span> <button type="button" id="banglaqr-timer-renew-btn" style="background:#fee2e2; border:1px solid #fecaca; color:#b91c1c; font-weight:700; border-radius:6px; cursor:pointer; padding:2px 8px; margin-left:6px; font-size:12px;">Extend Time (15 min)</button>';
+                var expiredHtml = '<span>' + escHtml(oi_banglaqr_params.i18n_session_expired) + '</span> <button type="button" id="banglaqr-timer-renew-btn" style="background:#fee2e2; border:1px solid #fecaca; color:#b91c1c; font-weight:700; border-radius:6px; cursor:pointer; padding:2px 8px; margin-left:6px; font-size:12px;">' + escHtml(oi_banglaqr_params.i18n_extend_time) + '</button>';
                 showError(expiredHtml, true);
                 $('#banglaqr-btn-submit').prop('disabled', true).css({ 'opacity': '0.5', 'cursor': 'not-allowed' });
                 $('#banglaqr-file-input').prop('disabled', true);
@@ -621,8 +621,8 @@ jQuery(document).ready(function ($) {
         successHtml += '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
         successHtml += '    </div>';
         successHtml += '  </div>';
-        successHtml += '  <div class="banglaqr-success-title">Payment Details Received!</div>';
-        successHtml += '  <div class="banglaqr-success-subtitle">Thank you! We are confirming your order now...</div>';
+        successHtml += '  <div class="banglaqr-success-title">' + escHtml(oi_banglaqr_params.i18n_payment_received) + '</div>';
+        successHtml += '  <div class="banglaqr-success-subtitle">' + escHtml(oi_banglaqr_params.i18n_confirming_order) + '</div>';
         successHtml += '</div>';
 
         $('#banglaqr-modal .banglaqr-modal-container').html(successHtml);
@@ -653,16 +653,16 @@ jQuery(document).ready(function ($) {
         var previewMarkup = '<div class="banglaqr-preview-header">' +
             '<div class="banglaqr-preview-title">' +
                 '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
-                '<span>Payment Details Attached</span>' +
+                '<span>' + escHtml(oi_banglaqr_params.i18n_payment_details_attached) + '</span>' +
             '</div>' +
             '<a href="#" id="banglaqr-change-receipt-btn" class="banglaqr-preview-change-btn">' +
                 '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
-                '<span>Edit</span>' +
+                '<span>' + escHtml(oi_banglaqr_params.i18n_edit) + '</span>' +
             '</a>' +
         '</div>' +
         '<div class="banglaqr-preview-meta">' +
-            '<div class="banglaqr-preview-meta-item"><span><strong>Account:</strong> ' + escHtml(activeQrName) + '</span></div>' +
-            '<div class="banglaqr-preview-meta-item"><span><strong>Transaction ID:</strong> <span class="banglaqr-preview-tag">' + escHtml(trxId) + '</span></span></div>' +
+            '<div class="banglaqr-preview-meta-item"><span><strong>' + escHtml(oi_banglaqr_params.i18n_account) + '</strong> ' + escHtml(activeQrName) + '</span></div>' +
+            '<div class="banglaqr-preview-meta-item"><span><strong>' + escHtml(oi_banglaqr_params.i18n_transaction_id) + '</strong> <span class="banglaqr-preview-tag">' + escHtml(trxId) + '</span></span></div>' +
         '</div>';
         $('#banglaqr-selected-qr-preview').html(previewMarkup).show();
 
@@ -741,18 +741,18 @@ jQuery(document).ready(function ($) {
                     var previewMarkup = '<div class="banglaqr-preview-header">' +
                         '<div class="banglaqr-preview-title">' +
                             '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
-                            '<span>Payment Details Attached</span>' +
+                            '<span>' + escHtml(oi_banglaqr_params.i18n_payment_details_attached) + '</span>' +
                         '</div>' +
                         '<a href="#" id="banglaqr-change-receipt-btn" class="banglaqr-preview-change-btn">' +
                             '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
-                            '<span>Edit</span>' +
+                            '<span>' + escHtml(oi_banglaqr_params.i18n_edit) + '</span>' +
                         '</a>' +
                     '</div>' +
                     '<div class="banglaqr-preview-meta">' +
-                        '<div class="banglaqr-preview-meta-item"><span><strong>Account:</strong> ' + escHtml(activeQrName) + '</span></div>' +
-                        '<div class="banglaqr-preview-meta-item"><span><strong>Receipt:</strong> <a href="' + escAttr(response.data.url) + '" target="_blank" rel="noopener noreferrer" style="color: var(--banglaqr-modal-primary, #137833); font-weight:600; text-decoration:underline;">View Receipt</a></span></div>';
+                        '<div class="banglaqr-preview-meta-item"><span><strong>' + escHtml(oi_banglaqr_params.i18n_account) + '</strong> ' + escHtml(activeQrName) + '</span></div>' +
+                        '<div class="banglaqr-preview-meta-item"><span><strong>' + escHtml(oi_banglaqr_params.i18n_receipt) + '</strong> <a href="' + escAttr(response.data.url) + '" target="_blank" rel="noopener noreferrer" style="color: var(--banglaqr-modal-primary, #137833); font-weight:600; text-decoration:underline;">' + escHtml(oi_banglaqr_params.i18n_view_receipt) + '</a></span></div>';
                     if (trxId) {
-                        previewMarkup += '<div class="banglaqr-preview-meta-item"><span><strong>Transaction ID:</strong> <span class="banglaqr-preview-tag">' + escHtml(trxId) + '</span></span></div>';
+                        previewMarkup += '<div class="banglaqr-preview-meta-item"><span><strong>' + escHtml(oi_banglaqr_params.i18n_transaction_id) + '</strong> <span class="banglaqr-preview-tag">' + escHtml(trxId) + '</span></span></div>';
                     }
                     previewMarkup += '</div>';
 
