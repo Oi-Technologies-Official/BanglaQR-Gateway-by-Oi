@@ -54,12 +54,12 @@ jQuery(document).ready(function ($) {
 
         var fee = qr.payment_charge || '0';
         var feeBadge = (parseFloat(fee) > 0)
-            ? '<span class="banglaqr-accordion-badge-fee">' + escapeAttr(fee) + '% Fee</span>'
-            : '<span class="banglaqr-accordion-badge-fee">No Fee</span>';
+            ? '<span class="banglaqr-accordion-badge-fee">' + escapeAttr(fee) + oi_banglaqr_admin_params.i18n_fee_suffix + '</span>'
+            : '<span class="banglaqr-accordion-badge-fee">' + oi_banglaqr_admin_params.i18n_no_fee + '</span>';
 
         var statusBadge = active 
-            ? '<span class="banglaqr-status-badge status-active"><span class="status-dot"></span> Active</span>'
-            : '<span class="banglaqr-status-badge status-inactive"><span class="status-dot"></span> Inactive</span>';
+            ? '<span class="banglaqr-status-badge status-active"><span class="status-dot"></span> ' + oi_banglaqr_admin_params.i18n_active + '</span>'
+            : '<span class="banglaqr-status-badge status-inactive"><span class="status-dot"></span> ' + oi_banglaqr_admin_params.i18n_inactive + '</span>';
 
         var html = '';
         html += '<div class="banglaqr-qr-accordion-item ' + isExpandedCls + '" data-index="' + idx + '">';
@@ -68,7 +68,7 @@ jQuery(document).ready(function ($) {
         html += '  <div class="banglaqr-accordion-header">';
         html += '    <div class="banglaqr-sort-handle" title="Drag to reorder"><svg viewBox="0 0 24 24" width="16" height="16" fill="#94a3b8"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></div>';
         html += '    <div class="banglaqr-accordion-logo">' + logoHtml + '</div>';
-        html += '    <div class="banglaqr-accordion-title">' + (qrName ? escapeAttr(qrName) : 'New QR Account') + '</div>';
+        html += '    <div class="banglaqr-accordion-title">' + (qrName ? escapeAttr(qrName) : oi_banglaqr_admin_params.i18n_new_qr_account) + '</div>';
         html += '    <div class="banglaqr-accordion-actions" style="display:flex; align-items:center;">';
         html += feeBadge;
         html += '      <div class="banglaqr-badge-wrapper">' + statusBadge + '</div>';
@@ -83,11 +83,11 @@ jQuery(document).ready(function ($) {
         // Left Column: Scan Preview
         var largePreviewStyle = qrCodeUrl ? 'display: block;' : 'display: none;';
         html += '      <div class="banglaqr-large-qr-preview-wrapper" style="' + largePreviewStyle + '">';
-        html += '        <div class="banglaqr-grid-field"><label class="banglaqr-field-label-with-icon" style="margin-bottom:4px;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Scan Preview</span></label></div>';
+        html += '        <div class="banglaqr-grid-field"><label class="banglaqr-field-label-with-icon" style="margin-bottom:4px;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>' + oi_banglaqr_admin_params.i18n_scan_preview + '</span></label></div>';
         html += '        <div class="banglaqr-large-qr-preview-box">';
         html += '          <img class="banglaqr-large-qr-preview-img" src="' + escapeAttr(qrCodeUrl) + '" alt="QR Preview" />';
         html += '        </div>';
-        html += '        <span style="font-size: 11px; color: #64748b; margin-top: 6px; display: block; line-height: 1.4;">Scan with your phone to confirm this QR code reads properly.</span>';
+        html += '        <span style="font-size: 11px; color: #64748b; margin-top: 6px; display: block; line-height: 1.4;">' + oi_banglaqr_admin_params.i18n_scan_hint + '</span>';
         html += '      </div>';
 
         // Right Column: Inputs
@@ -95,26 +95,26 @@ jQuery(document).ready(function ($) {
         
         // Name
         html += '        <div class="banglaqr-grid-field">';
-        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span>Account Name <span class="req">*</span></span></label>';
-        html += '          <input type="text" class="banglaqr-qr-name-input banglaqr-general-input" value="' + escapeAttr(qrName) + '" placeholder="e.g. bKash Merchant, City Bank BanglaQR" />';
+        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span>' + oi_banglaqr_admin_params.i18n_account_name + ' <span class="req">*</span></span></label>';
+        html += '          <input type="text" class="banglaqr-qr-name-input banglaqr-general-input" value="' + escapeAttr(qrName) + '" placeholder="' + escapeAttr(oi_banglaqr_admin_params.i18n_account_name_ph) + '" />';
         html += '        </div>';
 
         // Charge
         var qrCharge = qr.payment_charge || '0';
         html += '        <div class="banglaqr-grid-field">';
-        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg><span>Processing Fee (%)</span></label>';
-        html += '          <input type="number" step="0.01" min="0" max="100" class="banglaqr-payment-charge-input banglaqr-general-input" value="' + escapeAttr(qrCharge) + '" placeholder="e.g. 1.85 (leave 0 for no fee)" />';
+        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg><span>' + oi_banglaqr_admin_params.i18n_processing_fee + '</span></label>';
+        html += '          <input type="number" step="0.01" min="0" max="100" class="banglaqr-payment-charge-input banglaqr-general-input" value="' + escapeAttr(qrCharge) + '" placeholder="' + escapeAttr(oi_banglaqr_admin_params.i18n_processing_fee_ph) + '" />';
         html += '        </div>';
 
         // Image URL
         html += '        <div class="banglaqr-grid-field">';
-        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h2v2h-2z"/><path d="M18 14h3v3h-3z"/><path d="M14 18h3v3h-3z"/></svg><span>QR Code Image <span class="req">*</span></span></label>';
+        html += '          <label class="banglaqr-field-label-with-icon"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h2v2h-2z"/><path d="M18 14h3v3h-3z"/><path d="M14 18h3v3h-3z"/></svg><span>' + oi_banglaqr_admin_params.i18n_qr_code_image + ' <span class="req">*</span></span></label>';
         html += '          <div class="banglaqr-uploader-inline">';
         html += '            <div class="banglaqr-logo-preview-box banglaqr-qr-preview-box">' + qrPreview + '</div>';
-        html += '            <input type="text" class="banglaqr-qr-code-url-input banglaqr-general-input" value="' + escapeAttr(qrCodeUrl) + '" placeholder="Upload or paste image URL" />';
+        html += '            <input type="text" class="banglaqr-qr-code-url-input banglaqr-general-input" value="' + escapeAttr(qrCodeUrl) + '" placeholder="' + escapeAttr(oi_banglaqr_admin_params.i18n_upload_ph) + '" />';
         html += '            <button type="button" class="button button-secondary banglaqr-upload-logo-btn banglaqr-btn-with-icon">';
         html += '              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>';
-        html += '              <span>Upload</span>';
+        html += '              <span>' + oi_banglaqr_admin_params.i18n_upload_btn + '</span>';
         html += '            </button>';
         html += '          </div>';
         html += '        </div>';
@@ -126,11 +126,11 @@ jQuery(document).ready(function ($) {
         html += '              <input type="checkbox" class="banglaqr-is-active-input" ' + checkedStr + ' />';
         html += '              <span class="banglaqr-slider"></span>';
         html += '            </label>';
-        html += '            <span class="banglaqr-toggle-status">' + (active ? 'Active on Checkout' : 'Set as Active') + '</span>';
+        html += '            <span class="banglaqr-toggle-status">' + (active ? oi_banglaqr_admin_params.i18n_active_on_checkout : oi_banglaqr_admin_params.i18n_set_as_active) + '</span>';
         html += '          </div>';
-        html += '          <button type="button" class="banglaqr-delete-row-btn" title="Remove QR Account">';
+        html += '          <button type="button" class="banglaqr-delete-row-btn" title="' + oi_banglaqr_admin_params.i18n_remove_account + '">';
         html += '            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>';
-        html += '            <span>Remove Account</span>';
+        html += '            <span>' + oi_banglaqr_admin_params.i18n_remove_account + '</span>';
         html += '          </button>';
         html += '        </div>';
 
@@ -159,10 +159,10 @@ jQuery(document).ready(function ($) {
             emptyHtml += '  <div class="banglaqr-empty-icon-wrap">';
             emptyHtml += '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h2v2h-2z"/><path d="M18 14h3v3h-3z"/><path d="M14 18h3v3h-3z"/><path d="M20 20h1v1h-1z"/></svg>';
             emptyHtml += '  </div>';
-            emptyHtml += '  <p>You have not added any QR accounts yet. Add your first account to start accepting QR payments.</p>';
+            emptyHtml += '  <p>' + oi_banglaqr_admin_params.i18n_no_qrs_msg + '</p>';
             emptyHtml += '  <button type="button" class="button button-primary banglaqr-btn-with-icon" id="banglaqr-add-first-qr-btn">';
             emptyHtml += '    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
-            emptyHtml += '    <span>Add First QR Account</span>';
+            emptyHtml += '    <span>' + oi_banglaqr_admin_params.i18n_add_first_qr + '</span>';
             emptyHtml += '  </button>';
             emptyHtml += '</div>';
             $accordionWrapper.append(emptyHtml);
@@ -186,7 +186,7 @@ jQuery(document).ready(function ($) {
 
         var addBtnHtml = '<button type="button" class="banglaqr-btn-add-inline banglaqr-btn-with-icon" id="banglaqr-add-qr-row-inline">';
         addBtnHtml += '  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
-        addBtnHtml += '  <span>Add Another QR Account</span>';
+        addBtnHtml += '  <span>' + oi_banglaqr_admin_params.i18n_add_another_qr + '</span>';
         addBtnHtml += '</button>';
         $accordionWrapper.append(addBtnHtml);
 
@@ -324,7 +324,7 @@ jQuery(document).ready(function ($) {
     $(document).on('input', '.banglaqr-qr-name-input', function () {
         var $panel = $(this).closest('.banglaqr-qr-accordion-item');
         var name = $(this).val().trim();
-        $panel.find('.banglaqr-accordion-title').text(name ? name : 'New QR Account');
+        $panel.find('.banglaqr-accordion-title').text(name ? name : oi_banglaqr_admin_params.i18n_new_qr_account);
     });
 
     // Inline URL preview sync
@@ -366,16 +366,16 @@ jQuery(document).ready(function ($) {
                 var otherIdx = parseInt($otherPanel.data('index'), 10);
                 if (otherIdx !== idx) {
                     $other.prop('checked', false);
-                    $otherPanel.find('.banglaqr-badge-wrapper').html('<span class="banglaqr-status-badge status-inactive"><span class="status-dot"></span> Inactive</span>');
-                    $otherPanel.find('.banglaqr-toggle-status').text('Set as Active');
+                    $otherPanel.find('.banglaqr-badge-wrapper').html('<span class="banglaqr-status-badge status-inactive"><span class="status-dot"></span> ' + oi_banglaqr_admin_params.i18n_inactive + '</span>');
+                    $otherPanel.find('.banglaqr-toggle-status').text(oi_banglaqr_admin_params.i18n_set_as_active);
                 }
             });
 
-            $panel.find('.banglaqr-badge-wrapper').html('<span class="banglaqr-status-badge status-active"><span class="status-dot"></span> Active</span>');
-            $panel.find('.banglaqr-toggle-status').text('Active on Checkout');
+            $panel.find('.banglaqr-badge-wrapper').html('<span class="banglaqr-status-badge status-active"><span class="status-dot"></span> ' + oi_banglaqr_admin_params.i18n_active + '</span>');
+            $panel.find('.banglaqr-toggle-status').text(oi_banglaqr_admin_params.i18n_active_on_checkout);
         } else {
-            $panel.find('.banglaqr-badge-wrapper').html('<span class="banglaqr-status-badge status-inactive"><span class="status-dot"></span> Inactive</span>');
-            $panel.find('.banglaqr-toggle-status').text('Set as Active');
+            $panel.find('.banglaqr-badge-wrapper').html('<span class="banglaqr-status-badge status-inactive"><span class="status-dot"></span> ' + oi_banglaqr_admin_params.i18n_inactive + '</span>');
+            $panel.find('.banglaqr-toggle-status').text(oi_banglaqr_admin_params.i18n_set_as_active);
         }
 
         serializeData();
@@ -416,17 +416,17 @@ jQuery(document).ready(function ($) {
     // Toggle status text and status badge in settings tab
     $(document).on('change', '#woocommerce_oi_banglaqr_enabled', function () {
         var isChecked = $(this).is(':checked');
-        $(this).closest('.banglaqr-toggle-wrapper').find('.banglaqr-toggle-status').text(isChecked ? 'Enabled' : 'Disabled');
+        $(this).closest('.banglaqr-toggle-wrapper').find('.banglaqr-toggle-status').text(isChecked ? oi_banglaqr_admin_params.i18n_enabled : oi_banglaqr_admin_params.i18n_disabled);
 
         // Update header active badge
         var $badge = $('.banglaqr-status-badge').first();
         if ($badge.closest('.banglaqr-header-actions').length) {
             if (isChecked) {
                 $badge.removeClass('status-inactive').addClass('status-active');
-                $badge.html('<span class="status-dot"></span> Gateway Active');
+                $badge.html('<span class="status-dot"></span> ' + oi_banglaqr_admin_params.i18n_gateway_active);
             } else {
                 $badge.removeClass('status-active').addClass('status-inactive');
-                $badge.html('<span class="status-dot"></span> Gateway Inactive');
+                $badge.html('<span class="status-dot"></span> ' + oi_banglaqr_admin_params.i18n_gateway_inactive);
             }
         }
     });
@@ -438,8 +438,8 @@ jQuery(document).ready(function ($) {
         var $urlInput = $('#woocommerce_oi_banglaqr_gateway_logo');
 
         var fileFrame = wp.media({
-            title: 'Select Gateway Logo',
-            button: { text: 'Use Logo' },
+            title: oi_banglaqr_admin_params.i18n_select_gateway_logo,
+            button: { text: oi_banglaqr_admin_params.i18n_use_logo },
             multiple: false
         });
 
