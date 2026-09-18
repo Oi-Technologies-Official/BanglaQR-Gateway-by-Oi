@@ -10,10 +10,10 @@
 </p>
 
 <p align="center">
-  <a href="https://wordpress.org/"><img src="https://img.shields.io/badge/WordPress-5.6%20to%206.7+-21759B?logo=wordpress&logoColor=white" alt="WordPress 5.6 - 6.7+"></a>
+  <a href="https://wordpress.org/"><img src="https://img.shields.io/badge/WordPress-5.6%20to%207.1+-21759B?logo=wordpress&logoColor=white" alt="WordPress 5.6 - 7.1+"></a>
   <a href="https://woocommerce.com/"><img src="https://img.shields.io/badge/WooCommerce-HPOS%20Ready-96588A?logo=woocommerce&logoColor=white" alt="WooCommerce HPOS Ready"></a>
   <a href="https://www.php.net/"><img src="https://img.shields.io/badge/PHP-7.4%20to%208.3+-777BB4?logo=php&logoColor=white" alt="PHP 7.4 - 8.3+"></a>
-  <a href="https://opensource.org/license/mit/"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License"></a>
+  <a href="https://opensource.org/license/mit/"><img src="https://img.shields.io/badge/License-GPL%20v3-green.svg" alt="GPL v3 License"></a>
   <a href="#"><img src="https://img.shields.io/badge/Version-0.2.0-orange.svg" alt="Version 0.2.0"></a>
   <a href="#"><img src="https://img.shields.io/badge/Bangladesh-BanglaQR%20Standard-red.svg" alt="BanglaQR"></a>
 </p>
