@@ -535,7 +535,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                     <span class="banglaqr-mfs-type-tag"><?php esc_html_e('Merchant / Personal', 'banglaqr-payment-gateway-by-oi'); ?></span>
                                 </div>
                                 <div class="banglaqr-mfs-input-box">
-                                    <input type="text" name="woocommerce_oi_banglaqr_manual_bkash" id="woocommerce_oi_banglaqr_manual_bkash" value="<?php echo esc_attr($manual_bkash); ?>" placeholder="017xxxxxxxx" class="banglaqr-general-input banglaqr-mfs-input" />
+                                    <input type="text" name="woocommerce_oi_banglaqr_manual_bkash" id="woocommerce_oi_banglaqr_manual_bkash" value="<?php echo esc_attr($manual_bkash); ?>" placeholder="017xxxxxxxx" class="banglaqr-general-input banglaqr-mfs-input" maxlength="11" />
                                 </div>
                             </div>
 
@@ -549,7 +549,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                     <span class="banglaqr-mfs-type-tag"><?php esc_html_e('Merchant / Personal', 'banglaqr-payment-gateway-by-oi'); ?></span>
                                 </div>
                                 <div class="banglaqr-mfs-input-box">
-                                    <input type="text" name="woocommerce_oi_banglaqr_manual_nagad" id="woocommerce_oi_banglaqr_manual_nagad" value="<?php echo esc_attr($manual_nagad); ?>" placeholder="018xxxxxxxx" class="banglaqr-general-input banglaqr-mfs-input" />
+                                    <input type="text" name="woocommerce_oi_banglaqr_manual_nagad" id="woocommerce_oi_banglaqr_manual_nagad" value="<?php echo esc_attr($manual_nagad); ?>" placeholder="018xxxxxxxx" class="banglaqr-general-input banglaqr-mfs-input" maxlength="11" />
                                 </div>
                             </div>
 
@@ -563,7 +563,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                     <span class="banglaqr-mfs-type-tag"><?php esc_html_e('12-digit Account', 'banglaqr-payment-gateway-by-oi'); ?></span>
                                 </div>
                                 <div class="banglaqr-mfs-input-box">
-                                    <input type="text" name="woocommerce_oi_banglaqr_manual_rocket" id="woocommerce_oi_banglaqr_manual_rocket" value="<?php echo esc_attr($manual_rocket); ?>" placeholder="019xxxxxxxx" class="banglaqr-general-input banglaqr-mfs-input" />
+                                    <input type="text" name="woocommerce_oi_banglaqr_manual_rocket" id="woocommerce_oi_banglaqr_manual_rocket" value="<?php echo esc_attr($manual_rocket); ?>" placeholder="019xxxxxxxx" class="banglaqr-general-input banglaqr-mfs-input" maxlength="12" />
                                 </div>
                             </div>
 
@@ -577,7 +577,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                                     <span class="banglaqr-mfs-type-tag"><?php esc_html_e('Merchant / Personal', 'banglaqr-payment-gateway-by-oi'); ?></span>
                                 </div>
                                 <div class="banglaqr-mfs-input-box">
-                                    <input type="text" name="woocommerce_oi_banglaqr_manual_upay" id="woocommerce_oi_banglaqr_manual_upay" value="<?php echo esc_attr($manual_upay); ?>" placeholder="016xxxxxxxx" class="banglaqr-general-input banglaqr-mfs-input" />
+                                    <input type="text" name="woocommerce_oi_banglaqr_manual_upay" id="woocommerce_oi_banglaqr_manual_upay" value="<?php echo esc_attr($manual_upay); ?>" placeholder="016xxxxxxxx" class="banglaqr-general-input banglaqr-mfs-input" maxlength="11" />
                                 </div>
                             </div>
 
