@@ -942,6 +942,10 @@ input:checked + .banglaqr-slider:before {
     color: var(--banglaqr-text);
 }
 
+.banglaqr-qr-accordion-item.is-expanded .banglaqr-accordion-body {
+    display: block;
+}
+
 /* Accordion Body */
 .banglaqr-accordion-body {
     display: none;
