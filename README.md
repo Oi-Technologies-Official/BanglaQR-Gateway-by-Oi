@@ -1,4 +1,7 @@
-# <img src="assets/logo.jpg" alt="Logo" height="40" align="center" /> BanglaQR Gateway by Oi
+<h1 align="center">
+  <img src="assets/logo.jpg" alt="Oi Logo" height="100"><br>
+  BanglaQR Gateway by Oi
+</h1>
 
 <p align="center">
   <img src="assets/banner-1544x500.png" alt="BanglaQR Gateway by Oi - Bangladesh QR Payment Plugin" width="100%">
