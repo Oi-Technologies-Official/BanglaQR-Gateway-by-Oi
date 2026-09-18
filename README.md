@@ -313,8 +313,8 @@ This project is licensed under the **GNU General Public License v3.0 or later (G
 
 - 🌐 **Website:** [oitech.com.bd](https://oitech.com.bd)
 - 📧 **Support:** [support@oitech.com.bd](mailto:support@oitech.com.bd)
-- 🔓 **More Open Source Projects:** [Oi Open Source Projects](https://oitech.com.bd/open-source/)
-- 💬 **Contact Us:** [oitech.com.bd/helpline/contact-us](https://oitech.com.bd/helpline/contact-us/)
+- 🔓 **More Open Source Projects:** [Open Source Projects](https://oitech.com.bd/open-source/)
+- 💬 **Helpline/Contact Us:** [Helpline/Contact Us](https://oitech.com.bd/helpline/contact-us/)
 
 ---
 
