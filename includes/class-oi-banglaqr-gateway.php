@@ -849,6 +849,16 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
     }
 
     /**
+     * Static AJAX upload entry point to ensure execution even when
+     * WooCommerce has not initialized payment gateway classes.
+     */
+    public static function ajax_upload_slip_handler()
+    {
+        $gateway = new self();
+        $gateway->ajax_upload_slip();
+    }
+
+    /**
      * Handle AJAX file upload for payment receipt.
      */
     public function ajax_upload_slip()
@@ -865,7 +875,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
 
         // Ensure session cookie and token exist for guest uploads
         $session_token = '';
-        if (WC()->session) {
+        if (function_exists('WC') && WC()->session) {
             if (!WC()->session->has_session()) {
                 WC()->session->set_customer_session_cookie(true);
             }
@@ -876,7 +886,15 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             }
         }
 
-        // 1. Process Base64 payload (bypasses PHP upload_max_filesize completely)
+        $attachment_id = 0;
+        $allowed_mimes = array(
+            'image/jpeg' => 'jpg',
+            'image/png'  => 'png',
+            'image/webp' => 'webp',
+            'image/gif'  => 'gif',
+        );
+
+        // 1. Process Base64 payload if provided
         // phpcs:ignore WordPress.Security.NonceVerification.Missing
         if (!empty($_POST['image_base64'])) {
             $base64_data = wp_unslash($_POST['image_base64']);
@@ -890,21 +908,30 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                 if ($decoded !== false) {
                     $tmp_name = wp_tempnam('receipt');
                     file_put_contents($tmp_name, $decoded);
-                    $wp_filetype = wp_check_filetype_and_ext($tmp_name, 'receipt.' . $ext);
-                    
-                    if (empty($wp_filetype['ext']) || empty($wp_filetype['type']) || !in_array($wp_filetype['type'], array('image/jpeg', 'image/png', 'image/webp', 'image/gif'))) {
-                        @unlink($tmp_name);
-                        wp_send_json_error(array('message' => __('Please upload a valid image file (JPEG, PNG, or WebP).', 'banglaqr-payment-gateway-by-oi')));
-                    }
-                    $ext = $wp_filetype['ext'];
+                    $image_info = @getimagesize($tmp_name);
                     @unlink($tmp_name);
 
-                    $raw_name = !empty($_POST['image_name']) ? sanitize_file_name(wp_unslash($_POST['image_name'])) : 'receipt.jpg';
-                    $clean_name = preg_replace('/\.[^.]+$/', '', $raw_name);
-                    if (empty($clean_name)) {
-                        $clean_name = 'receipt';
+                    if (!$image_info || empty($image_info['mime']) || !array_key_exists($image_info['mime'], $allowed_mimes)) {
+                        wp_send_json_error(array('message' => __('Please upload a valid image file (JPEG, PNG, or WebP).', 'banglaqr-payment-gateway-by-oi')));
                     }
-                    $filename_to_save = 'receipt_' . wp_generate_password(8, false) . '.' . $ext;
+
+                    // Format check: enforce valid image extension matching detected image format
+                    $ext = $allowed_mimes[$image_info['mime']];
+
+                    // Preserve original user filename if passed
+                    $raw_name = !empty($_POST['image_name']) ? sanitize_text_field(wp_unslash($_POST['image_name'])) : 'receipt';
+                    $info = pathinfo($raw_name);
+                    $orig_base = !empty($info['filename']) ? $info['filename'] : 'receipt';
+                    $orig_ext  = !empty($info['extension']) ? strtolower($info['extension']) : $ext;
+                    if (!in_array($orig_ext, array('jpg', 'jpeg', 'png', 'webp', 'gif'), true)) {
+                        $orig_ext = $ext;
+                    }
+
+                    $clean_base = sanitize_file_name($orig_base);
+                    if (empty($clean_base) || $clean_base === '.') {
+                        $clean_base = 'receipt_' . substr(md5($orig_base), 0, 8);
+                    }
+                    $filename_to_save = $clean_base . '.' . $orig_ext;
 
                     $upload = wp_upload_bits($filename_to_save, null, $decoded);
 
@@ -914,84 +941,128 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
 
                     $filename = $upload['file'];
                     $wp_filetype = wp_check_filetype($filename, null);
+                    $mime_type = !empty($wp_filetype['type']) ? $wp_filetype['type'] : $image_info['mime'];
 
                     $attachment = array(
-                        'post_mime_type' => !empty($wp_filetype['type']) ? $wp_filetype['type'] : 'image/jpeg',
-                        'post_title'     => $clean_name,
+                        'post_mime_type' => $mime_type,
+                        'post_title'     => $orig_base,
                         'post_content'   => '',
-                        'post_status'    => 'inherit'
+                        'post_status'    => 'inherit',
                     );
 
                     $attachment_id = wp_insert_attachment($attachment, $filename);
-
-                    if (is_wp_error($attachment_id)) {
-                        wp_send_json_error(array('message' => __('We could not save your receipt image. Please try uploading again.', 'banglaqr-payment-gateway-by-oi')));
-                    }
-
-                    $attachment_data = wp_generate_attachment_metadata($attachment_id, $filename);
-                    wp_update_attachment_metadata($attachment_id, $attachment_data);
-
-                    // Security mark to link receipt to customer session
-                    update_post_meta($attachment_id, '_oi_banglaqr_pending_upload', '1');
-                    if (!empty($session_token)) {
-                        update_post_meta($attachment_id, '_oi_banglaqr_uploader_token', $session_token);
-                    }
-
-                    wp_send_json_success(array(
-                        'id'            => $attachment_id,
-                        'attachment_id' => $attachment_id,
-                        'url'           => wp_get_attachment_url($attachment_id)
-                    ));
                 }
             }
         }
 
-        // 2. Fallback: Standard $_FILES handling
-        if (empty($_FILES['oi_banglaqr_file']) || !empty($_FILES['oi_banglaqr_file']['error'])) {
-            $error_message = __('Please select a receipt image file to upload.', 'banglaqr-payment-gateway-by-oi');
-            if (!empty($_FILES['oi_banglaqr_file']['error'])) {
-                $error_code = intval($_FILES['oi_banglaqr_file']['error']);
+        // 2. Standard $_FILES handling (Multipart Form Data)
+        if (!$attachment_id && !empty($_FILES['oi_banglaqr_file'])) {
+            $file = $_FILES['oi_banglaqr_file']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+
+            if (!empty($file['error'])) {
+                $error_code = intval($file['error']);
+                $error_message = __('Please select a receipt image file to upload.', 'banglaqr-payment-gateway-by-oi');
                 if ($error_code === UPLOAD_ERR_INI_SIZE || $error_code === UPLOAD_ERR_FORM_SIZE) {
                     $error_message = __('This image file is too large. Please choose a smaller photo or screenshot.', 'banglaqr-payment-gateway-by-oi');
                 }
+                wp_send_json_error(array('message' => $error_message));
             }
-            wp_send_json_error(array('message' => $error_message));
+
+            if (empty($file['tmp_name']) || !file_exists($file['tmp_name'])) {
+                wp_send_json_error(array('message' => __('Please select a valid image file to upload.', 'banglaqr-payment-gateway-by-oi')));
+            }
+
+            // Strictly verify that the uploaded file is a valid image format (JPEG, PNG, WebP, GIF)
+            $image_info = @getimagesize($file['tmp_name']);
+            if (!$image_info || empty($image_info['mime']) || !array_key_exists($image_info['mime'], $allowed_mimes)) {
+                wp_send_json_error(array('message' => __('Please upload a valid image file (JPEG, PNG, or WebP).', 'banglaqr-payment-gateway-by-oi')));
+            }
+
+            // Format check: verify/determine matching extension
+            $ext = $allowed_mimes[$image_info['mime']];
+
+            // Allow the user's original filename
+            $raw_name = !empty($file['name']) ? sanitize_text_field(wp_unslash($file['name'])) : 'receipt';
+            $info = pathinfo($raw_name);
+            $orig_base = !empty($info['filename']) ? $info['filename'] : 'receipt';
+            $orig_ext  = !empty($info['extension']) ? strtolower($info['extension']) : $ext;
+
+            // Ensure extension is a valid image extension
+            if (!in_array($orig_ext, array('jpg', 'jpeg', 'png', 'webp', 'gif'), true)) {
+                $orig_ext = $ext;
+            }
+
+            // Keep user's original filename, only sanitizing for filesystem safety.
+            // If sanitize_file_name strips all non-ASCII characters (e.g. purely Bengali text),
+            // fallback gracefully so the server filesystem can save it properly.
+            $clean_base = sanitize_file_name($orig_base);
+            if (empty($clean_base) || $clean_base === '.') {
+                $clean_base = 'receipt_' . substr(md5($orig_base), 0, 8);
+            }
+            $target_filename = $clean_base . '.' . $orig_ext;
+            $file['name'] = $target_filename;
+
+            $overrides = array(
+                'test_form' => false,
+                'test_type' => false, // Strict binary format check already performed above
+                'mimes'     => array(
+                    'jpg|jpeg|jpe' => 'image/jpeg',
+                    'gif'          => 'image/gif',
+                    'png'          => 'image/png',
+                    'webp'         => 'image/webp',
+                ),
+            );
+
+            $uploaded_file = wp_handle_upload($file, $overrides);
+
+            // Fallback: If wp_handle_upload fails for filesystem or move reasons, use wp_upload_bits
+            if (isset($uploaded_file['error']) || empty($uploaded_file['file'])) {
+                $file_contents = file_get_contents($file['tmp_name']);
+                if ($file_contents !== false) {
+                    $upload_fallback = wp_upload_bits($target_filename, null, $file_contents);
+                    if (empty($upload_fallback['error']) && !empty($upload_fallback['file'])) {
+                        $uploaded_file = $upload_fallback;
+                        $uploaded_file['type'] = $image_info['mime'];
+                    }
+                }
+            }
+
+            if (isset($uploaded_file['error']) && !empty($uploaded_file['error'])) {
+                wp_send_json_error(array('message' => $uploaded_file['error']));
+            }
+
+            if (empty($uploaded_file['file'])) {
+                wp_send_json_error(array('message' => __('We could not save your receipt image. Please try uploading again.', 'banglaqr-payment-gateway-by-oi')));
+            }
+
+            $filename = $uploaded_file['file'];
+            $mime_type = !empty($uploaded_file['type']) ? $uploaded_file['type'] : $image_info['mime'];
+
+            $attachment = array(
+                'post_mime_type' => $mime_type,
+                'post_title'     => $orig_base, // Keep user's original filename as title
+                'post_content'   => '',
+                'post_status'    => 'inherit',
+            );
+
+            $attachment_id = wp_insert_attachment($attachment, $filename);
         }
 
-        $file = $_FILES['oi_banglaqr_file']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-
-        $overrides = array(
-            'test_form' => false,
-            'mimes' => array(
-                'jpg|jpeg|jpe' => 'image/jpeg',
-                'gif'          => 'image/gif',
-                'png'          => 'image/png',
-                'webp'         => 'image/webp'
-            ),
-        );
-
-        $uploaded_file = wp_handle_upload($file, $overrides);
-
-        if (isset($uploaded_file['error'])) {
-            wp_send_json_error(array('message' => $uploaded_file['error']));
-        }
-
-        $filename = $uploaded_file['file'];
-        $attachment = array(
-            'post_mime_type' => $uploaded_file['type'],
-            'post_title'     => preg_replace('/\.[^.]+$/', '', basename($filename)),
-            'post_content'   => '',
-            'post_status'    => 'inherit'
-        );
-
-        $attachment_id = wp_insert_attachment($attachment, $filename);
-
-        if (is_wp_error($attachment_id)) {
+        if (!$attachment_id || is_wp_error($attachment_id)) {
             wp_send_json_error(array('message' => __('We could not save your receipt image. Please try uploading again.', 'banglaqr-payment-gateway-by-oi')));
         }
 
-        $attachment_data = wp_generate_attachment_metadata($attachment_id, $filename);
-        wp_update_attachment_metadata($attachment_id, $attachment_data);
+        // Safely generate metadata without crashing on memory limits or timeouts
+        if (function_exists('wp_generate_attachment_metadata')) {
+            try {
+                $attachment_data = wp_generate_attachment_metadata($attachment_id, $filename);
+                if (!empty($attachment_data) && !is_wp_error($attachment_data)) {
+                    wp_update_attachment_metadata($attachment_id, $attachment_data);
+                }
+            } catch (\Throwable $e) {
+                // Silently ignore thumbnail generation errors to prevent upload failures
+            }
+        }
 
         // Security mark to link receipt to customer session
         update_post_meta($attachment_id, '_oi_banglaqr_pending_upload', '1');
@@ -1002,7 +1073,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         wp_send_json_success(array(
             'id'            => $attachment_id,
             'attachment_id' => $attachment_id,
-            'url'           => wp_get_attachment_url($attachment_id)
+            'url'           => wp_get_attachment_url($attachment_id),
         ));
     }
 

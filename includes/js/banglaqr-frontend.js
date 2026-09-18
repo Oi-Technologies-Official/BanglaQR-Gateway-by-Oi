@@ -10,6 +10,7 @@ jQuery(document).ready(function ($) {
 
     var selectedFile = null;
     var selectedBase64 = null;
+    var selectedFileName = 'receipt.jpg';
     var uploadInProgress = false;
     var currentObjectUrl = null;
     var $lastActiveElement = null;
@@ -320,99 +321,154 @@ jQuery(document).ready(function ($) {
 
     // Image compression utility with aggressive lightweight optimization (guaranteed < 1MB)
     function compressImage(file, callback) {
+        function fallbackToOriginal() {
+            callback(file, null);
+        }
+
+        if (!window.FileReader || !document.createElement('canvas').getContext) {
+            fallbackToOriginal();
+            return;
+        }
+
+        // If file is already small (<= 2MB), keep original file and format directly without compression
+        if (file && file.size <= 2 * 1024 * 1024) {
+            fallbackToOriginal();
+            return;
+        }
+
         var reader = new FileReader();
 
         reader.onerror = function () {
-            handleUploadError(oi_banglaqr_params.error_invalid_file || 'Failed to read image file.');
+            fallbackToOriginal();
         };
 
         reader.onload = function (event) {
             var img = new Image();
 
             img.onerror = function () {
-                handleUploadError(oi_banglaqr_params.error_invalid_file || 'Failed to decode image.');
+                fallbackToOriginal();
             };
 
             img.onload = function () {
-                var canvas = document.createElement('canvas');
-                var ctx = canvas.getContext('2d');
-                var MAX_DIM = 1000;
-                var width = img.width;
-                var height = img.height;
-
-                if (width > height) {
-                    if (width > MAX_DIM) {
-                        height = Math.round(height * (MAX_DIM / width));
-                        width = MAX_DIM;
+                try {
+                    var canvas = document.createElement('canvas');
+                    var ctx = canvas.getContext('2d');
+                    if (!ctx) {
+                        fallbackToOriginal();
+                        return;
                     }
-                } else {
-                    if (height > MAX_DIM) {
-                        width = Math.round(width * (MAX_DIM / height));
-                        height = MAX_DIM;
+
+                    var MAX_DIM = 1200;
+                    var width = img.width;
+                    var height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_DIM) {
+                            height = Math.round(height * (MAX_DIM / width));
+                            width = MAX_DIM;
+                        }
+                    } else {
+                        if (height > MAX_DIM) {
+                            width = Math.round(width * (MAX_DIM / height));
+                            height = MAX_DIM;
+                        }
                     }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    // Fill with white background to prevent transparent PNG screenshots from having black background
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, width, height);
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    var baseName = (file.name || 'receipt').replace(/\.[^/.]+$/, '');
+                    if (!baseName) {
+                        baseName = 'receipt';
+                    }
+
+                    if (!canvas.toBlob) {
+                        var base64Data = null;
+                        try {
+                            base64Data = canvas.toDataURL('image/jpeg', 0.7);
+                        } catch (e) {}
+                        callback(file, base64Data);
+                        return;
+                    }
+
+                    function exportBlob(quality) {
+                        canvas.toBlob(function (blob) {
+                            if (!blob) {
+                                fallbackToOriginal();
+                                return;
+                            }
+
+                            // If still larger than 1MB and quality can be reduced, compress further
+                            if (blob.size > 1024 * 1024 && quality > 0.4) {
+                                exportBlob(quality - 0.15);
+                                return;
+                            }
+
+                            var newFile;
+                            try {
+                                newFile = new File([blob], baseName + '.jpg', {
+                                    type: 'image/jpeg',
+                                    lastModified: Date.now()
+                                });
+                            } catch (e) {
+                                // Fallback for Safari iOS < 14 and WebViews where new File throws TypeError
+                                newFile = blob;
+                                newFile.name = baseName + '.jpg';
+                            }
+
+                            var base64Data = null;
+                            try {
+                                base64Data = canvas.toDataURL('image/jpeg', quality);
+                            } catch (e) {}
+
+                            // Release memory
+                            img.onload = null;
+                            img.onerror = null;
+                            img.src = '';
+                            canvas.width = 0;
+                            canvas.height = 0;
+                            callback(newFile, base64Data);
+                        }, 'image/jpeg', quality);
+                    }
+
+                    exportBlob(0.65);
+                } catch (err) {
+                    fallbackToOriginal();
                 }
-
-                canvas.width = width;
-                canvas.height = height;
-                // Fill with white background to prevent transparent PNG screenshots from having black background
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillRect(0, 0, width, height);
-                ctx.drawImage(img, 0, 0, width, height);
-
-                function exportBlob(quality) {
-                    canvas.toBlob(function (blob) {
-                        if (!blob) {
-                            handleUploadError('Image processing failed. Please try another image.');
-                            return;
-                        }
-
-                        // If still larger than 1MB and quality can be reduced, compress further
-                        if (blob.size > 1024 * 1024 && quality > 0.4) {
-                            exportBlob(quality - 0.15);
-                            return;
-                        }
-
-                        // Align filename with jpeg output to avoid MIME mismatch rejection in WordPress
-                        var baseName = file.name.replace(/\.[^/.]+$/, "");
-                        var newFile = new File([blob], baseName + '.jpg', {
-                            type: 'image/jpeg',
-                            lastModified: Date.now()
-                        });
-
-                        var base64Data = canvas.toDataURL('image/jpeg', quality);
-                        // Release memory
-                        img.onload = null;
-                        img.onerror = null;
-                        img.src = '';
-                        canvas.width = 0;
-                        canvas.height = 0;
-                        callback(newFile, base64Data);
-                    }, 'image/jpeg', quality);
-                }
-
-                exportBlob(0.65);
             };
 
             img.src = event.target.result;
         };
 
-        reader.readAsDataURL(file);
+        try {
+            reader.readAsDataURL(file);
+        } catch (e) {
+            fallbackToOriginal();
+        }
     }
 
     // Process file validation and rendering previews
     function handleFileSelect(file) {
         hideError();
 
-        // Check file type
-        if (!file.type.match('image.*')) {
+        // Check file type robustly (handles empty file.type on mobile browsers)
+        var isImage = (file.type && file.type.match('image.*')) || (/\.(jpe?g|png|webp|gif)$/i.test(file.name));
+        if (!isImage) {
             showError(oi_banglaqr_params.error_invalid_file);
             return;
         }
 
+        selectedFileName = file.name || 'receipt.jpg';
+
         // Compress image before proceeding
         compressImage(file, function (compressedFile, base64Data) {
+            var maxAllowed = parseInt(oi_banglaqr_params.max_file_size, 10) || (5 * 1024 * 1024);
             // Check file size on compressed file against server limits
-            if (compressedFile.size > oi_banglaqr_params.max_file_size) {
+            if (compressedFile.size > maxAllowed) {
                 showError(oi_banglaqr_params.error_file_too_large);
                 return;
             }
@@ -482,6 +538,7 @@ jQuery(document).ready(function ($) {
     function resetFileSelector() {
         selectedFile = null;
         selectedBase64 = null;
+        selectedFileName = 'receipt.jpg';
         if (currentObjectUrl) {
             URL.revokeObjectURL(currentObjectUrl);
             currentObjectUrl = null;
@@ -668,10 +725,20 @@ jQuery(document).ready(function ($) {
         formData.append('action', 'oi_banglaqr_upload_slip');
         formData.append('nonce', oi_banglaqr_params.upload_nonce);
 
-        // Append file as standard multipart form data
-        // (Base64 payload triggers ModSecurity/WAF blocks on many hosts)
+        // Compute safe filename ensuring valid extension
+        var safeName = selectedFileName || (selectedFile && selectedFile.name ? selectedFile.name : 'receipt.jpg');
+        if (!/\.(jpe?g|png|webp|gif)$/i.test(safeName)) {
+            safeName += '.jpg';
+        }
+
+        // Append file as standard multipart form data with explicit filename
         if (selectedFile) {
-            formData.append('oi_banglaqr_file', selectedFile);
+            formData.append('oi_banglaqr_file', selectedFile, safeName);
+            formData.append('image_name', safeName);
+        }
+
+        if (selectedBase64) {
+            formData.append('image_base64', selectedBase64);
         }
 
         $.ajax({
@@ -736,8 +803,12 @@ jQuery(document).ready(function ($) {
                     handleUploadError(response && response.data && response.data.message ? response.data.message : 'We could not upload your receipt image. Please try again or use another format.');
                 }
             },
-            error: function () {
-                handleUploadError('We could not upload your receipt due to a network connection issue. Please check your internet and try again.');
+            error: function (xhr) {
+                var errorMsg = 'We could not upload your receipt due to a network connection issue. Please check your internet and try again.';
+                if (xhr && xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message) {
+                    errorMsg = xhr.responseJSON.data.message;
+                }
+                handleUploadError(errorMsg);
             }
         });
     }

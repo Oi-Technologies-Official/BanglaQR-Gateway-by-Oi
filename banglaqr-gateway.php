@@ -74,6 +74,11 @@ function oi_banglaqr_init_plugin()
 
     // Calculate fees globally to bypass class instantiation delays
     add_action('woocommerce_cart_calculate_fees', 'oi_banglaqr_add_payment_charge_fee');
+
+    // Register AJAX slip upload handlers globally so they run reliably during admin-ajax.php
+    add_action('wp_ajax_oi_banglaqr_upload_slip', array('Oi_BanglaQR_Gateway', 'ajax_upload_slip_handler'));
+    add_action('wp_ajax_nopriv_oi_banglaqr_upload_slip', array('Oi_BanglaQR_Gateway', 'ajax_upload_slip_handler'));
+    add_action('wc_ajax_oi_banglaqr_upload_slip', array('Oi_BanglaQR_Gateway', 'ajax_upload_slip_handler'));
 }
 add_action('plugins_loaded', 'oi_banglaqr_init_plugin', 11);
 
