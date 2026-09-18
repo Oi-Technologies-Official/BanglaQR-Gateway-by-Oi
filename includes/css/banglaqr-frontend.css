@@ -121,11 +121,12 @@
 }
 
 .banglaqr-modal-close:hover,
-.banglaqr-modal-close:focus {
+.banglaqr-modal-close:focus-visible {
     background-color: #ffffff;
     color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
     transform: rotate(90deg);
     outline: 2px solid #ffffff;
+    outline-offset: 2px;
 }
 
 .banglaqr-modal-close svg {
@@ -203,11 +204,12 @@
 }
 
 .banglaqr-qr-box.is-zoomable:hover,
-.banglaqr-qr-box.is-zoomable:focus {
+.banglaqr-qr-box.is-zoomable:focus-visible {
     transform: translateY(-4px) scale(1.02);
     box-shadow: var(--banglaqr-shadow-lg);
     border-color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
-    outline: none;
+    outline: 2px solid var(--banglaqr-modal-primary, var(--banglaqr-primary));
+    outline-offset: 2px;
 }
 
 .banglaqr-qr-box img {
@@ -249,7 +251,7 @@
 }
 
 .banglaqr-qr-box.is-zoomable:hover .banglaqr-qr-zoom-badge,
-.banglaqr-qr-box.is-zoomable:focus .banglaqr-qr-zoom-badge {
+.banglaqr-qr-box.is-zoomable:focus-visible .banglaqr-qr-zoom-badge {
     opacity: 1;
     transform: scale(1);
 }
@@ -316,13 +318,14 @@
 }
 
 .banglaqr-dropzone:hover,
-.banglaqr-dropzone:focus,
+.banglaqr-dropzone:focus-visible,
 .banglaqr-dropzone.is-dragover {
     border-color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
     background-color: var(--banglaqr-modal-primary-light, var(--banglaqr-primary-light));
     transform: translateY(-2px);
     box-shadow: var(--banglaqr-shadow-sm);
-    outline: none;
+    outline: 2px solid var(--banglaqr-modal-primary, var(--banglaqr-primary));
+    outline-offset: 2px;
 }
 
 .banglaqr-upload-icon {
@@ -333,7 +336,7 @@
 }
 
 .banglaqr-dropzone:hover .banglaqr-upload-icon,
-.banglaqr-dropzone:focus .banglaqr-upload-icon {
+.banglaqr-dropzone:focus-visible .banglaqr-upload-icon {
     color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
 }
 
@@ -406,9 +409,11 @@
 }
 
 .banglaqr-remove-file-btn:hover,
-.banglaqr-remove-file-btn:focus {
+.banglaqr-remove-file-btn:focus-visible {
     background-color: var(--banglaqr-accent-light);
     color: var(--banglaqr-accent);
+    outline: 2px solid var(--banglaqr-accent);
+    outline-offset: 2px;
 }
 
 .banglaqr-remove-file-btn svg {

@@ -41,227 +41,40 @@ jQuery(document).ready(function ($) {
     // Update payable amount in modal without rebuilding HTML
     function updateModalAmounts() {
         var total = getCurrentOrderTotal();
-        $('#banglaqr-modal-payable-val').text(total);
+        $('#banglaqr-modal-payable-val').html(total); // using html to retain price formatting
     }
 
-    // Append modal HTML structure to body
-    function buildModalHtml() {
-        if ($('#banglaqr-modal').length) {
-            return; // Already built
-        }
+    // Bind events - Initialize once if the modal is present
+    function setupModalEvents() {
+        if ($('#banglaqr-modal').data('events-bound')) return;
+        $('#banglaqr-modal').data('events-bound', true);
 
-        var activeQr = oi_banglaqr_params.active_qr;
-        var themeColor = oi_banglaqr_params.theme_color || '#137833';
-        var total = getCurrentOrderTotal();
-        var charge = parseFloat(oi_banglaqr_params.payment_charge || '0');
-
-        var html = '<div id="banglaqr-modal" class="banglaqr-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="banglaqr-modal-title">';
-        html += '<style>';
-        html += '  #banglaqr-modal {';
-        html += '    --banglaqr-modal-primary: ' + escAttr(themeColor) + ';';
-        html += '    --banglaqr-modal-primary-hover: ' + escAttr(themeColor) + 'dd;';
-        html += '    --banglaqr-modal-primary-light: ' + escAttr(themeColor) + '15;';
-        html += '    --banglaqr-modal-primary-border: ' + escAttr(themeColor) + '30;';
-        html += '  }';
-        html += '</style>';
-        html += '  <div class="banglaqr-modal-container" role="document">';
-
-        // Header
-        html += '    <div class="banglaqr-modal-header">';
-        html += '      <div>';
-        html += '        <h3 id="banglaqr-modal-title">' + escHtml('Bangla QR Payment') + '</h3>';
-        html += '        <p class="banglaqr-modal-subtitle">' + escHtml('Scan the QR code with your mobile banking app to pay') + '</p>';
-        html += '      </div>';
-        html += '      <div style="display:flex; align-items:center; gap: 12px;">';
-        html += '        <div class="banglaqr-countdown-timer" id="banglaqr-countdown-timer">';
-        html += '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
-        html += '          <span id="banglaqr-timer-text">15:00</span>';
-        html += '        </div>';
-        html += '        <button type="button" class="banglaqr-modal-close" id="banglaqr-modal-close-btn" aria-label="Close modal">';
-        html += '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>';
-        html += '        </button>';
-        html += '      </div>';
-        html += '    </div>';
-
-        // Body
-        html += '    <div class="banglaqr-modal-body">';
-        html += '      <div id="banglaqr-error-banner" class="banglaqr-modal-error" role="alert" aria-live="polite"></div>';
-
-        if (activeQr && activeQr.qr_code_url) {
-            html += '      <div class="banglaqr-payable-amount-box">';
-            html += '        <div class="banglaqr-payable-label">Payable Amount</div>';
-            html += '        <div class="banglaqr-payable-value" id="banglaqr-modal-payable-val">' + escHtml(total) + '</div>';
-            if (charge > 0) {
-                html += '        <div class="banglaqr-payable-note">(Includes ' + charge + '% payment processing fee)</div>';
-            } else {
-                html += '        <div class="banglaqr-payable-note">(No extra fees applied)</div>';
+        // Escape key to close modal
+        $(document).on('keydown', function(e) {
+            if (e.key === 'Escape' && $('#banglaqr-modal').hasClass('is-active')) {
+                closeModal();
             }
-            html += '      </div>';
+        });
 
-            // QR Code Box (Click to zoom/enlarge)
-            html += '      <div class="banglaqr-qr-wrapper">';
-            html += '        <div class="banglaqr-qr-box is-zoomable" id="banglaqr-qr-box" title="Tap or click to view larger QR code" role="button" tabindex="0" aria-label="Enlarge QR Code">';
-            html += '          <div class="banglaqr-qr-zoom-badge">';
-            html += '            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>';
-            html += '          </div>';
-            html += '          <img src="' + escAttr(activeQr.qr_code_url) + '" alt="' + escAttr(activeQr.qr_name || 'Bangla QR Code') + '" />';
-            html += '          <div class="banglaqr-qr-box-text">Scan with Your App</div>';
-            html += '        </div>';
-            html += '        <div class="banglaqr-qr-zoom-hint-text">Tap to enlarge QR code</div>';
-            html += '      </div>';
-
-            // Payment Page Banner
-            if (oi_banglaqr_params.paymentpage_img_url) {
-                html += '      <div class="banglaqr-payment-methods-banner">';
-                html += '        <img src="' + escAttr(oi_banglaqr_params.paymentpage_img_url) + '" alt="Accepted Payment Methods" />';
-                html += '      </div>';
-            }
-
-            // Instruction Alert Banner
-            html += '      <div class="banglaqr-instruction-banner">';
-            html += '        <p class="banglaqr-instruction-text">Open your bank or mobile wallet app (bKash, Nagad, Rocket, CellFin, etc.) and scan the QR code to pay. Then confirm your payment below.</p>';
-            html += '      </div>';
-
-            if (oi_banglaqr_params.enable_manual_payment === 'yes') {
-                var manualAccounts = [
-                    { name: 'bKash', number: oi_banglaqr_params.manual_bkash },
-                    { name: 'Nagad', number: oi_banglaqr_params.manual_nagad },
-                    { name: 'Rocket', number: oi_banglaqr_params.manual_rocket },
-                    { name: 'Upay', number: oi_banglaqr_params.manual_upay },
-                    { name: 'CellFin', number: oi_banglaqr_params.manual_cellfin }
-                ];
-                
-                var hasManual = false;
-                var accountsHtml = '';
-                manualAccounts.forEach(function(acc) {
-                    if (acc.number && acc.number.trim() !== '') {
-                        hasManual = true;
-                        var brandClass = 'banglaqr-brand-' + acc.name.toLowerCase();
-                        accountsHtml += '        <div class="banglaqr-manual-account-item ' + brandClass + '">';
-                        accountsHtml += '          <span class="banglaqr-manual-account-name">' + escHtml(acc.name) + '</span>';
-                        accountsHtml += '          <div class="banglaqr-manual-account-number-wrap">';
-                        accountsHtml += '            <span class="banglaqr-manual-account-number">' + escHtml(acc.number) + '</span>';
-                        accountsHtml += '            <button type="button" class="banglaqr-manual-copy-btn" data-number="' + escAttr(acc.number) + '" title="Copy Number">';
-                        accountsHtml += '              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
-                        accountsHtml += '              <span>Copy</span>';
-                        accountsHtml += '            </button>';
-                        accountsHtml += '          </div>';
-                        accountsHtml += '        </div>';
+        // Focus trap
+        $('#banglaqr-modal').on('keydown', function(e) {
+            var $focusable = $(this).find('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])').filter(':visible');
+            var first = $focusable[0];
+            var last = $focusable[$focusable.length - 1];
+            if (e.key === 'Tab') {
+                if (e.shiftKey) { // shift + tab
+                    if (document.activeElement === first) {
+                        last.focus();
+                        e.preventDefault();
                     }
-                });
-                
-                var manualHtml = '      <div class="banglaqr-trx-toggle-wrap" style="margin-top:15px; margin-bottom: 5px;">';
-                manualHtml += '        <button type="button" class="banglaqr-trx-toggle-btn" id="banglaqr-mfs-toggle-btn" aria-expanded="false" aria-controls="banglaqr-mfs-accounts-container">';
-                manualHtml += '          <span class="banglaqr-trx-toggle-icon">';
-                manualHtml += '            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
-                manualHtml += '          </span>';
-                manualHtml += '          <span class="banglaqr-trx-toggle-text">Prefer to pay manually? View mobile wallet numbers</span>';
-                manualHtml += '        </button>';
-                manualHtml += '      </div>';
-                manualHtml += '      <div class="banglaqr-manual-accounts" id="banglaqr-mfs-accounts-container" style="display:none; margin-top: 10px;">';
-                manualHtml += accountsHtml;
-                manualHtml += '      </div>';
-                
-                if (hasManual) {
-                    html += manualHtml;
+                } else { // tab
+                    if (document.activeElement === last) {
+                        first.focus();
+                        e.preventDefault();
+                    }
                 }
             }
-        } else {
-            html += '      <div class="banglaqr-modal-error" style="display:block;">';
-            html += '        No active QR accounts are currently set up. Please contact support or choose another payment method.';
-            html += '      </div>';
-        }
-
-        // Upload Receipt Section
-        if (oi_banglaqr_params.receipt_rule !== 'hidden') {
-            var receiptLabel = 'Upload Payment Screenshot or Receipt';
-            if (oi_banglaqr_params.receipt_rule === 'mandatory') {
-                receiptLabel += ' <span style="color:#ef4444;">*</span>';
-            }
-            html += '      <div class="banglaqr-upload-section">';
-            html += '        <label class="banglaqr-upload-label" for="banglaqr-file-input">' + receiptLabel + '</label>';
-            html += '        <div id="banglaqr-dropzone" class="banglaqr-dropzone" tabindex="0" role="button" aria-label="Upload payment screenshot">';
-            html += '          <svg class="banglaqr-upload-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>';
-            html += '          <span class="banglaqr-upload-text">Drop your payment screenshot here, or click to browse</span>';
-            html += '          <span class="banglaqr-upload-subtext">Supports JPEG, PNG, WEBP up to ' + oi_banglaqr_params.text_max_file_size + '</span>';
-            html += '          <input type="file" id="banglaqr-file-input" style="display:none;" accept="image/jpeg,image/png,image/webp,image/gif" />';
-            html += '        </div>';
-            html += '        <div id="banglaqr-file-preview-container"></div>';
-            html += '      </div>';
-        }
-
-        // Transaction ID Section
-        if (oi_banglaqr_params.trxid_rule !== 'hidden') {
-            var trxIdLabel = 'Transaction ID (TrxID) / Reference';
-            if (oi_banglaqr_params.trxid_rule === 'mandatory') {
-                trxIdLabel += ' <span style="color:#ef4444;">*</span>';
-            }
-            var hideToggle = (oi_banglaqr_params.receipt_rule === 'hidden');
-            
-            html += '      <div class="banglaqr-trx-section">';
-            if (!hideToggle) {
-                html += '        <div class="banglaqr-trx-toggle-wrap">';
-                html += '          <button type="button" class="banglaqr-trx-toggle-btn" id="banglaqr-trx-toggle-btn" aria-expanded="false" aria-controls="banglaqr-trx-input-container">';
-                html += '            <span class="banglaqr-trx-toggle-icon">';
-                html += '              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
-                html += '            </span>';
-                html += '            <span class="banglaqr-trx-toggle-text">Have a Transaction ID? Enter it here</span>';
-                html += '          </button>';
-                html += '        </div>';
-            }
-            
-            var containerStyle = hideToggle ? 'display:block;' : 'display:none;';
-            html += '        <div class="banglaqr-trx-input-container" id="banglaqr-trx-input-container" style="' + containerStyle + '">';
-            html += '          <label class="banglaqr-trx-label" for="banglaqr-trx-input">' + trxIdLabel + '</label>';
-            html += '          <div class="banglaqr-trx-input-box">';
-            html += '            <svg class="banglaqr-trx-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>';
-            html += '            <input type="text" id="banglaqr-trx-input" class="banglaqr-trx-input" placeholder="e.g. 9K28DF109X or Bank Reference" autocomplete="off" />';
-            html += '          </div>';
-            html += '          <span class="banglaqr-trx-hint">You can find this in your bank or mobile wallet confirmation SMS / receipt.</span>';
-            html += '        </div>';
-            html += '      </div>';
-        }
-
-        html += '    </div>'; // Close modal-body
-
-        // Footer
-        html += '    <div class="banglaqr-modal-footer">';
-        html += '      <button type="button" class="banglaqr-btn banglaqr-btn-cancel" id="banglaqr-btn-cancel">Cancel</button>';
-        html += '      <button type="button" class="banglaqr-btn banglaqr-btn-submit" id="banglaqr-btn-submit">Confirm & Place Order</button>';
-        html += '    </div>';
-
-        html += '  </div>'; // Close modal-container
-
-        // Enlarged QR Lightbox View
-        if (activeQr && activeQr.qr_code_url) {
-            html += '  <div id="banglaqr-zoom-overlay" class="banglaqr-zoom-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Enlarged QR Code">';
-            html += '    <div class="banglaqr-zoom-card">';
-            html += '      <div class="banglaqr-zoom-header">';
-            html += '        <div class="banglaqr-zoom-title-box">';
-            html += '          <span class="banglaqr-zoom-badge">' + escHtml(activeQr.qr_name || 'Bangla QR') + '</span>';
-            html += '          <h4 class="banglaqr-zoom-title">Scan to Pay</h4>';
-            html += '        </div>';
-            html += '        <button type="button" class="banglaqr-zoom-close" id="banglaqr-zoom-close-btn" aria-label="Close enlarged QR">';
-            html += '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>';
-            html += '        </button>';
-            html += '      </div>';
-            html += '      <div class="banglaqr-zoom-img-wrap">';
-            html += '        <img src="' + escAttr(activeQr.qr_code_url) + '" alt="' + escAttr(activeQr.qr_name) + '" class="banglaqr-zoom-img" />';
-            html += '      </div>';
-            html += '      <div class="banglaqr-zoom-footer-note">Scan directly from your screen using your bank or mobile wallet app.</div>';
-            html += '      <button type="button" class="banglaqr-zoom-dismiss-btn" id="banglaqr-zoom-dismiss-btn">Done / Back to Checkout</button>';
-            html += '    </div>';
-            html += '  </div>';
-        }
-
-        html += '</div>'; // Close modal-overlay
-
-        $('body').append(html);
-        setupModalEvents();
-    }
-
-    // Helper for safe copy to clipboard with fallback
-    function copyTextToClipboard(text, callback) {
+        });
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(function () {
                 if (callback) callback();
@@ -764,7 +577,17 @@ jQuery(document).ready(function ($) {
 
     function openModal() {
         $lastActiveElement = document.activeElement;
-        buildModalHtml();
+        
+        var themeColor = oi_banglaqr_params.theme_color || '#137833';
+        var modal = document.getElementById('banglaqr-modal');
+        if (modal) {
+            modal.style.setProperty('--banglaqr-modal-primary', themeColor);
+            modal.style.setProperty('--banglaqr-modal-primary-hover', themeColor + 'dd');
+            modal.style.setProperty('--banglaqr-modal-primary-light', themeColor + '15');
+            modal.style.setProperty('--banglaqr-modal-primary-border', themeColor + '30');
+        }
+
+        setupModalEvents();
         updateModalAmounts();
         startTimer();
 
