@@ -1,11 +1,11 @@
-# 💳 BanglaQR Gateway by Oi
+# <img src="assets/logo.jpg" alt="Logo" height="40" align="center" /> BanglaQR Gateway by Oi
 
 <p align="center">
-  <img src="assets/banner-1544x500.png" alt="BanglaQR Gateway by Oi for WooCommerce - Bangladesh QR Payment Plugin" width="100%">
+  <img src="assets/banner-1544x500.png" alt="BanglaQR Gateway by Oi - Bangladesh QR Payment Plugin" width="100%">
 </p>
 
 <p align="center">
-  <strong>The Ultimate BanglaQR, MFS & Bank QR Gateway for WooCommerce</strong><br>
+  <strong>The Ultimate BanglaQR, MFS & Bank QR Gateway</strong><br>
   <em>Accept bKash, Nagad, Rocket, Upay, CellFin & Bank QR payments seamlessly with interactive popup, live timer, and receipt verification.</em>
 </p>
 
