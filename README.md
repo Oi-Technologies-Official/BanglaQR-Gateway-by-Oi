@@ -262,20 +262,6 @@ Yes, the plugin is 100% compatible with HPOS and works flawlessly on both modern
 
 ---
 
-## 📝 Changelog
-
-### 🚀 Version 0.2.0
-- 🔒 **Security:** Fixed IDOR vulnerability by tying uploaded receipts to WooCommerce session tokens.
-- 🔒 **Security:** Added strict server-side MIME type verification for all uploaded payment slips.
-- 🔒 **Security:** Automated daily cleanup cron to purge orphaned temporary upload files.
-- 🐛 **Fix:** Resolved issue where percentage fees could calculate as `0.00` on checkout.
-- 🐛 **Fix:** Resolved infinite modal loop when checkout rules were set to hidden.
-- ✨ **UI/UX:** Added one-click session renewal when the 15-minute timer finishes.
-- ✨ **UI/UX:** Modernized checkout confirmation cards with clean badges and responsive typography.
-- ✨ **UI/UX:** Added mobile bottom-sheet styling and touch target optimizations.
-
----
-
 ## 🤝 Contributing
  
 Contributions are warmly welcomed! We encourage developers and merchants to help improve **BanglaQR Gateway by Oi**.
