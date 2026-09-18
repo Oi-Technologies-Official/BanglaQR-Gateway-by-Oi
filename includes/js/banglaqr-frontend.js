@@ -44,37 +44,7 @@ jQuery(document).ready(function ($) {
         $('#banglaqr-modal-payable-val').html(total); // using html to retain price formatting
     }
 
-    // Bind events - Initialize once if the modal is present
-    function setupModalEvents() {
-        if ($('#banglaqr-modal').data('events-bound')) return;
-        $('#banglaqr-modal').data('events-bound', true);
-
-        // Escape key to close modal
-        $(document).on('keydown', function(e) {
-            if (e.key === 'Escape' && $('#banglaqr-modal').hasClass('is-active')) {
-                closeModal();
-            }
-        });
-
-        // Focus trap
-        $('#banglaqr-modal').on('keydown', function(e) {
-            var $focusable = $(this).find('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])').filter(':visible');
-            var first = $focusable[0];
-            var last = $focusable[$focusable.length - 1];
-            if (e.key === 'Tab') {
-                if (e.shiftKey) { // shift + tab
-                    if (document.activeElement === first) {
-                        last.focus();
-                        e.preventDefault();
-                    }
-                } else { // tab
-                    if (document.activeElement === last) {
-                        first.focus();
-                        e.preventDefault();
-                    }
-                }
-            }
-        });
+    function copyTextToClipboard(text, callback) {
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(function () {
                 if (callback) callback();
@@ -106,6 +76,9 @@ jQuery(document).ready(function ($) {
 
     // Bind events
     function setupModalEvents() {
+        if ($('#banglaqr-modal').data('events-bound')) return;
+        $('#banglaqr-modal').data('events-bound', true);
+
         // Copy to clipboard with fallback and debounce/timer management
         var defaultCopyHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copy</span>';
         var copiedHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Copied</span>';
