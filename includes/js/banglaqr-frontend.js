@@ -668,11 +668,9 @@ jQuery(document).ready(function ($) {
         formData.append('action', 'oi_banglaqr_upload_slip');
         formData.append('nonce', oi_banglaqr_params.upload_nonce);
 
-        // Send base64 payload to bypass PHP upload_max_filesize restriction
-        if (selectedBase64) {
-            formData.append('image_base64', selectedBase64);
-            formData.append('image_name', selectedFile ? selectedFile.name : 'receipt.jpg');
-        } else if (selectedFile) {
+        // Append file as standard multipart form data
+        // (Base64 payload triggers ModSecurity/WAF blocks on many hosts)
+        if (selectedFile) {
             formData.append('oi_banglaqr_file', selectedFile);
         }
 
