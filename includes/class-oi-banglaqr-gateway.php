@@ -29,7 +29,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
 
         // Set the gateway icon URL for WooCommerce admin payments list
         $logo_url = $this->get_option('gateway_logo', '');
-        $this->icon = $logo_url ? $logo_url : OI_BANGLAQR_URL . 'includes/img/banglaqrlogo.png';
+        $this->icon = $logo_url ? $logo_url : OI_BANGLAQR_URL . 'assets/logo.jpg';
 
         // Action hooks
         add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
@@ -77,7 +77,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                 'title' => __('Gateway Logo', 'banglaqr-payment-gateway-by-oi'),
                 'type' => 'text',
                 'description' => __('A brand icon or logo displayed beside the payment title on checkout.', 'banglaqr-payment-gateway-by-oi'),
-                'default' => OI_BANGLAQR_URL . 'includes/img/banglaqrlogo.png',
+                'default' => OI_BANGLAQR_URL . 'assets/logo.jpg',
                 'desc_tip' => true,
             ),
             'description' => array(
@@ -196,7 +196,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         $title = $this->get_option('title', 'Bangla QR Payment');
         $gateway_logo = $this->get_option('gateway_logo');
         if (!$gateway_logo) {
-            $gateway_logo = OI_BANGLAQR_URL . 'includes/img/banglaqrlogo.png';
+            $gateway_logo = OI_BANGLAQR_URL . 'assets/logo.jpg';
         }
         $description = $this->get_option('description', '');
         $theme_color = $this->get_option('theme_color', '#137833');
