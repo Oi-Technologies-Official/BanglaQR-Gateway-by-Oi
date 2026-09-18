@@ -4,8 +4,13 @@
  */
 
 jQuery(document).ready(function ($) {
+    console.log("BanglaQR admin.js loaded.");
     // Safety check
     if (typeof oi_banglaqr_admin_params === 'undefined' || !$('#woocommerce_oi_banglaqr_qrs_table').length) {
+        console.warn("BanglaQR admin.js: Params undefined or table input not found. Exiting.", {
+            params: typeof oi_banglaqr_admin_params,
+            tableLength: $('#woocommerce_oi_banglaqr_qrs_table').length
+        });
         return;
     }
 
@@ -144,6 +149,7 @@ jQuery(document).ready(function ($) {
 
     // Refresh layout in the DOM
     function renderTable() {
+        console.log("BanglaQR renderTable() called. qrs array:", qrs);
         // Save expansion states
         var expandedStates = [];
         $('.banglaqr-qr-accordion-item').each(function() {
@@ -175,7 +181,7 @@ jQuery(document).ready(function ($) {
             var $item = $(html);
             
             // Restore expansion state if re-rendering
-            if (expandedStates.includes(idx)) {
+            if (expandedStates.indexOf(idx) !== -1) {
                 $item.addClass('is-expanded');
             } else if (expandedStates.length > 0) {
                 $item.removeClass('is-expanded');

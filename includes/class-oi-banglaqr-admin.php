@@ -26,7 +26,7 @@ class Oi_BanglaQR_Admin
     {
         // Enqueue only on settings page of our gateway
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-        $is_settings_page = isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === 'wc-settings' && isset($_GET['section']) && sanitize_text_field(wp_unslash($_GET['section'])) === 'oi_banglaqr';
+        $is_settings_page = isset($_GET['page']) && sanitize_text_field(wp_unslash($_GET['page'])) === 'wc-settings';
 
         // Check for WooCommerce order screens (Classic and HPOS)
         $is_order_page = false;
