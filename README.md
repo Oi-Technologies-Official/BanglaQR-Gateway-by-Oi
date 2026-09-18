@@ -10,12 +10,12 @@
 </p>
 
 <p align="center">
-  <a href="https://wordpress.org/"><img src="https://img.shields.io/badge/WordPress-5.6%20to%207.1+-21759B?logo=wordpress&logoColor=white" alt="WordPress 5.6 - 7.1+"></a>
+  <a href="https://wordpress.org/"><img src="https://img.shields.io/badge/WordPress-5.6%20to%206.7+-21759B?logo=wordpress&logoColor=white" alt="WordPress 5.6 - 6.7+"></a>
   <a href="https://woocommerce.com/"><img src="https://img.shields.io/badge/WooCommerce-HPOS%20Ready-96588A?logo=woocommerce&logoColor=white" alt="WooCommerce HPOS Ready"></a>
   <a href="https://www.php.net/"><img src="https://img.shields.io/badge/PHP-7.4%20to%208.3+-777BB4?logo=php&logoColor=white" alt="PHP 7.4 - 8.3+"></a>
-  <a href="https://opensource.org/license/mit/"><img src="https://img.shields.io/badge/License-GPL%20v3-green.svg" alt="GPL v3 License"></a>
-  <a href="#"><img src="https://img.shields.io/badge/Version-0.2.0-orange.svg" alt="Version 0.2.0"></a>
-  <a href="#"><img src="https://img.shields.io/badge/Bangladesh-BanglaQR%20Standard-red.svg" alt="BanglaQR"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL%20v3-green.svg?logo=gnu&logoColor=white" alt="GPL v3 License"></a>
+  <a href="https://github.com/Oi-Technologies-Official/BanglaQR-Payment-Gateway-by-Oi/releases"><img src="https://img.shields.io/badge/Version-0.2.0-orange.svg" alt="Version 0.2.0"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Bangladesh-BanglaQR%20Standard-red.svg" alt="BanglaQR Standard"></a>
 </p>
 
 <p align="center">
@@ -27,8 +27,9 @@
   <a href="#-admin-configuration-guide">Configuration</a> •
   <a href="#-screenshots">Screenshots</a> •
   <a href="#-developer-hooks--meta">Developers</a> •
+  <a href="#-security--data-integrity">Security</a> •
   <a href="#-frequently-asked-questions">FAQ</a> •
-  <a href="#-security">Security</a>
+  <a href="#-contributing">Contributing</a>
 </p>
 
 ---
@@ -217,6 +218,8 @@ We prioritize the security of both merchants and customers:
 - 🛡️ **Input Sanitization & Escaping:** All Transaction IDs, field values, and user inputs are strictly sanitized and escaped against SQL injection and XSS.
 - 🛡️ **HPOS & WooCommerce Standards:** Compliant with WooCommerce High-Performance Order Storage (HPOS) and official WordPress Plugin Coding Guidelines.
 
+For responsible vulnerability disclosure procedures, please refer to our **[Security Policy (SECURITY.md)](SECURITY.md)**.
+
 ---
 
 ## ❓ Frequently Asked Questions
@@ -274,9 +277,13 @@ Yes, the plugin is 100% compatible with HPOS and works flawlessly on both modern
 ---
 
 ## 🤝 Contributing
-
-Contributions are warmly welcomed! If you've found a bug, want to suggest an improvement, or want to contribute code:
-
+ 
+Contributions are warmly welcomed! We encourage developers and merchants to help improve **BanglaQR Gateway by Oi**.
+ 
+Please review our **[Contributing Guidelines (Contributing.md)](Contributing.md)** and **[Code of Conduct (Code of Conduct.md)](Code%20of%20Conduct.md)** before submitting code or opening pull requests.
+ 
+### Quick Contribution Steps:
+ 
 1. **Fork** this repository.
 2. **Create a branch** for your feature or fix:
    ```bash
@@ -296,13 +303,13 @@ Contributions are warmly welcomed! If you've found a bug, want to suggest an imp
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — free to use, modify, and distribute for both personal and commercial projects. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the **GNU General Public License v3.0 or later (GPLv3)** — see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🏢 About Oi Technologies
+## 🏢 About Oi
 
-**Oi Technologies** builds high quality, accessible open-source tools that empower merchants, developers, and digital businesses across Bangladesh.
+**Oi** builds high quality, accessible open-source tools that empower merchants, developers, and digital businesses across Bangladesh.
 
 - 🌐 **Website:** [oitech.com.bd](https://oitech.com.bd)
 - 📧 **Support:** [support@oitech.com.bd](mailto:support@oitech.com.bd)
