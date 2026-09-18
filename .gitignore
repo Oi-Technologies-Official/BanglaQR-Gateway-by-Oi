@@ -15,6 +15,8 @@ desktop.ini
 # IDE & Editor Files
 .idea/
 .vscode/
+/.idea
+/.vscode
 *.sublime-project
 *.sublime-workspace
 *.swp

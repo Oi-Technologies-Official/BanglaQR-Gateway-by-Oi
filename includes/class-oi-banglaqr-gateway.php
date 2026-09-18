@@ -39,6 +39,9 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         // AJAX hooks for slip upload
         add_action('wp_ajax_oi_banglaqr_upload_slip', array($this, 'ajax_upload_slip'));
         add_action('wp_ajax_nopriv_oi_banglaqr_upload_slip', array($this, 'ajax_upload_slip'));
+
+        // Output modal in footer
+        add_action('wp_footer', array($this, 'render_modal_html'));
     }
 
     /**
@@ -1086,6 +1089,243 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             'result' => 'success',
             'redirect' => $this->get_return_url($order),
         );
+    }
+
+    /**
+     * Render the modal HTML in the footer on the checkout page.
+     */
+    public function render_modal_html()
+    {
+        if (!is_checkout() || !WC()->cart || !$this->is_available()) {
+            return;
+        }
+
+        $settings = $this->settings;
+        $qrs_table = isset($settings['qrs_table']) ? $settings['qrs_table'] : array();
+
+        $active_qr = null;
+        if (is_array($qrs_table) && !empty($qrs_table)) {
+            foreach ($qrs_table as $qr) {
+                if (isset($qr['is_active']) && $qr['is_active'] === 'yes') {
+                    $active_qr = $qr;
+                    break;
+                }
+            }
+            if (!$active_qr && !empty($qrs_table)) {
+                $active_qr = $qrs_table[0];
+            }
+        }
+
+        $charge = ($active_qr && isset($active_qr['payment_charge'])) ? floatval($active_qr['payment_charge']) : 0;
+        $receipt_rule = isset($settings['receipt_rule']) ? $settings['receipt_rule'] : 'optional';
+        $trxid_rule = isset($settings['trxid_rule']) ? $settings['trxid_rule'] : 'optional';
+        $enable_manual_payment = isset($settings['enable_manual_payment']) ? $settings['enable_manual_payment'] : 'no';
+        $paymentpage_img_url = OI_BANGLAQR_URL . 'includes/img/banglaqr-paymentpage.png';
+
+        // Formatted total respecting store decimal settings
+        $total_amount = WC()->cart->total;
+        $formatted_total = wc_price($total_amount);
+        
+        $max_upload_size = wp_max_upload_size();
+        $allowed_max_size = min(5 * 1024 * 1024, $max_upload_size);
+        $allowed_max_size_mb = max(1, round($allowed_max_size / (1024 * 1024))) . 'MB';
+        ?>
+        <div id="banglaqr-modal" class="banglaqr-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="banglaqr-modal-title">
+            <div class="banglaqr-modal-container" role="document">
+                <!-- Header -->
+                <div class="banglaqr-modal-header">
+                    <div>
+                        <h3 id="banglaqr-modal-title"><?php esc_html_e('Bangla QR Payment', 'banglaqr-payment-gateway-by-oi'); ?></h3>
+                        <p class="banglaqr-modal-subtitle"><?php esc_html_e('Scan the QR code with your mobile banking app to pay', 'banglaqr-payment-gateway-by-oi'); ?></p>
+                    </div>
+                    <div style="display:flex; align-items:center; gap: 12px;">
+                        <div class="banglaqr-countdown-timer" id="banglaqr-countdown-timer">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            <span id="banglaqr-timer-text">15:00</span>
+                        </div>
+                        <button type="button" class="banglaqr-modal-close" id="banglaqr-modal-close-btn" aria-label="<?php esc_attr_e('Close modal', 'banglaqr-payment-gateway-by-oi'); ?>">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div class="banglaqr-modal-body">
+                    <div id="banglaqr-error-banner" class="banglaqr-modal-error" role="alert" aria-live="polite"></div>
+
+                    <?php if ($active_qr && !empty($active_qr['qr_code_url'])): ?>
+                        <div class="banglaqr-payable-amount-box">
+                            <div class="banglaqr-payable-label"><?php esc_html_e('Payable Amount', 'banglaqr-payment-gateway-by-oi'); ?></div>
+                            <div class="banglaqr-payable-value" id="banglaqr-modal-payable-val"><?php echo wp_kses_post($formatted_total); ?></div>
+                            <?php if ($charge > 0): ?>
+                                <div class="banglaqr-payable-note"><?php printf(esc_html__('(Includes %s%% payment processing fee)', 'banglaqr-payment-gateway-by-oi'), $charge); ?></div>
+                            <?php else: ?>
+                                <div class="banglaqr-payable-note"><?php esc_html_e('(No extra fees applied)', 'banglaqr-payment-gateway-by-oi'); ?></div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- QR Code Box -->
+                        <div class="banglaqr-qr-wrapper">
+                            <div class="banglaqr-qr-box is-zoomable" id="banglaqr-qr-box" title="<?php esc_attr_e('Tap or click to view larger QR code', 'banglaqr-payment-gateway-by-oi'); ?>" role="button" tabindex="0" aria-label="<?php esc_attr_e('Enlarge QR Code', 'banglaqr-payment-gateway-by-oi'); ?>">
+                                <div class="banglaqr-qr-zoom-badge">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                                </div>
+                                <img src="<?php echo esc_url($active_qr['qr_code_url']); ?>" alt="<?php echo esc_attr(!empty($active_qr['qr_name']) ? $active_qr['qr_name'] : 'Bangla QR Code'); ?>" />
+                                <div class="banglaqr-qr-box-text"><?php esc_html_e('Scan with Your App', 'banglaqr-payment-gateway-by-oi'); ?></div>
+                            </div>
+                            <div class="banglaqr-qr-zoom-hint-text"><?php esc_html_e('Tap to enlarge QR code', 'banglaqr-payment-gateway-by-oi'); ?></div>
+                        </div>
+
+                        <!-- Payment Page Banner -->
+                        <?php if ($paymentpage_img_url): ?>
+                            <div class="banglaqr-payment-methods-banner">
+                                <img src="<?php echo esc_url($paymentpage_img_url); ?>" alt="<?php esc_attr_e('Accepted Payment Methods', 'banglaqr-payment-gateway-by-oi'); ?>" />
+                            </div>
+                        <?php endif; ?>
+
+                        <!-- Instruction Alert Banner -->
+                        <div class="banglaqr-instruction-banner">
+                            <p class="banglaqr-instruction-text"><?php esc_html_e('Open your bank or mobile wallet app (bKash, Nagad, Rocket, CellFin, etc.) and scan the QR code to pay. Then confirm your payment below.', 'banglaqr-payment-gateway-by-oi'); ?></p>
+                        </div>
+
+                        <?php if ($enable_manual_payment === 'yes'): 
+                            $manual_accounts = array(
+                                array('name' => 'bKash', 'number' => isset($settings['manual_bkash']) ? $settings['manual_bkash'] : ''),
+                                array('name' => 'Nagad', 'number' => isset($settings['manual_nagad']) ? $settings['manual_nagad'] : ''),
+                                array('name' => 'Rocket', 'number' => isset($settings['manual_rocket']) ? $settings['manual_rocket'] : ''),
+                                array('name' => 'Upay', 'number' => isset($settings['manual_upay']) ? $settings['manual_upay'] : ''),
+                                array('name' => 'CellFin', 'number' => isset($settings['manual_cellfin']) ? $settings['manual_cellfin'] : ''),
+                            );
+                            $has_manual = false;
+                            foreach ($manual_accounts as $acc) {
+                                if (!empty(trim($acc['number']))) {
+                                    $has_manual = true;
+                                    break;
+                                }
+                            }
+                            if ($has_manual):
+                        ?>
+                            <div class="banglaqr-trx-toggle-wrap" style="margin-top:15px; margin-bottom: 5px;">
+                                <button type="button" class="banglaqr-trx-toggle-btn" id="banglaqr-mfs-toggle-btn" aria-expanded="false" aria-controls="banglaqr-mfs-accounts-container">
+                                    <span class="banglaqr-trx-toggle-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                                    </span>
+                                    <span class="banglaqr-trx-toggle-text"><?php esc_html_e('Prefer to pay manually? View mobile wallet numbers', 'banglaqr-payment-gateway-by-oi'); ?></span>
+                                </button>
+                            </div>
+                            <div class="banglaqr-manual-accounts" id="banglaqr-mfs-accounts-container" style="display:none; margin-top: 10px;">
+                                <?php foreach ($manual_accounts as $acc): 
+                                    if (!empty(trim($acc['number']))):
+                                        $brandClass = 'banglaqr-brand-' . strtolower($acc['name']);
+                                ?>
+                                    <div class="banglaqr-manual-account-item <?php echo esc_attr($brandClass); ?>">
+                                        <span class="banglaqr-manual-account-name"><?php echo esc_html($acc['name']); ?></span>
+                                        <div class="banglaqr-manual-account-number-wrap">
+                                            <span class="banglaqr-manual-account-number"><?php echo esc_html($acc['number']); ?></span>
+                                            <button type="button" class="banglaqr-manual-copy-btn" data-number="<?php echo esc_attr($acc['number']); ?>" title="<?php esc_attr_e('Copy Number', 'banglaqr-payment-gateway-by-oi'); ?>">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                                <span><?php esc_html_e('Copy', 'banglaqr-payment-gateway-by-oi'); ?></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                <?php 
+                                    endif;
+                                endforeach; 
+                                ?>
+                            </div>
+                        <?php 
+                            endif;
+                        endif; 
+                        ?>
+                    <?php else: ?>
+                        <div class="banglaqr-modal-error" style="display:block;">
+                            <?php esc_html_e('No active QR accounts are currently set up. Please contact support or choose another payment method.', 'banglaqr-payment-gateway-by-oi'); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Upload Receipt Section -->
+                    <?php if ($receipt_rule !== 'hidden'): ?>
+                        <div class="banglaqr-upload-section">
+                            <label class="banglaqr-upload-label" for="banglaqr-file-input">
+                                <?php esc_html_e('Upload Payment Screenshot or Receipt', 'banglaqr-payment-gateway-by-oi'); ?>
+                                <?php if ($receipt_rule === 'mandatory'): ?>
+                                    <span style="color:#ef4444;">*</span>
+                                <?php endif; ?>
+                            </label>
+                            <div id="banglaqr-dropzone" class="banglaqr-dropzone" tabindex="0" role="button" aria-label="<?php esc_attr_e('Upload payment screenshot', 'banglaqr-payment-gateway-by-oi'); ?>">
+                                <svg class="banglaqr-upload-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>
+                                <span class="banglaqr-upload-text"><?php esc_html_e('Drop your payment screenshot here, or click to browse', 'banglaqr-payment-gateway-by-oi'); ?></span>
+                                <span class="banglaqr-upload-subtext"><?php printf(esc_html__('Supports JPEG, PNG, WEBP up to %s', 'banglaqr-payment-gateway-by-oi'), $allowed_max_size_mb); ?></span>
+                                <input type="file" id="banglaqr-file-input" style="display:none;" accept="image/jpeg,image/png,image/webp,image/gif" />
+                            </div>
+                            <div id="banglaqr-file-preview-container"></div>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Transaction ID Section -->
+                    <?php if ($trxid_rule !== 'hidden'): 
+                        $hide_toggle = ($receipt_rule === 'hidden');
+                    ?>
+                        <div class="banglaqr-trx-section">
+                            <?php if (!$hide_toggle): ?>
+                                <div class="banglaqr-trx-toggle-wrap">
+                                    <button type="button" class="banglaqr-trx-toggle-btn" id="banglaqr-trx-toggle-btn" aria-expanded="false" aria-controls="banglaqr-trx-input-container">
+                                        <span class="banglaqr-trx-toggle-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                                        </span>
+                                        <span class="banglaqr-trx-toggle-text"><?php esc_html_e('Have a Transaction ID? Enter it here', 'banglaqr-payment-gateway-by-oi'); ?></span>
+                                    </button>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <div class="banglaqr-trx-input-container" id="banglaqr-trx-input-container" style="<?php echo $hide_toggle ? 'display:block;' : 'display:none;'; ?>">
+                                <label class="banglaqr-trx-label" for="banglaqr-trx-input">
+                                    <?php esc_html_e('Transaction ID (TrxID) / Reference', 'banglaqr-payment-gateway-by-oi'); ?>
+                                    <?php if ($trxid_rule === 'mandatory'): ?>
+                                        <span style="color:#ef4444;">*</span>
+                                    <?php endif; ?>
+                                </label>
+                                <div class="banglaqr-trx-input-box">
+                                    <svg class="banglaqr-trx-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                                    <input type="text" id="banglaqr-trx-input" class="banglaqr-trx-input" placeholder="<?php esc_attr_e('e.g. 9K28DF109X or Bank Reference', 'banglaqr-payment-gateway-by-oi'); ?>" autocomplete="off" />
+                                </div>
+                                <span class="banglaqr-trx-hint"><?php esc_html_e('You can find this in your bank or mobile wallet confirmation SMS / receipt.', 'banglaqr-payment-gateway-by-oi'); ?></span>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                </div> <!-- Close modal-body -->
+
+                <!-- Footer -->
+                <div class="banglaqr-modal-footer">
+                    <button type="button" class="banglaqr-btn banglaqr-btn-cancel" id="banglaqr-btn-cancel"><?php esc_html_e('Cancel', 'banglaqr-payment-gateway-by-oi'); ?></button>
+                    <button type="button" class="banglaqr-btn banglaqr-btn-submit" id="banglaqr-btn-submit"><?php esc_html_e('Confirm & Place Order', 'banglaqr-payment-gateway-by-oi'); ?></button>
+                </div>
+            </div> <!-- Close modal-container -->
+
+            <!-- Enlarged QR Lightbox View -->
+            <?php if ($active_qr && !empty($active_qr['qr_code_url'])): ?>
+                <div id="banglaqr-zoom-overlay" class="banglaqr-zoom-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e('Enlarged QR Code', 'banglaqr-payment-gateway-by-oi'); ?>">
+                    <div class="banglaqr-zoom-card">
+                        <div class="banglaqr-zoom-header">
+                            <div class="banglaqr-zoom-title-box">
+                                <span class="banglaqr-zoom-badge"><?php echo esc_html(!empty($active_qr['qr_name']) ? $active_qr['qr_name'] : 'Bangla QR'); ?></span>
+                                <h4 class="banglaqr-zoom-title"><?php esc_html_e('Scan to Pay', 'banglaqr-payment-gateway-by-oi'); ?></h4>
+                            </div>
+                            <button type="button" class="banglaqr-zoom-close" id="banglaqr-zoom-close-btn" aria-label="<?php esc_attr_e('Close enlarged QR', 'banglaqr-payment-gateway-by-oi'); ?>">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                        <div class="banglaqr-zoom-img-wrap">
+                            <img src="<?php echo esc_url($active_qr['qr_code_url']); ?>" alt="<?php echo esc_attr(!empty($active_qr['qr_name']) ? $active_qr['qr_name'] : 'Bangla QR Code'); ?>" class="banglaqr-zoom-img" />
+                        </div>
+                        <div class="banglaqr-zoom-footer-note"><?php esc_html_e('Scan directly from your screen using your bank or mobile wallet app.', 'banglaqr-payment-gateway-by-oi'); ?></div>
+                        <button type="button" class="banglaqr-zoom-dismiss-btn" id="banglaqr-zoom-dismiss-btn"><?php esc_html_e('Done / Back to Checkout', 'banglaqr-payment-gateway-by-oi'); ?></button>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div> <!-- Close modal-overlay -->
+        <?php
     }
 
 }
