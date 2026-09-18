@@ -43,6 +43,10 @@ jQuery(document).ready(function ($) {
     function updateModalAmounts() {
         var total = getCurrentOrderTotal();
         $('#banglaqr-modal-payable-val').html(total); // using html to retain price formatting
+        var cleanAmount = String(total).replace(/[^0-9\.]/g, '');
+        if (cleanAmount) {
+            $('#banglaqr-copy-amount-btn').attr('data-amount', cleanAmount);
+        }
     }
 
     function copyTextToClipboard(text, callback) {
@@ -110,14 +114,43 @@ jQuery(document).ready(function ($) {
             });
         });
 
+        // Copy payable amount to clipboard
+        var defaultCopyAmountHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="banglaqr-copy-amount-text">' + escHtml(oi_banglaqr_params.i18n_copy_amount || 'Copy') + '</span>';
+        var copiedAmountHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="banglaqr-copy-amount-text">' + escHtml(oi_banglaqr_params.i18n_amount_copied || 'Copied') + '</span>';
+
+        $(document).off('click', '#banglaqr-copy-amount-btn').on('click', '#banglaqr-copy-amount-btn', function(e) {
+            e.preventDefault();
+            var btn = $(this);
+            var amt = btn.attr('data-amount') || '';
+            if (!amt) {
+                amt = getCurrentOrderTotal().replace(/[^0-9\.]/g, '');
+            }
+
+            copyTextToClipboard(amt, function() {
+                btn.html(copiedAmountHtml).addClass('copied');
+                setTimeout(function() {
+                    btn.html(defaultCopyAmountHtml).removeClass('copied');
+                }, 2000);
+            });
+        });
+
         // Countdown Timer logic is now handled by startTimer() when modal opens
 
-        // TrxID Smart Validation (Alphanumeric only, uppercase)
+        // TrxID Smart Validation (Strip SMS prefixes like "TrxID:", alphanumeric only, uppercase)
         $('#banglaqr-trx-input').on('input', function() {
             var val = $(this).val();
-            var sanitized = val.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+            var cleaned = val.replace(/^(trxid|txnid|transaction\s*id|trans\s*id|ref|reference)[:\s\-\.]+/i, '');
+            var sanitized = cleaned.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
             if (val !== sanitized) {
                 $(this).val(sanitized);
+            }
+        });
+
+        // Trigger submission when pressing Enter inside TrxID input
+        $('#banglaqr-trx-input').on('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                $('#banglaqr-btn-submit').click();
             }
         });
 
@@ -241,12 +274,12 @@ jQuery(document).ready(function ($) {
 
             // Validate required fields based on rules
             if (oi_banglaqr_params.receipt_rule === 'mandatory' && !selectedFile) {
-                showError('Please upload your payment receipt screenshot before completing your order.');
+                showError(oi_banglaqr_params.i18n_receipt_required || 'Please upload your payment receipt screenshot before completing your order.');
                 return;
             }
 
             if (oi_banglaqr_params.trxid_rule === 'mandatory' && !trxId) {
-                showError('Please enter your payment Transaction ID before completing your order.');
+                showError(oi_banglaqr_params.i18n_trx_required || 'Please enter your payment Transaction ID before completing your order.');
                 return;
             }
 
@@ -493,11 +526,27 @@ jQuery(document).ready(function ($) {
                 '      <div class="banglaqr-progress-bar" id="banglaqr-progress-bar"></div>' +
                 '    </div>' +
                 '  </div>' +
-                '  <button type="button" class="banglaqr-remove-file-btn" id="banglaqr-remove-file" aria-label="Remove file">' +
-                '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>' +
-                '  </button>' +
+                '  <div class="banglaqr-file-preview-actions">' +
+                '    <button type="button" class="banglaqr-change-file-btn" id="banglaqr-change-file" aria-label="Change file">' +
+                '      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
+                '      <span>' + escHtml(oi_banglaqr_params.i18n_change_file || 'Change') + '</span>' +
+                '    </button>' +
+                '    <button type="button" class="banglaqr-remove-file-btn" id="banglaqr-remove-file" aria-label="Remove file">' +
+                '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>' +
+                '    </button>' +
+                '  </div>' +
                 '</div>'
             );
+
+            // Auto-collapse dropzone to maximize mobile screen space
+            $('#banglaqr-dropzone').hide();
+
+            // Bind change action
+            $('#banglaqr-change-file').on('click', function (e) {
+                e.preventDefault();
+                if (uploadInProgress) return;
+                $('#banglaqr-file-input').click();
+            });
 
             // Bind delete action
             $('#banglaqr-remove-file').on('click', function (e) {
@@ -545,6 +594,7 @@ jQuery(document).ready(function ($) {
         }
         $('#banglaqr-file-input').val('');
         $('#banglaqr-file-preview-container').empty();
+        $('#banglaqr-dropzone').show();
         hideError();
     }
 
@@ -598,9 +648,7 @@ jQuery(document).ready(function ($) {
                 clearInterval(window.banglaqrTimerInterval);
                 var expiredHtml = '<span>' + escHtml(oi_banglaqr_params.i18n_session_expired) + '</span> <button type="button" id="banglaqr-timer-renew-btn" style="background:#fee2e2; border:1px solid #fecaca; color:#b91c1c; font-weight:700; border-radius:6px; cursor:pointer; padding:2px 8px; margin-left:6px; font-size:12px;">' + escHtml(oi_banglaqr_params.i18n_extend_time) + '</button>';
                 showError(expiredHtml, true);
-                $('#banglaqr-btn-submit').prop('disabled', true).css({ 'opacity': '0.5', 'cursor': 'not-allowed' });
-                $('#banglaqr-file-input').prop('disabled', true);
-                $('#banglaqr-trx-input').prop('disabled', true);
+                // Keep inputs and submit button active so customers who already paid can still complete order without panic
             }
         }, 1000);
     }
@@ -619,6 +667,10 @@ jQuery(document).ready(function ($) {
 
         setupModalEvents();
         updateModalAmounts();
+        hideError();
+        $('#banglaqr-success-overlay').hide();
+        $('#banglaqr-btn-submit').prop('disabled', false).removeClass('loading').html(escHtml(oi_banglaqr_params.i18n_confirm_btn_default || 'Confirm & Place Order'));
+        $('#banglaqr-btn-cancel').prop('disabled', false);
         startTimer();
 
         // Show overlay
@@ -636,6 +688,8 @@ jQuery(document).ready(function ($) {
             clearInterval(window.banglaqrTimerInterval);
         }
 
+        hideError();
+        $('#banglaqr-success-overlay').hide();
         $('#banglaqr-modal').removeClass('is-active');
         $('body').css('overflow', ''); // restore scroll
 
@@ -645,23 +699,14 @@ jQuery(document).ready(function ($) {
     }
 
     function playSuccessAnimationAndSubmit() {
-        var successHtml = '<div class="banglaqr-success-container">';
-        successHtml += '  <div class="banglaqr-success-icon-wrap">';
-        successHtml += '    <div class="banglaqr-success-icon">';
-        successHtml += '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-        successHtml += '    </div>';
-        successHtml += '  </div>';
-        successHtml += '  <div class="banglaqr-success-title">' + escHtml(oi_banglaqr_params.i18n_payment_received) + '</div>';
-        successHtml += '  <div class="banglaqr-success-subtitle">' + escHtml(oi_banglaqr_params.i18n_confirming_order) + '</div>';
-        successHtml += '</div>';
-
-        $('#banglaqr-modal .banglaqr-modal-container').html(successHtml);
+        // Non-destructive overlay animation - preserves all inner form elements
+        $('#banglaqr-success-overlay').fadeIn(150);
 
         setTimeout(function() {
             uploadInProgress = false;
             closeModal();
             $('form.checkout').submit();
-        }, 2500);
+        }, 1000); // 1000ms snappy response
     }
 
     // Submit with Transaction ID Only (No Image Upload)
@@ -698,7 +743,7 @@ jQuery(document).ready(function ($) {
 
         var $submitBtn = $('#banglaqr-btn-submit');
         $('#banglaqr-btn-cancel').prop('disabled', true);
-        $submitBtn.prop('disabled', true).addClass('loading').html('<span class="banglaqr-spinner"></span> <span>Confirming Order...</span>');
+        $submitBtn.prop('disabled', true).addClass('loading').html('<span class="banglaqr-spinner"></span> <span>' + escHtml(oi_banglaqr_params.i18n_confirming_order_btn || 'Confirming Order...') + '</span>');
 
         // Play animation and submit
         playSuccessAnimationAndSubmit();
@@ -718,7 +763,7 @@ jQuery(document).ready(function ($) {
         $('#banglaqr-btn-cancel, #banglaqr-remove-file').prop('disabled', true);
         var $submitBtn = $('#banglaqr-btn-submit');
         $submitBtn.prop('disabled', true).addClass('loading');
-        $submitBtn.html('<span class="banglaqr-spinner"></span> <span>Submitting Receipt...</span>');
+        $submitBtn.html('<span class="banglaqr-spinner"></span> <span>' + escHtml(oi_banglaqr_params.i18n_submitting_receipt || 'Submitting Receipt...') + '</span>');
 
         // Build FormData
         var formData = new FormData();
@@ -796,15 +841,15 @@ jQuery(document).ready(function ($) {
 
                     $('#banglaqr-selected-qr-preview').html(previewMarkup).show();
 
-                    $submitBtn.html('<span class="banglaqr-spinner"></span> <span>Confirming Order...</span>');
+                    $submitBtn.html('<span class="banglaqr-spinner"></span> <span>' + escHtml(oi_banglaqr_params.i18n_confirming_order_btn || 'Confirming Order...') + '</span>');
 
                     playSuccessAnimationAndSubmit();
                 } else {
-                    handleUploadError(response && response.data && response.data.message ? response.data.message : 'We could not upload your receipt image. Please try again or use another format.');
+                    handleUploadError(response && response.data && response.data.message ? response.data.message : (oi_banglaqr_params.i18n_upload_failed || 'We could not upload your receipt image. Please try again or use another format.'));
                 }
             },
             error: function (xhr) {
-                var errorMsg = 'We could not upload your receipt due to a network connection issue. Please check your internet and try again.';
+                var errorMsg = oi_banglaqr_params.i18n_upload_network_error || 'We could not upload your receipt due to a network connection issue. Please check your internet and try again.';
                 if (xhr && xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message) {
                     errorMsg = xhr.responseJSON.data.message;
                 }
@@ -822,7 +867,7 @@ jQuery(document).ready(function ($) {
         $('#banglaqr-btn-cancel, #banglaqr-remove-file').prop('disabled', false);
         var $submitBtn = $('#banglaqr-btn-submit');
         $submitBtn.prop('disabled', false).removeClass('loading');
-        $submitBtn.html('Confirm & Place Order');
+        $submitBtn.html(escHtml(oi_banglaqr_params.i18n_confirm_btn_default || 'Confirm & Place Order'));
 
         showError(errMsg);
     }
@@ -980,7 +1025,7 @@ jQuery(document).ready(function ($) {
 
     // Listen to WooCommerce checkout errors to reset buttons
     $(document.body).on('checkout_error', function () {
-        $('#banglaqr-btn-submit').prop('disabled', false).removeClass('loading').html('Confirm & Place Order');
+        $('#banglaqr-btn-submit').prop('disabled', false).removeClass('loading').html(escHtml(oi_banglaqr_params.i18n_confirm_btn_default || 'Confirm & Place Order'));
         $('#banglaqr-btn-cancel, #banglaqr-remove-file').prop('disabled', false);
         $('.banglaqr-progress-container').hide();
     });

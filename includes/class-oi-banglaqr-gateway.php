@@ -730,6 +730,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         // Formatted total respecting store decimal settings
         $total_amount = WC()->cart->total;
         $formatted_total = html_entity_decode(wp_strip_all_tags(wc_price($total_amount)));
+        $raw_numeric_total = number_format(floatval($total_amount), function_exists('wc_get_price_decimals') ? wc_get_price_decimals() : 2, '.', '');
 
         // Dynamically set max file size based on server limit and our 5MB default
         $max_upload_size = wp_max_upload_size();
@@ -747,6 +748,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             'text_max_file_size' => $allowed_max_size_mb . 'MB',
             'paymentpage_img_url' => OI_BANGLAQR_URL . 'includes/img/banglaqr-paymentpage.png',
             'order_total' => $formatted_total,
+            'raw_order_total' => $raw_numeric_total,
             'payment_charge' => $charge_percent,
             'error_no_file' => __('Please upload your payment screenshot or enter your Transaction ID to confirm your order.', 'banglaqr-payment-gateway-by-oi'),
             'error_invalid_file' => __('Please upload a valid image file (JPEG, PNG, or WebP).', 'banglaqr-payment-gateway-by-oi'),
@@ -766,6 +768,16 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
             'i18n_payment_receipt' => __('Payment Receipt', 'banglaqr-payment-gateway-by-oi'),
             'i18n_session_expired' => __('Your payment session has expired.', 'banglaqr-payment-gateway-by-oi'),
             'i18n_extend_time' => __('Extend Time (15 min)', 'banglaqr-payment-gateway-by-oi'),
+            'i18n_receipt_required' => __('Please upload your payment receipt screenshot before completing your order.', 'banglaqr-payment-gateway-by-oi'),
+            'i18n_trx_required' => __('Please enter your payment Transaction ID before completing your order.', 'banglaqr-payment-gateway-by-oi'),
+            'i18n_submitting_receipt' => __('Submitting Receipt...', 'banglaqr-payment-gateway-by-oi'),
+            'i18n_confirming_order_btn' => __('Confirming Order...', 'banglaqr-payment-gateway-by-oi'),
+            'i18n_confirm_btn_default' => __('Confirm & Place Order', 'banglaqr-payment-gateway-by-oi'),
+            'i18n_upload_network_error' => __('We could not upload your receipt due to a network connection issue. Please check your internet and try again.', 'banglaqr-payment-gateway-by-oi'),
+            'i18n_upload_failed' => __('We could not upload your receipt image. Please try again or use another format.', 'banglaqr-payment-gateway-by-oi'),
+            'i18n_copy_amount' => __('Copy', 'banglaqr-payment-gateway-by-oi'),
+            'i18n_amount_copied' => __('Copied', 'banglaqr-payment-gateway-by-oi'),
+            'i18n_change_file' => __('Change', 'banglaqr-payment-gateway-by-oi'),
             'receipt_rule' => isset($settings['receipt_rule']) ? $settings['receipt_rule'] : 'optional',
             'trxid_rule' => isset($settings['trxid_rule']) ? $settings['trxid_rule'] : 'optional',
             'enable_manual_payment' => isset($settings['enable_manual_payment']) ? $settings['enable_manual_payment'] : 'no',
@@ -1208,6 +1220,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         // Formatted total respecting store decimal settings
         $total_amount = WC()->cart->total;
         $formatted_total = wc_price($total_amount);
+        $raw_numeric_total = number_format(floatval($total_amount), function_exists('wc_get_price_decimals') ? wc_get_price_decimals() : 2, '.', '');
         
         $max_upload_size = wp_max_upload_size();
         $allowed_max_size = min(5 * 1024 * 1024, $max_upload_size);
@@ -1215,6 +1228,17 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
         ?>
         <div id="banglaqr-modal" class="banglaqr-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="banglaqr-modal-title">
             <div class="banglaqr-modal-container" role="document">
+                <!-- Non-destructive Success Overlay -->
+                <div id="banglaqr-success-overlay" class="banglaqr-success-overlay" style="display:none;">
+                    <div class="banglaqr-success-icon-wrap">
+                        <div class="banglaqr-success-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                    </div>
+                    <div class="banglaqr-success-title"><?php esc_html_e('Payment Details Received!', 'banglaqr-payment-gateway-by-oi'); ?></div>
+                    <div class="banglaqr-success-subtitle"><?php esc_html_e('Thank you! We are confirming your order now...', 'banglaqr-payment-gateway-by-oi'); ?></div>
+                </div>
+
                 <!-- Header -->
                 <div class="banglaqr-modal-header">
                     <div>
@@ -1239,7 +1263,13 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                     <?php if ($active_qr && !empty($active_qr['qr_code_url'])): ?>
                         <div class="banglaqr-payable-amount-box">
                             <div class="banglaqr-payable-label"><?php esc_html_e('Payable Amount', 'banglaqr-payment-gateway-by-oi'); ?></div>
-                            <div class="banglaqr-payable-value" id="banglaqr-modal-payable-val"><?php echo wp_kses_post($formatted_total); ?></div>
+                            <div class="banglaqr-payable-row">
+                                <div class="banglaqr-payable-value" id="banglaqr-modal-payable-val"><?php echo wp_kses_post($formatted_total); ?></div>
+                                <button type="button" class="banglaqr-copy-amount-btn" id="banglaqr-copy-amount-btn" data-amount="<?php echo esc_attr($raw_numeric_total); ?>" title="<?php esc_attr_e('Copy Amount', 'banglaqr-payment-gateway-by-oi'); ?>">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    <span class="banglaqr-copy-amount-text"><?php esc_html_e('Copy', 'banglaqr-payment-gateway-by-oi'); ?></span>
+                                </button>
+                            </div>
                             <?php if ($charge > 0): ?>
                                 <div class="banglaqr-payable-note"><?php printf(esc_html__('(Includes %s%% payment processing fee)', 'banglaqr-payment-gateway-by-oi'), $charge); ?></div>
                             <?php else: ?>
@@ -1337,7 +1367,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
                             </label>
                             <div id="banglaqr-dropzone" class="banglaqr-dropzone" tabindex="0" role="button" aria-label="<?php esc_attr_e('Upload payment screenshot', 'banglaqr-payment-gateway-by-oi'); ?>">
                                 <svg class="banglaqr-upload-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>
-                                <span class="banglaqr-upload-text"><?php esc_html_e('Drop your payment screenshot here, or click to browse', 'banglaqr-payment-gateway-by-oi'); ?></span>
+                                <span class="banglaqr-upload-text"><?php esc_html_e('Choose or drop payment screenshot', 'banglaqr-payment-gateway-by-oi'); ?></span>
                                 <span class="banglaqr-upload-subtext"><?php printf(esc_html__('Supports JPEG, PNG, WEBP up to %s', 'banglaqr-payment-gateway-by-oi'), $allowed_max_size_mb); ?></span>
                                 <input type="file" id="banglaqr-file-input" style="display:none;" accept="image/jpeg,image/png,image/webp,image/gif" />
                             </div>
@@ -1347,7 +1377,7 @@ class Oi_BanglaQR_Gateway extends WC_Payment_Gateway
 
                     <!-- Transaction ID Section -->
                     <?php if ($trxid_rule !== 'hidden'): 
-                        $hide_toggle = ($receipt_rule === 'hidden');
+                        $hide_toggle = ($receipt_rule === 'hidden' || $trxid_rule === 'mandatory');
                     ?>
                         <div class="banglaqr-trx-section">
                             <?php if (!$hide_toggle): ?>

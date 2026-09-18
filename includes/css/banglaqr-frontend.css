@@ -66,6 +66,7 @@
     max-width: 460px;
     box-shadow: var(--banglaqr-shadow-modal);
     overflow: hidden;
+    position: relative;
     transform: translateY(16px) scale(0.98);
     transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
@@ -169,6 +170,41 @@
     color: var(--banglaqr-modal-primary, var(--banglaqr-primary));
     margin: 3px 0;
     line-height: 1.2;
+}
+
+.banglaqr-payable-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 3px 0;
+}
+
+.banglaqr-copy-amount-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #ffffff;
+    border: 1px solid var(--banglaqr-border);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--banglaqr-text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.banglaqr-copy-amount-btn:hover {
+    background: var(--banglaqr-modal-primary-light, #f0fdf4);
+    color: var(--banglaqr-modal-primary, #137833);
+    border-color: var(--banglaqr-modal-primary, #137833);
+}
+
+.banglaqr-copy-amount-btn.copied {
+    background: #ecfdf5;
+    color: #059669;
+    border-color: #a7f3d0;
 }
 
 .banglaqr-payable-note {
@@ -395,6 +431,33 @@
     margin-top: 2px;
 }
 
+.banglaqr-file-preview-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.banglaqr-change-file-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #f1f5f9;
+    border: 1px solid var(--banglaqr-border);
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--banglaqr-text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.banglaqr-change-file-btn:hover {
+    background: #e2e8f0;
+    color: var(--banglaqr-text);
+}
+
 .banglaqr-remove-file-btn {
     background: none;
     border: none;
@@ -419,6 +482,65 @@
 .banglaqr-remove-file-btn svg {
     width: 16px;
     height: 16px;
+}
+
+/* Success Overlay (non-destructive) */
+.banglaqr-success-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 20px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 24px;
+    text-align: center;
+}
+
+.banglaqr-success-icon-wrap {
+    margin-bottom: 16px;
+}
+
+.banglaqr-success-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    margin: 0 auto;
+    box-shadow: 0 10px 20px -5px rgba(34, 197, 94, 0.4);
+    animation: banglaqr-pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.banglaqr-success-icon svg {
+    width: 32px;
+    height: 32px;
+}
+
+@keyframes banglaqr-pop {
+    0% { transform: scale(0.6); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.banglaqr-success-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--banglaqr-text);
+    margin-bottom: 6px;
+}
+
+.banglaqr-success-subtitle {
+    font-size: 13px;
+    color: var(--banglaqr-text-light);
+    font-weight: 500;
 }
 
 /* Progress bar */
